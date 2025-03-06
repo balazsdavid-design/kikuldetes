@@ -1,0 +1,16 @@
+{
+  "xsappname": "kikuldetesek",
+  "tenant-mode": "dedicated",
+  "scopes": [],
+  "attributes": [],
+  "role-templates": [],
+  "oauth2-configuration": {
+    "credential-types": [
+      "binding-secret",
+      "x509"
+    ],
+    "redirect-uris": [
+      "https://*.applicationstudio.cloud.sap/**"
+    ]
+  }
+}

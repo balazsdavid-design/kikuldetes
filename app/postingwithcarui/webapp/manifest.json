@@ -1,0 +1,180 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "postingwithcarui",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.16.3",
+      "toolsId": "58a41fca-7980-42af-a789-dd33469e2f05"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/app/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "PostingWithCar-manage": {
+          "semanticObject": "PostingWithCar",
+          "action": "manage",
+          "title": "{{flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.132.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "postingwithcarui.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "PostingsWithCarList",
+          "target": "PostingsWithCarList"
+        },
+        {
+          "name": "PostingsWithCarObjectPage",
+          "pattern": "PostingsWithCar({PostingsWithCarKey}):?query:",
+          "target": "PostingsWithCarObjectPage"
+        }
+      ],
+      "targets": {
+        "PostingsWithCarList": {
+          "type": "Component",
+          "id": "PostingsWithCarList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/PostingsWithCar",
+              "variantManagement": "Page",
+              "navigation": {
+                "PostingsWithCar": {
+                  "detail": {
+                    "route": "PostingsWithCarObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  },
+                  "columns": {
+                    "DataField::pdf": {
+                      "width": "5em"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PostingsWithCarObjectPage": {
+          "type": "Component",
+          "id": "PostingsWithCarObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/PostingsWithCar",
+              "sectionLayout": "Tabs",
+              "content": {
+                "header": {
+                  "actions": {
+                    "savepdf": {
+                      "press": "postingwithcarui.ext.controller.PDF_handler.handle",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "Save PDF",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "EditAction"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "kikuld_router"
+  }
+}
