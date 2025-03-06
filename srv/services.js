@@ -1,6 +1,7 @@
 
 const cds = require("@sap/cds");
 const { createPDFCar , createPDF } = require("./pdf_creator")
+const { createPDFCarDirect , createPDFRegularDirect} = require("./pdf_maker")
 
 class Service extends cds.ApplicationService {
   init() {
@@ -24,7 +25,8 @@ class Service extends cds.ApplicationService {
     }).where({ID:id})
     .then( async (next) => {
       
-      const result = await createPDFCar(next[0])
+      //const result = await createPDFCar(next[0])
+      const result = await createPDFCarDirect(next[0])
       
       return result
     });
@@ -38,9 +40,9 @@ class Service extends cds.ApplicationService {
     return await SELECT.from('PostingsRegular', p => {
       p`.*`,p.employee (e => {e`.*`}),p.employer (emp => emp`.*`), 
       p.departures_arrivals ( d => d`.*`), p.daily_expenses ( daily => daily`.*`),
-      p.accomodations ( acc => acc`.*`), p.material ( mat=> mat`.*`)
+      p.accomodations ( acc => acc`.*`), p.material_expenses ( mat=> mat`.*`)
     }).where({ID:id}).then( async (next) => {
-      const result = await createPDF(next[0])
+      const result = await createPDFRegularDirect(next[0])
       return result
     });
   }

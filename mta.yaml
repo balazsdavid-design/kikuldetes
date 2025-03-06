@@ -3,188 +3,198 @@ ID: kikuldetesek
 description: A simple CAP project.
 version: 1.0.0
 modules:
-  - name: kikuldetesek-srv
-    type: nodejs
-    path: gen/srv
-    requires:
-      - name: kikuldetesek-auth
-      - name: kikuldetesek-db
-    provides:
-      - name: srv-api
-        properties:
-          srv-url: ${default-url}
+- name: kikuldetesek-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: kikuldetesek-auth
+  - name: kikuldetesek-db
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    readiness-health-check-http-endpoint: /health
+    readiness-health-check-type: http
+  build-parameters:
+    builder: npm
+- name: kikuldetesek-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: kikuldetesek-destination-service
     parameters:
-      buildpack: nodejs_buildpack
-      readiness-health-check-http-endpoint: /health
-      readiness-health-check-type: http
-    build-parameters:
-      builder: npm
-  - name: kikuldetesek-destination-content
-    type: com.sap.application.content
-    requires:
-      - name: kikuldetesek-destination-service
-        parameters:
-          content-target: true
-      - name: kikuldetesek_html_repo_host
-        parameters:
-          service-key:
-            name: kikuldetesek_html_repo_host-key
-      - name: kikuldetesek-auth
-        parameters:
-          service-key:
-            name: kikuldetesek-auth-key
+      content-target: true
+  - name: kikuldetesek_html_repo_host
     parameters:
-      content:
+      service-key:
+        name: kikuldetesek_html_repo_host-key
+  - name: kikuldetesek-auth
+    parameters:
+      service-key:
+        name: kikuldetesek-auth-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: kikuld_router_kikuldetesek_html_repo_host
+          ServiceInstanceName: kikuldetesek-html5-app-host-service
+          ServiceKeyName: kikuldetesek_html_repo_host-key
+          sap.cloud.service: kikuld_router
+        - Authentication: OAuth2UserTokenExchange
+          Name: kikuld_router_uaa_kikuldetesek
+          ServiceInstanceName: kikuldetesek-auth
+          ServiceKeyName: kikuldetesek-auth-key
+          sap.cloud.service: kikuld_router
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: kikuldetesek-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: kikuldetesek_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - postingwithcarui.zip
+      name: postingwithcarui
+      target-path: resources/
+    - artifacts:
+      - postingregularui.zip
+      name: postingregularui
+      target-path: resources/
+    - artifacts:
+      - mainview.zip
+      name: mainview
+      target-path: resources/
+    - artifacts:
+      - listview.zip
+      name: listview
+      target-path: resources/
+- name: kikuldetesek
+  type: approuter.nodejs
+  path: app/router
+  requires:
+  - name: srv-api
+    group: destinations
+    properties:
+      forwardAuthToken: true
+      name: srv-api
+      url: ~{srv-url}
+  - name: kikuldetesek-auth
+  - name: kikuldetesek-destination-service
+    group: destinations
+    properties:
+      forwardAuthToken: false
+      name: ui5
+      url: https://ui5.sap.com
+  provides:
+  - name: app-api
+    properties:
+      app-protocol: ${protocol}
+      app-uri: ${default-uri}
+  parameters:
+    disk-quota: 256M
+    keep-existing-routes: true
+    memory: 256M
+- name: postingregularui
+  type: html5
+  path: app/postingregularui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: mainview
+  type: html5
+  path: app/mainview
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: postingwithcarui
+  type: html5
+  path: app/postingwithcarui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: listview
+  type: html5
+  path: app/listview
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: kikuldetesek-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
         instance:
           destinations:
-            - Name: kikuld_router_kikuldetesek_html_repo_host
-              ServiceInstanceName: kikuldetesek-html5-app-host-service
-              ServiceKeyName: kikuldetesek_html_repo_host-key
-              sap.cloud.service: kikuld_router
-            - Authentication: OAuth2UserTokenExchange
-              Name: kikuld_router_uaa_kikuldetesek
-              ServiceInstanceName: kikuldetesek-auth
-              ServiceKeyName: kikuldetesek-auth-key
-              sap.cloud.service: kikuld_router
-          existing_destinations_policy: ignore
-    build-parameters:
-      no-source: true
-  - name: kikuldetesek-app-content
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: kikuldetesek_html_repo_host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        
-        - artifacts:
-            - postingwithcarui.zip
-          name: postingwithcarui
-          target-path: resources/
-        - artifacts:
-            - postingregularui.zip
-          name: postingregularui
-          target-path: resources/
-        - artifacts:
-            - mainview.zip
-          name: mainview
-          target-path: resources/
-  - name: kikuldetesek
-    type: approuter.nodejs
-    path: app/router
-    requires:
-      - name: srv-api
-        group: destinations
-        properties:
-          forwardAuthToken: true
-          name: srv-api
-          url: ~{srv-url}
-      - name: kikuldetesek-auth
-      - name: kikuldetesek-destination-service
-        group: destinations
-        properties:
-          forwardAuthToken: false
-          name: ui5
-          url: https://ui5.sap.com
-    parameters:
-      disk-quota: 256M
-      keep-existing-routes: true
-      memory: 256M
-    provides:
-      - name: app-api
-        properties:
-          app-protocol: ${protocol}
-          app-uri: ${default-uri}
-  - name: postingregularui
-    type: html5
-    path: app/postingregularui
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms:
-        []
-  - name: mainview
-    type: html5
-    path: app/mainview
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms:
-        []
-  - name: postingwithcarui
-    type: html5
-    path: app/postingwithcarui
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms:
-        []
-resources:
-  - name: kikuldetesek-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      config:
-        HTML5Runtime_enabled: true
-        init_data:
-          instance:
-            destinations:
-              - Authentication: NoAuthentication
-                Name: ui5
-                ProxyType: Internet
-                Type: HTTP
-                URL: https://ui5.sap.com
-              - Authentication: NoAuthentication
-                HTML5.DynamicDestination: true
-                HTML5.ForwardAuthToken: true
-                Name: kikuldetesek-srv-api
-                ProxyType: Internet
-                Type: HTTP
-                URL: ~{srv-api/srv-url}
-            existing_destinations_policy: update
-        version: 1.0.0
-      service: destination
-      service-name: kikuldetesek-destination-service
-      service-plan: application
-    requires:
-      - name: srv-api
-  - name: kikuldetesek_html_repo_host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-name: kikuldetesek-html5-app-host-service
-      service-plan: app-host
-  - name: kikuldetesek-auth
-    type: org.cloudfoundry.managed-service
-    parameters:
-      config:
-        tenant-mode: dedicated
-        xsappname: kikuldetesek-${org}-${space}
-      path: ./xs-security.json
-      service: xsuaa
-      service-plan: application
-  - name: kikuldetesek-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          - Authentication: NoAuthentication
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: kikuldetesek-srv-api
+            ProxyType: Internet
+            Type: HTTP
+            URL: ~{srv-api/srv-url}
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: kikuldetesek-destination-service
+    service-plan: application
+  requires:
+  - name: srv-api
+- name: kikuldetesek_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: kikuldetesek-html5-app-host-service
+    service-plan: app-host
+- name: kikuldetesek-auth
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: kikuldetesek-${org}-${space}
+    path: ./xs-security.json
+    service: xsuaa
+    service-plan: application
+- name: kikuldetesek-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-    - builder: custom
-      commands:
-        - npm ci
-        - npx cds build --production
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production

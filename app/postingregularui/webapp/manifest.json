@@ -152,6 +152,15 @@
                     }
                   }
                 }
+              },
+              "controlConfiguration": {
+                "material_expenses/@com.sap.vocabularies.UI.v1.LineItem#Materialexpenses": {
+                  "columns": {
+                    "DataField::price": {
+                      "availability": "Default"
+                    }
+                  }
+                }
               }
             }
           }

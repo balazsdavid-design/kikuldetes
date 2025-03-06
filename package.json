@@ -31,7 +31,8 @@
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "watch-mainview": "cds watch --open mainview/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-postingregularui": "cds watch --open postingregularui/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-postingwithcarui": "cds watch --open postingwithcarui/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-postingwithcarui": "cds watch --open postingwithcarui/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-listview": "cds watch --open listview/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {

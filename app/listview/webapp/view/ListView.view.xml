@@ -1,0 +1,35 @@
+<mvc:View controllerName="listview.controller.ListView"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+     <content>
+       <SearchField id="_IDGenSearchField"
+            width="100%"
+            placeholder="Keresés..."
+            liveChange="onSearch"/>
+     <Table id="postingList" items="{ path: '/PostingsWithCar'}" >
+
+        <columns>
+        
+        <Column id="goal">
+        <Text id="goaltext" text="Goal"></Text>
+        </Column>
+        <Column id="employee">
+        <Text id="_IDGenText" text="Employee"></Text>
+        </Column>
+        </columns>
+        <items>
+         <ColumnListItem id="_IDGenColumnListItem1" >
+         <cells>
+            <Text id="_IDGenText5" text="{goal}"></Text>
+            <Text id="_IDGenText6" text="{employee_ID}"></Text>
+         </cells>
+         </ColumnListItem>
+        </items>
+
+     </Table>
+
+     
+     </content>
+    </Page>
+</mvc:View>

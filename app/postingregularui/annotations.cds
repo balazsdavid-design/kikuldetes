@@ -23,6 +23,16 @@ annotate service.PostingsRegular with @(
                 Label : 'goal',
                 Value : goal,
             },
+            {
+                $Type : 'UI.DataField',
+                Value : travel_to,
+                Label : 'travel_to',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : travel_back,
+                Label : 'travel_back',
+            },
         ],
     },
     UI.Facets : [
