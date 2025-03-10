@@ -29,6 +29,6 @@
       "csrfProtection": true,
       "authenticationType": "xsuaa"
     }
-  ],
-  "welcomeFile": "/listview"
+  ]
+ 
 }

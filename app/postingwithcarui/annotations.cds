@@ -49,8 +49,8 @@ annotate service.PostingsWithCar with @(
         },
         {
             $Type : 'UI.DataField',
-            Label : 'employer_ID',
-            Value : employer_ID,
+            Value : goal,
+            Label : 'goal',
         },
     ],
     
@@ -157,6 +157,21 @@ annotate service.PostingsWithCar with @(
             $Type : 'UI.DataField',
             Value : goal,
         },
+    },
+    UI.SelectionPresentationVariant #tableView : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem',
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
+        Text : 'Postings with car',
     },
 );
 
@@ -316,6 +331,36 @@ annotate service.FuelTypes with @(
     Communication.Contact #contact : {
         $Type : 'Communication.ContactType',
         fn : name,
+    }
+);
+
+annotate service.PostingsRegular with @(
+    UI.LineItem #tableView : [
+        {
+            $Type : 'UI.DataField',
+            Value : employee_ID,
+            Label : 'employee_ID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : goal,
+            Label : 'goal',
+        },
+    ],
+    UI.SelectionPresentationVariant #tableView : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem#tableView',
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
+        Text : 'Regular postings',
     }
 );
 
