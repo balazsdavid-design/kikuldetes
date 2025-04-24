@@ -595,7 +595,7 @@ annotate service.DeparturesAndArrivals with @(
         {
             $Type : 'UI.DataField',
             Value : meanOfTransport_ID,
-            Label : 'meanOfTransport_ID',
+            Label : 'Utazás módja',
         },
     ]
 );

@@ -187,6 +187,43 @@
                     }
                   }
                 }
+              },
+              "controlConfiguration": {
+                "stickers/@com.sap.vocabularies.UI.v1.LineItem#HighwayStickers": {
+                  "columns": {
+                    "DataField::country_code": {
+                      "width": "15%"
+                    },
+                    "DataField::price": {
+                      "width": "15%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "15%"
+                    },
+                    "DataField::date": {
+                      "width": "15%"
+                    }
+                  }
+                },
+                "data/@com.sap.vocabularies.UI.v1.LineItem#Data": {
+                  "columns": {
+                    "DataField::posting::data::date": {
+                      "width": "8%"
+                    },
+                    "DataField::posting::data::from_where": {
+                      "width": "20%"
+                    },
+                    "DataField::posting::data::to_where": {
+                      "width": "20%"
+                    },
+                    "DataField::posting::data::mileage": {
+                      "width": "6%"
+                    },
+                    "DataField::posting::data::daily_expense": {
+                      "width": "6%"
+                    }
+                  }
+                }
               }
             }
           }
@@ -213,6 +250,112 @@
                         "placement": "Before",
                         "anchor": "EditAction"
                       }
+                    }
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "departures_arrivals/@com.sap.vocabularies.UI.v1.LineItem#DeparturesandArrivals": {
+                  "columns": {
+                    "DataField::from_where": {
+                      "width": "16%"
+                    },
+                    "DataField::departure": {
+                      "width": "10%"
+                    },
+                    "DataField::to_where": {
+                      "width": "16%"
+                    },
+                    "DataField::arrival": {
+                      "width": "10%"
+                    },
+                    "DataField::meanOfTransport_ID": {
+                      "width": "8%"
+                    }
+                  }
+                },
+                "daily_expenses/@com.sap.vocabularies.UI.v1.LineItem#Dailyexpenses": {
+                  "columns": {
+                    "DataField::date": {
+                      "width": "14%"
+                    },
+                    "DataField::days": {
+                      "width": "12%"
+                    },
+                    "DataField::daily_price": {
+                      "width": "12%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "12%"
+                    },
+                    "DataField::paymentMethod_ID": {
+                      "width": "10%"
+                    }
+                  }
+                },
+                "accomodations/@com.sap.vocabularies.UI.v1.LineItem#Accomodations": {
+                  "columns": {
+                    "DataField::accomodation_name": {
+                      "width": "20%"
+                    },
+                    "DataField::date": {
+                      "width": "6%"
+                    },
+                    "DataField::days": {
+                      "width": "6%"
+                    },
+                    "DataField::daily_price": {
+                      "width": "8%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "10%"
+                    },
+                    "DataField::paymentMethod_ID": {
+                      "width": "10%"
+                    }
+                  }
+                },
+                "material_expenses/@com.sap.vocabularies.UI.v1.LineItem#Materialexpenses": {
+                  "columns": {
+                    "DataField::reference": {
+                      "width": "16%"
+                    },
+                    "DataField::date": {
+                      "width": "6%"
+                    },
+                    "DataField::name": {
+                      "width": "16%"
+                    },
+                    "DataField::price": {
+                      "width": "6%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "6%"
+                    },
+                    "DataField::paymentMethod_ID": {
+                      "width": "10%"
+                    }
+                  }
+                },
+                "trip_expenses/@com.sap.vocabularies.UI.v1.LineItem#Tripexpenses": {
+                  "columns": {
+                    "DataField::posting::trip_expenses::reference": {
+                      "width": "16%"
+                    },
+                    "DataField::posting::trip_expenses::date": {
+                      "width": "6%"
+                    },
+                    "DataField::posting::trip_expenses::name": {
+                      "width": "16%"
+                    },
+                    "DataField::posting::trip_expenses::price": {
+                      "width": "6%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "6%"
+                    },
+                    "DataField::paymentMethod_ID": {
+                      "width": "10%"
                     }
                   }
                 }

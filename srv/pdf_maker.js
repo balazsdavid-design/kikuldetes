@@ -22,8 +22,8 @@ async function createPDFCarDirect(PostingWithCar) {
     const day = date.getDate().toString().padStart(2,"0")
     const yearMonth = year+"-"+month
     const employee = PostingWithCar.employee;
-    const data = PostingWithCar.data;
-    const stickers = PostingWithCar.stickers;
+    const data = PostingWithCar.data.sort(compareByDate);
+    const stickers = PostingWithCar.stickers.sort(compareByDate);
     var consumption = 3;
     var cylinder_volume = PostingWithCar.cylinder_volume
     const fuelPrices = await SELECT.one.from('FuelPrices').where({yearMonth:yearMonth})
@@ -322,11 +322,13 @@ async function createPDFRegularDirect(PostingRegular){
     const month =  date.getMonth().toString().padStart(2,"0")
     const day = date.getDate().toString().padStart(2,"0")
     const employee = PostingRegular.employee;
-    const departures_arrivals = PostingRegular.departures_arrivals;
-    const daily = PostingRegular.daily_expenses;
-    const accomodations = PostingRegular.accomodations
-    const material = PostingRegular.material_expenses
-    const tripExpenses = PostingRegular.trip_expenses
+    const departures_arrivals = PostingRegular.departures_arrivals.sort((a,b) => (
+        a.departure > b.departure ? 1 : b.departure > a.departure ? -1 : 0
+    ));
+    const daily = PostingRegular.daily_expenses.sort(compareByDate);
+    const accomodations = PostingRegular.accomodations.sort(compareByDate)
+    const material = PostingRegular.material_expenses.sort(compareByDate)
+    const tripExpenses = PostingRegular.trip_expenses.sort(compareByDate)
     const postingCountry = await getLocalCountryName(PostingRegular.country_code)
     var borrowed = PostingRegular.borrowedHUF
     var borrowedEUR = PostingRegular.borrowedEUR
@@ -509,7 +511,12 @@ async function createPDFRegularDirect(PostingRegular){
         var priceText = '';
         var hufText = '';
         var changeRate = ""
+        var acc_date = new Date(accomodation.date)
+        var endDate = new Date(accomodation.date)
+        endDate.setDate(acc_date.getDate()+accomodation.days)
         
+        const endDateString = (endDate.getMonth()+1).toString().padStart(2,"0")+"-"+endDate.getDate().toString().padStart(2,"0")
+        const accomodation_string = `${accomodation.accomodation_name}, ${accomodation.date}-tól ${endDateString}-ig`
         if(currency == 'EUR'){
            priceEUR = price
            priceText = priceEUR
@@ -569,7 +576,7 @@ async function createPDFRegularDirect(PostingRegular){
         sumAccomodationHUF+= priceHUF;
         sumAccomodationEUR += priceEUR;
         tableBody.push(
-            [{text:accomodation.accomodation_name+", "+accomodation.date,style:'fill',colSpan:2},'',{text:accomodation.days,style:'fill'},currencyText,{text:accomodation.daily_price,style:'fill'},priceText,changeRate,hufText,{text:accomodation.paymentMethod_name}],
+            [{text:accomodation_string,style:'fill',colSpan:2},'',{text:accomodation.days,style:'fill'},currencyText,{text:accomodation.daily_price,style:'fill'},priceText,changeRate,hufText,{text:accomodation.paymentMethod_name}],
              )
     }
     if(accomodations.length == 1){
@@ -993,6 +1000,15 @@ async function getExchangeRates(date,currency){
 async function getLocalCountryName(country_code){
     const country = await SELECT.one.from('sap.common.Countries.texts').where({locale:'hu',code:country_code})
     return country.name
+}
+function compareByDate(a,b) {
+    if(a.date  < b.date) {
+        return -1;
+    }
+    if(a.date > b.date){
+        return 1;
+    }
+    return 0;
 }
 
 module.exports = { createPDFCarDirect, createPDFRegularDirect }

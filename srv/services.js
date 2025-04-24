@@ -1,5 +1,6 @@
 
 const cds = require("@sap/cds");
+
 const { createPDFCarDirect , createPDFRegularDirect} = require("./pdf_maker");
 
 
@@ -148,12 +149,7 @@ class Service extends cds.ApplicationService {
       for(let each of results){
         
         each.editing = true
-      if(each.status_ID == 1 || each.status_ID == 3){
-        each.submittable = true
-      }
-      else {
-        each.submittable = false
-      }
+      
       each.backOffice = user.is('Backoffice')
     }
       
