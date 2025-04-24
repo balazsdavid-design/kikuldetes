@@ -149,7 +149,8 @@
                 "paths": [
                   {
                     "key": "tableView",
-                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView"
+                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                    "visible": true
                   },
                   {
                     "key": "tableView1",
@@ -157,7 +158,8 @@
                     "entitySet": "PostingsRegular"
                   }
                 ]
-              }
+              },
+              "hideFilterBar": false
             }
           }
         },
@@ -169,19 +171,19 @@
             "settings": {
               "navigation": {},
               "contextPath": "/PostingsWithCar",
-              "sectionLayout": "Tabs",
+              "sectionLayout": "Page",
               "content": {
                 "header": {
                   "actions": {
                     "savepdf": {
                       "press": "postingwithcarui.ext.controller.PDF_handler.handle",
-                      "visible": true,
-                      "enabled": true,
                       "text": "Save PDF",
                       "position": {
                         "placement": "Before",
                         "anchor": "EditAction"
-                      }
+                      },
+                      "enabled": "{= !${ui>/isEditable}}",
+                      "visible": "{= !${submittable} }"
                     }
                   }
                 }
@@ -197,14 +199,15 @@
             "settings": {
               "navigation": {},
               "contextPath": "/PostingsRegular",
-              "sectionLayout": "Tabs",
+              "sectionLayout": "Page",
               "content": {
                 "header": {
                   "actions": {
                     "saveRegularPDF": {
+                      "id": "saveRegularPDF",
                       "press": "postingwithcarui.ext.controller.RegPDF_handler.downloadPDF",
                       "visible": true,
-                      "enabled": true,
+                      "enabled": "{= !${ui>/isEditable} && ${backOffice}}",
                       "text": "Save PDF",
                       "position": {
                         "placement": "Before",

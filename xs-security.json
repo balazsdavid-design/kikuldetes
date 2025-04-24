@@ -1,9 +1,23 @@
 {
   "xsappname": "kikuldetesek",
   "tenant-mode": "dedicated",
-  "scopes": [],
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Backoffice",
+      "description": "Backoffice"
+    }
+  ],
   "attributes": [],
-  "role-templates": [],
+  "role-templates": [
+    {
+      "name": "Backoffice",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Backoffice"
+      ],
+      "attribute-references": []
+    }
+  ],
   "oauth2-configuration": {
     "credential-types": [
       "binding-secret",

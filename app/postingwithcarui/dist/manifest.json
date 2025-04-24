@@ -105,6 +105,11 @@
                     "name": "PostingsWithCarObjectPage",
                     "pattern": "PostingsWithCar({PostingsWithCarKey}):?query:",
                     "target": "PostingsWithCarObjectPage"
+                },
+                {
+                    "name": "PostingsRegularObjectPage",
+                    "pattern": "PostingsRegular({PostingsRegularKey}):?query:",
+                    "target": "PostingsRegularObjectPage"
                 }
             ],
             "targets": {
@@ -121,14 +126,37 @@
                                     "detail": {
                                         "route": "PostingsWithCarObjectPage"
                                     }
+                                },
+                                "PostingsRegular": {
+                                    "detail": {
+                                        "route": "PostingsRegularObjectPage"
+                                    }
                                 }
                             },
                             "controlConfiguration": {
                                 "@com.sap.vocabularies.UI.v1.LineItem": {
                                     "tableSettings": {
                                         "type": "ResponsiveTable"
+                                    },
+                                    "columns": {
+                                        "DataField::pdf": {
+                                            "width": "5em"
+                                        }
                                     }
                                 }
+                            },
+                            "views": {
+                                "paths": [
+                                    {
+                                        "key": "tableView",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView"
+                                    },
+                                    {
+                                        "key": "tableView1",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                                        "entitySet": "PostingsRegular"
+                                    }
+                                ]
                             }
                         }
                     }
@@ -141,8 +169,62 @@
                         "settings": {
                             "navigation": {},
                             "contextPath": "/PostingsWithCar",
-                            "sectionLayout": "Tabs"
+                            "sectionLayout": "Tabs",
+                            "content": {
+                                "header": {
+                                    "actions": {
+                                        "savepdf": {
+                                            "press": "postingwithcarui.ext.controller.PDF_handler.handle",
+                                            "visible": true,
+                                            "enabled": true,
+                                            "text": "Save PDF",
+                                            "position": {
+                                                "placement": "Before",
+                                                "anchor": "EditAction"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
+                    }
+                },
+                "PostingsRegularObjectPage": {
+                    "type": "Component",
+                    "id": "PostingsRegularObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "navigation": {},
+                            "contextPath": "/PostingsRegular",
+                            "sectionLayout": "Tabs",
+                            "content": {
+                                "header": {
+                                    "actions": {
+                                        "saveRegularPDF": {
+                                            "id": "saveRegularPDF",
+                                            "press": "postingwithcarui.ext.controller.RegPDF_handler.downloadPDF",
+                                            "visible": true,
+                                            "enabled": "{= !${ui>/isEditable} && ${restriction} == 2}",
+                                            "text": "Save PDF",
+                                            "position": {
+                                                "placement": "Before",
+                                                "anchor": "EditAction"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {
+                    "sap.fe.templates.ObjectPage.ObjectPageController#postingwithcarui::PostingsRegularObjectPage": {
+                        "controllerName": "postingwithcarui.ext.controller.RegController"
                     }
                 }
             }

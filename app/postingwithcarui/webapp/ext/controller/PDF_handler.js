@@ -1,8 +1,8 @@
 
 
 sap.ui.define([
-    "sap/m/MessageToast"
-], function(MessageToast) {
+    "sap/m/MessageToast", "sap/m/MessageBox"
+], function(MessageToast,MessageBox) {
     'use strict';
 
     return {
@@ -12,17 +12,24 @@ sap.ui.define([
             
             let obj = oEvent.getObject()
             
+            const filename = "AutosKikuldetes_"+obj["goal"]+".pdf"
             let id = obj["ID"];
             var url = `/odata/v4/app/getPDFCar?ID=${id}`
             fetch(url).then(response => {
+               
                 if (!response.ok) {
                   throw new Error('Hiba történt a fájl letöltése során.');
                 }
                 return response.json(); // A válasz JSON-ként való feldolgozása
               })
               .then(data => {
-                // Ellenőrizzük, hogy a válasz tartalmazza-e a szükséges adatokat
-                if (data && data.value && data.value.data) {
+                
+                if(data.value=='FuelPriceNotFound'){
+                  MessageBox.error("Nem található üzemanyagár az adott hónapra")
+                }
+                // Ellenőrzöm, hogy a válasz tartalmazza-e a szükséges adatokat
+                else if (data && data.value && data.value.data) {
+                  
                   // Uint8Array létrehozása a bináris adatokból
                   const uint8Array = new Uint8Array(data.value.data);
             
@@ -35,7 +42,7 @@ sap.ui.define([
                   // <a> elem létrehozása a letöltéshez
                   const a = document.createElement('a');
                   a.href = url;
-                  a.download = 'letoltott_fajl.pdf'; // A letöltött fájl neve
+                  a.download = filename; // A letöltött fájl neve
                   document.body.appendChild(a);
                   a.click();
             
