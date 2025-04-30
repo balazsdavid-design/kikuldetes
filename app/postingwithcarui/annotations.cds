@@ -122,7 +122,6 @@ annotate service.PostingsWithCar with @(
                 $Type : 'UI.DataField',
                 Value : cylinder_volume,
                 Label : 'cylinder_volume',
-                ![@UI.Hidden] : (not fuel_type.ICE),
             },
         ],
     },
@@ -212,6 +211,21 @@ annotate service.PostingsWithCar with @(
             @UI.Hidden: ( submittable or backOffice or editing),
         },
     ],
+    UI.ConnectedFields #connected : {
+        $Type : 'UI.ConnectedFieldsType',
+        Template : '{fuel_type_ID}-{cylinder_volume}',
+        Data : {
+            $Type : 'Core.Dictionary',
+            fuel_type_ID : {
+                $Type : 'UI.DataField',
+                Value : fuel_type_ID,
+            },
+            cylinder_volume : {
+                $Type : 'UI.DataField',
+                Value : cylinder_volume,
+            },
+        },
+    },
 );
 
 annotate service.PostingsWithCar with {
@@ -1045,4 +1059,8 @@ annotate service.PostingsRegular with {
             ![@UI.TextArrangement] : #TextOnly,
         },
 )};
+
+annotate service.PostingsWithCar with {
+    cylinder_volume @Common.FieldControl : #Optional
+};
 

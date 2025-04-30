@@ -27,10 +27,18 @@
         },
         "crossNavigation": {
             "inbounds": {
-                "PostingWithCar-manage": {
+                "Posting-manage": {
                     "semanticObject": "PostingWithCar",
                     "action": "manage",
                     "title": "{{flpTitle}}",
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    }
+                },
+                "postingwithcarui-display": {
+                    "semanticObject": "postingwithcarui",
+                    "action": "display",
                     "signature": {
                         "parameters": {},
                         "additionalParameters": "allowed"
@@ -149,7 +157,8 @@
                                 "paths": [
                                     {
                                         "key": "tableView",
-                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView"
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                                        "visible": true
                                     },
                                     {
                                         "key": "tableView1",
@@ -157,7 +166,8 @@
                                         "entitySet": "PostingsRegular"
                                     }
                                 ]
-                            }
+                            },
+                            "hideFilterBar": false
                         }
                     }
                 },
@@ -169,19 +179,56 @@
                         "settings": {
                             "navigation": {},
                             "contextPath": "/PostingsWithCar",
-                            "sectionLayout": "Tabs",
+                            "sectionLayout": "Page",
                             "content": {
                                 "header": {
                                     "actions": {
                                         "savepdf": {
                                             "press": "postingwithcarui.ext.controller.PDF_handler.handle",
-                                            "visible": true,
-                                            "enabled": true,
                                             "text": "Save PDF",
                                             "position": {
                                                 "placement": "Before",
                                                 "anchor": "EditAction"
-                                            }
+                                            },
+                                            "enabled": "{= !${ui>/isEditable}}",
+                                            "visible": "{= !${submittable} }"
+                                        }
+                                    }
+                                }
+                            },
+                            "controlConfiguration": {
+                                "stickers/@com.sap.vocabularies.UI.v1.LineItem#HighwayStickers": {
+                                    "columns": {
+                                        "DataField::country_code": {
+                                            "width": "15%"
+                                        },
+                                        "DataField::price": {
+                                            "width": "15%"
+                                        },
+                                        "DataField::currency_code": {
+                                            "width": "15%"
+                                        },
+                                        "DataField::date": {
+                                            "width": "15%"
+                                        }
+                                    }
+                                },
+                                "data/@com.sap.vocabularies.UI.v1.LineItem#Data": {
+                                    "columns": {
+                                        "DataField::posting::data::date": {
+                                            "width": "8%"
+                                        },
+                                        "DataField::posting::data::from_where": {
+                                            "width": "20%"
+                                        },
+                                        "DataField::posting::data::to_where": {
+                                            "width": "20%"
+                                        },
+                                        "DataField::posting::data::mileage": {
+                                            "width": "6%"
+                                        },
+                                        "DataField::posting::data::daily_expense": {
+                                            "width": "6%"
                                         }
                                     }
                                 }
@@ -197,7 +244,7 @@
                         "settings": {
                             "navigation": {},
                             "contextPath": "/PostingsRegular",
-                            "sectionLayout": "Tabs",
+                            "sectionLayout": "Page",
                             "content": {
                                 "header": {
                                     "actions": {
@@ -205,12 +252,118 @@
                                             "id": "saveRegularPDF",
                                             "press": "postingwithcarui.ext.controller.RegPDF_handler.downloadPDF",
                                             "visible": true,
-                                            "enabled": "{= !${ui>/isEditable} && ${restriction} == 2}",
+                                            "enabled": "{= !${ui>/isEditable} && ${backOffice}}",
                                             "text": "Save PDF",
                                             "position": {
                                                 "placement": "Before",
                                                 "anchor": "EditAction"
                                             }
+                                        }
+                                    }
+                                }
+                            },
+                            "controlConfiguration": {
+                                "departures_arrivals/@com.sap.vocabularies.UI.v1.LineItem#DeparturesandArrivals": {
+                                    "columns": {
+                                        "DataField::from_where": {
+                                            "width": "16%"
+                                        },
+                                        "DataField::departure": {
+                                            "width": "10%"
+                                        },
+                                        "DataField::to_where": {
+                                            "width": "16%"
+                                        },
+                                        "DataField::arrival": {
+                                            "width": "10%"
+                                        },
+                                        "DataField::meanOfTransport_ID": {
+                                            "width": "8%"
+                                        }
+                                    }
+                                },
+                                "daily_expenses/@com.sap.vocabularies.UI.v1.LineItem#Dailyexpenses": {
+                                    "columns": {
+                                        "DataField::date": {
+                                            "width": "14%"
+                                        },
+                                        "DataField::days": {
+                                            "width": "12%"
+                                        },
+                                        "DataField::daily_price": {
+                                            "width": "12%"
+                                        },
+                                        "DataField::currency_code": {
+                                            "width": "12%"
+                                        },
+                                        "DataField::paymentMethod_ID": {
+                                            "width": "10%"
+                                        }
+                                    }
+                                },
+                                "accomodations/@com.sap.vocabularies.UI.v1.LineItem#Accomodations": {
+                                    "columns": {
+                                        "DataField::accomodation_name": {
+                                            "width": "20%"
+                                        },
+                                        "DataField::date": {
+                                            "width": "6%"
+                                        },
+                                        "DataField::days": {
+                                            "width": "6%"
+                                        },
+                                        "DataField::daily_price": {
+                                            "width": "8%"
+                                        },
+                                        "DataField::currency_code": {
+                                            "width": "10%"
+                                        },
+                                        "DataField::paymentMethod_ID": {
+                                            "width": "10%"
+                                        }
+                                    }
+                                },
+                                "material_expenses/@com.sap.vocabularies.UI.v1.LineItem#Materialexpenses": {
+                                    "columns": {
+                                        "DataField::reference": {
+                                            "width": "16%"
+                                        },
+                                        "DataField::date": {
+                                            "width": "6%"
+                                        },
+                                        "DataField::name": {
+                                            "width": "16%"
+                                        },
+                                        "DataField::price": {
+                                            "width": "6%"
+                                        },
+                                        "DataField::currency_code": {
+                                            "width": "6%"
+                                        },
+                                        "DataField::paymentMethod_ID": {
+                                            "width": "10%"
+                                        }
+                                    }
+                                },
+                                "trip_expenses/@com.sap.vocabularies.UI.v1.LineItem#Tripexpenses": {
+                                    "columns": {
+                                        "DataField::posting::trip_expenses::reference": {
+                                            "width": "16%"
+                                        },
+                                        "DataField::posting::trip_expenses::date": {
+                                            "width": "6%"
+                                        },
+                                        "DataField::posting::trip_expenses::name": {
+                                            "width": "16%"
+                                        },
+                                        "DataField::posting::trip_expenses::price": {
+                                            "width": "6%"
+                                        },
+                                        "DataField::currency_code": {
+                                            "width": "6%"
+                                        },
+                                        "DataField::paymentMethod_ID": {
+                                            "width": "10%"
                                         }
                                     }
                                 }
@@ -222,11 +375,7 @@
         },
         "extends": {
             "extensions": {
-                "sap.ui.controllerExtensions": {
-                    "sap.fe.templates.ObjectPage.ObjectPageController#postingwithcarui::PostingsRegularObjectPage": {
-                        "controllerName": "postingwithcarui.ext.controller.RegController"
-                    }
-                }
+                "sap.ui.controllerExtensions": {}
             }
         }
     },

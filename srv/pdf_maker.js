@@ -25,20 +25,32 @@ async function createPDFCarDirect(PostingWithCar) {
     const data = PostingWithCar.data.sort(compareByDate);
     const stickers = PostingWithCar.stickers.sort(compareByDate);
     var consumption = 3;
+    var fuel_consumption;
     var cylinder_volume = PostingWithCar.cylinder_volume
     const fuelPrices = await SELECT.one.from('FuelPrices').where({yearMonth:yearMonth})
     if(fuelPrices == null){
-        throw "FuelPriceNotFound"
+        return "FuelPriceNotFound"
+    }
+    else if(cylinder_volume == null && PostingWithCar.fuel_type_ID != 5){
+        return "NoVolume"
     }
     var fuelPrice = fuelPrices.petrolPrice
     if(PostingWithCar.fuel_type_ID == 2 || PostingWithCar.fuel_type_ID == 4){
         fuelPrice = fuelPrices.dieselPrice
     }
     if(PostingWithCar.fuel_type_ID != 5) {
-    const fuel_consumption = await SELECT.one.from('FuelConsumptions')
-    .where(`${PostingWithCar.cylinder_volume} > volumeStart and ${PostingWithCar.cylinder_volume} < volumeEnd and fuelType_ID = ${PostingWithCar.fuel_type_ID} `).columns( f => { f.consumption})
+        if(cylinder_volume < 3001){
+            fuel_consumption = await SELECT.one.from('FuelConsumptions')
+    .where(`${PostingWithCar.cylinder_volume} >= volumeStart and ${PostingWithCar.cylinder_volume} <= volumeEnd and fuelType_ID = ${PostingWithCar.fuel_type_ID} `)
+        }
+        else {
+            fuel_consumption =  await SELECT.one.from('FuelConsumptions')
+            .where(`3001 = volumeStart and fuelType_ID = ${PostingWithCar.fuel_type_ID} `)
+            
+            
+        }
+        consumption = fuel_consumption.consumption
     
-    consumption = fuel_consumption.consumption
     }
     else {
         cylinder_volume = '-'

@@ -1,5 +1,7 @@
 using AppService as service from '../../srv/services';
 using from '@sap/cds/common';
+using from '../../db/schema';
+
 
 annotate service.FuelPrices with @(
     UI.FieldGroup #GeneratedGroup : {
@@ -144,8 +146,8 @@ annotate service.PaymentMethods with @(
     UI.LineItem #tableView : [
         {
             $Type : 'UI.DataField',
-            Value : name,
-            Label : 'name',
+            Value : ID,
+            Label : 'Neve',
         },
     ],
     UI.SelectionPresentationVariant #tableView : {
@@ -177,8 +179,8 @@ annotate service.MeansOfTransport with @(
     UI.LineItem #tableView : [
         {
             $Type : 'UI.DataField',
-            Value : name,
-            Label : 'name',
+            Value : ID,
+            Label : 'ID',
         },
     ],
     UI.SelectionPresentationVariant #tableView : {
@@ -342,7 +344,7 @@ annotate service.Statuses with @(
         {
             $Type : 'UI.DataField',
             Value : statusText,
-            Label : 'statusText',
+            Label : 'Státusz neve',
         },
     ],
     UI.SelectionPresentationVariant #tableView : {
@@ -359,6 +361,69 @@ annotate service.Statuses with @(
             ],
         },
         Text : 'Statuses',
-    }
+    },
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : 'General Information',
+            ID : 'GeneralInformation',
+            Target : '@UI.FieldGroup#GeneralInformation',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : 'Szöveg',
+            ID : 'Szveg',
+            Target : 'texts/@UI.LineItem#Szveg',
+        },
+    ],
+    UI.FieldGroup #GeneralInformation : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : statusText,
+                Label : 'statusText',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : texts.statusText,
+                Label : 'statusText',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : texts.locale,
+                Label : 'locale',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : ID,
+                Label : 'ID',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : texts.ID,
+                Label : 'ID',
+            },
+        ],
+    },
 );
+
+annotate service.Statuses.texts with @(
+    UI.LineItem #Szveg : [
+        {
+            $Type : 'UI.DataField',
+            Value : locale,
+            Label : 'locale',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : statusText,
+            Label : 'statusText',
+        },
+    ]
+);
+
+annotate service.Statuses with {
+    ID @Common.FieldControl : #ReadOnly
+};
 

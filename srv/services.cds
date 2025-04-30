@@ -21,7 +21,8 @@ service AppService {
     entity Accomodations as projection on my.Accomodations;
     entity MaterialExpenses as projection on my.MaterialExpenses;
 
-    @odata.draft.enabled
+    
+    
     entity Statuses as projection on my.Statuses;
 
 

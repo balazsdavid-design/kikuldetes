@@ -29,7 +29,7 @@ class Service extends cds.ApplicationService {
         req.error(400,'Legalább két elemet hozzá kell adni az utazás adatokhoz!')
       }
       req.data.userEmail = req.user.id
-      
+      req.data.status_ID = 1
       const db = cds.transaction(req);
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -161,11 +161,15 @@ class Service extends cds.ApplicationService {
   
   
   this.before('CREATE', 'PostingsRegular', async(req) => {
-    
+    var borrowedHUF = req.data.borrowedHUF
+    var borrowedEUR = req.data.borrowedEUR
     
     
     var travelTo = new Date(req.data.travel_to)
     var travelBack = new Date(req.data.travel_back)
+    travelBack.setHours(23)
+    travelBack.setMinutes(59)
+    travelBack.setSeconds(59)
     if(travelTo > travelBack){
       req.error(400,"Az indulás nem lehet nagyobb az érkezésnél")
     }
@@ -176,14 +180,75 @@ class Service extends cds.ApplicationService {
       if(departure > arrival){
         req.error(400,'Az indulási és érkezési adatok közt az indulás időpontja nem lehet nagyobb mint az érkezésé!')
       }
+      if(departure < travelTo || departure > travelBack || arrival < travelTo || arrival > travelBack){
+        req.error(400,'Az indulási és érkezési adatok dátumainak a kiküldetés idején belül kell lennie!')
+      }
     }   
-      
+    for (var daily of req.data.daily_expenses) {
+        var dailyDate = new Date(daily.date)
+        if(dailyDate < travelTo || dailyDate > travelBack){
+          req.error(400,'Napidíjelszámolást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+        }
+        if(daily.paymentMethod_ID == 8){
+          if(daily.currency_code == 'EUR'){
+            borrowedEUR -= daily.days*daily.daily_price
+          }
+          else {
+            borrowedHUF -= daily.days*daily.daily_price
+          }
+        }
+    }
+    for(var accomodation of req.data.accomodations){
+      var accDate = new Date(accomodation.date)
+      if(accDate < travelTo || accDate > travelBack){
+        req.error(400,'Szállásköltségelszámolást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+      }
+      if(accomodation.paymentMethod_ID == 8){
+        if(accomodation.currency_code == 'EUR'){
+          borrowedEUR -= accomodation.days*accomodation.daily_price
+        }
+        else {
+          borrowedHUF -= accomodation.days*accomodation.daily_price
+        }
+      }
+    } 
+    for( var material of req.data.material_expenses){
+      var matDate = new Date(material.date)
+      if(matDate< travelTo || matDate > travelBack){
+        req.error(400,'Anyagi kiadást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+      }
+      if(material.paymentMethod_ID == 8){
+        if(material.currency_code == 'EUR'){
+          borrowedEUR -= material.price
+        }
+        else {
+          borrowedHUF -= material.price
+        }
+      }
+    }
+    for( var tripexp of req.data.trip_expenses){
+      var tripDate = new Date(tripexp.date)
+      if(tripDate< travelTo || tripDate > travelBack){
+        req.error(400,'Útiköltséget nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+      }
+      if(tripexp.paymentMethod_ID == 8){
+        if(tripexp.currency_code == 'EUR'){
+          borrowedEUR -= tripexp.price
+        }
+        else {
+          borrowedHUF -= tripexp.price
+        }
+      }
+    }
+    if( borrowedEUR < 0 || borrowedHUF < 0){
+      req.error(400,'Az előre felvett valuta mennyiségét meghaladja az elhasznált előre felvett valuta!')
+    }
     
     if(req.data.departures_arrivals.length < 2){
       req.error(400,'Legalább két elemet hozzá kell adni az indulási, érkezési adatokhoz!')
     }
     req.data.userEmail = req.user.id
-
+    req.data.status_ID = 1
     const db = cds.transaction(req);
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -197,7 +262,7 @@ class Service extends cds.ApplicationService {
         const newNumber = lastNumber + 1;
         const formattedNumber = String(newNumber).padStart(2, '0'); 
         
-        // Frissítjük a SerialNumbers táblát
+        
         await db.run(
             UPSERT.into`SerialNumbers`.entries({ yearMonth, lastNumber: newNumber })
         );
@@ -205,23 +270,95 @@ class Service extends cds.ApplicationService {
         req.data.serialNumber = `${yearMonth}-${formattedNumber}`;
   })
   this.before("UPDATE",'PostingsRegular', async(req) => {
+    var borrowedHUF = req.data.borrowedHUF
+    var borrowedEUR = req.data.borrowedEUR
+    
+    
     var travelTo = new Date(req.data.travel_to)
-      var travelBack = new Date(req.data.travel_back)
-      if(travelTo > travelBack){
-        req.error(400,"Az indulás nem lehet nagyobb az érkezésnél")
-      }
-      
-
-    if(req.data.departures_arrivals.length < 2){
-      req.error(400,'Legalább két elemet hozzá kell adni az indulási, érkezési adatokhoz!')
+    var travelBack = new Date(req.data.travel_back)
+    travelBack.setHours(23)
+    travelBack.setMinutes(59)
+    travelBack.setSeconds(59)
+    if(travelTo > travelBack){
+      req.error(400,"Az indulás nem lehet nagyobb az érkezésnél")
     }
+      
     for(var departure_arrival of req.data.departures_arrivals){
       var arrival = new Date(departure_arrival.arrival)
       var departure = new Date(departure_arrival.departure)
       if(departure > arrival){
         req.error(400,'Az indulási és érkezési adatok közt az indulás időpontja nem lehet nagyobb mint az érkezésé!')
       }
+      if(departure < travelTo || departure > travelBack || arrival < travelTo || arrival > travelBack){
+        req.error(400,'Az indulási és érkezési adatok dátumainak a kiküldetés idején belül kell lennie!')
+      }
+    }   
+    for (var daily of req.data.daily_expenses) {
+      var dailyDate = new Date(daily.date)
+      if(dailyDate < travelTo || dailyDate > travelBack){
+        req.error(400,'Napidíjelszámolást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+      }
+      if(daily.paymentMethod_ID == 8){
+        if(daily.currency_code == 'EUR'){
+          borrowedEUR -= daily.days*daily.daily_price
+        }
+        else {
+          borrowedHUF -= daily.days*daily.daily_price
+        }
+      }
+  }
+  for(var accomodation of req.data.accomodations){
+    var accDate = new Date(accomodation.date)
+    if(accDate < travelTo || accDate > travelBack){
+      req.error(400,'Szállásköltségelszámolást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
     }
+    if(accomodation.paymentMethod_ID == 8){
+      if(accomodation.currency_code == 'EUR'){
+        borrowedEUR -= accomodation.days*accomodation.daily_price
+      }
+      else {
+        borrowedHUF -= accomodation.days*accomodation.daily_price
+      }
+    }
+  } 
+  for( var material of req.data.material_expenses){
+    var matDate = new Date(material.date)
+    if(matDate< travelTo || matDate > travelBack){
+      req.error(400,'Anyagi kiadást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+    }
+    if(material.paymentMethod_ID == 8){
+      if(material.currency_code == 'EUR'){
+        borrowedEUR -= material.price
+      }
+      else {
+        borrowedHUF -= material.price
+      }
+    }
+  }
+  for( var tripexp of req.data.trip_expenses){
+    var tripDate = new Date(tripexp.date)
+    if(tripDate< travelTo || tripDate > travelBack){
+      req.error(400,'Útiköltséget nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+    }
+    if(tripexp.paymentMethod_ID == 8){
+      if(tripexp.currency_code == 'EUR'){
+        borrowedEUR -= tripexp.price
+      }
+      else {
+        borrowedHUF -= tripexp.price
+      }
+    }
+  }
+    if( borrowedEUR < 0 || borrowedHUF < 0){
+      req.error(400,'Az előre felvett valuta mennyiségét meghaladja az elhasznált előre felvett valuta!')
+    }
+    
+      
+
+    if(req.data.departures_arrivals.length < 2){
+      req.error(400,'Legalább két elemet hozzá kell adni az indulási, érkezési adatokhoz!')
+    }
+    
     
   })
 
@@ -240,6 +377,43 @@ class Service extends cds.ApplicationService {
     }
     
     
+  })
+  this.before("CREATE",'PaymentMethods.drafts', async(req) => {
+    
+    var lastID = (await SELECT.from('PaymentMethods').orderBy('ID desc'))
+    if(lastID.length == 0){
+      lastID = 1
+    }
+    else {
+      lastID = lastID[0].ID
+    }
+    
+    req.data.ID = lastID+1;
+  })
+  this.before("CREATE",'MeansOfTransport.drafts', async(req) => {
+    
+    var lastID = (await SELECT.from('MeansOfTransport').orderBy('ID desc'))
+    
+    if(lastID.length == 0){
+      lastID = 1
+    }
+    else {
+      lastID = lastID[0].ID
+    }
+    
+    req.data.ID = lastID+1;
+  })
+  this.before("CREATE",'FuelConsumptions.drafts', async(req) => {
+    
+    var lastID = (await SELECT.from('FuelConsumptions').orderBy('ID desc'))
+    if(lastID.length == 0){
+      lastID = 1
+    }
+    else {
+      lastID = lastID[0].ID
+    }
+    
+    req.data.ID = lastID+1;
   })
 
   this.before('READ','PostingsRegular', async (req) => {
@@ -431,9 +605,7 @@ class Service extends cds.ApplicationService {
     return buffer
     }
     catch(err) {
-      if(err == 'FuelPriceNotFound'){
-        return err
-      }
+      console.log(err)
     }
     
    

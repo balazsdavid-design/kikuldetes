@@ -24,6 +24,20 @@
           "odataVersion": "4.0"
         }
       }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "AdminPanel-manage": {
+          "semanticObject": "AdminPanel",
+          "action": "manage",
+          "title": "{{AdminPanel-manage.flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+        
+      }
     }
   },
   "sap.ui": {
@@ -198,11 +212,6 @@
                     "key": "tableView12345",
                     "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
                     "entitySet": "Currencies"
-                  },
-                  {
-                    "key": "tableView123456",
-                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
-                    "entitySet": "Statuses"
                   }
                 ]
               }

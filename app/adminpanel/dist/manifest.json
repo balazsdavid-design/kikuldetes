@@ -1,0 +1,299 @@
+{
+    "_version": "1.65.0",
+    "sap.app": {
+        "id": "adminpanel",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:lrop",
+            "version": "1.17.1",
+            "toolsId": "830c1f9f-c585-412b-b237-b4fb5340e36f"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "odata/v4/app/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "odataVersion": "4.0"
+                }
+            }
+        },
+        "crossNavigation": {
+            "inbounds": {
+                "AdminPanel-manage": {
+                    "semanticObject": "AdminPanel",
+                    "action": "manage",
+                    "title": "{{AdminPanel-manage.flpTitle}}",
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    }
+                },
+                "postingwithcarui-display": {
+                    "semanticObject": "postingwithcarui",
+                    "action": "display",
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    }
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.134.1",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.fe.templates": {},
+                "sap.f": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "adminpanel.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            }
+        },
+        "resources": {
+            "css": []
+        },
+        "routing": {
+            "config": {
+                "flexibleColumnLayout": {
+                    "defaultTwoColumnLayoutType": "TwoColumnsBeginExpanded",
+                    "defaultThreeColumnLayoutType": "ThreeColumnsMidExpanded"
+                },
+                "routerClass": "sap.f.routing.Router"
+            },
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "FuelPricesList",
+                    "target": [
+                        "FuelPricesList"
+                    ]
+                },
+                {
+                    "name": "FuelPricesObjectPage",
+                    "pattern": "FuelPrices({FuelPricesKey}):?query:",
+                    "target": [
+                        "FuelPricesList",
+                        "FuelPricesObjectPage"
+                    ]
+                },
+                {
+                    "name": "FuelConsumptionsObjectPage",
+                    "pattern": "FuelConsumptions({FuelConsumptionsKey}):?query:",
+                    "target": [
+                        "FuelPricesList",
+                        "FuelConsumptionsObjectPage"
+                    ]
+                },
+                {
+                    "name": "PaymentMethodsObjectPage",
+                    "pattern": "PaymentMethods({PaymentMethodsKey}):?query:",
+                    "target": [
+                        "FuelPricesList",
+                        "PaymentMethodsObjectPage"
+                    ]
+                },
+                {
+                    "name": "MeansOfTransportObjectPage",
+                    "pattern": "MeansOfTransport({MeansOfTransportKey}):?query:",
+                    "target": [
+                        "FuelPricesList",
+                        "MeansOfTransportObjectPage"
+                    ]
+                }
+            ],
+            "targets": {
+                "FuelPricesList": {
+                    "type": "Component",
+                    "id": "FuelPricesList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/FuelPrices",
+                            "variantManagement": "Page",
+                            "navigation": {
+                                "FuelPrices": {
+                                    "detail": {
+                                        "route": "FuelPricesObjectPage"
+                                    }
+                                },
+                                "FuelConsumptions": {
+                                    "detail": {
+                                        "route": "FuelConsumptionsObjectPage"
+                                    }
+                                },
+                                "PaymentMethods": {
+                                    "detail": {
+                                        "route": "PaymentMethodsObjectPage"
+                                    }
+                                },
+                                "MeansOfTransport": {
+                                    "detail": {
+                                        "route": "MeansOfTransportObjectPage"
+                                    }
+                                }
+                            },
+                            "controlConfiguration": {
+                                "@com.sap.vocabularies.UI.v1.LineItem": {
+                                    "tableSettings": {
+                                        "type": "ResponsiveTable"
+                                    }
+                                }
+                            },
+                            "views": {
+                                "paths": [
+                                    {
+                                        "key": "tableView",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView"
+                                    },
+                                    {
+                                        "key": "tableView1",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                                        "entitySet": "FuelConsumptions"
+                                    },
+                                    {
+                                        "key": "tableView12",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                                        "entitySet": "PaymentMethods"
+                                    },
+                                    {
+                                        "key": "tableView123",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                                        "entitySet": "MeansOfTransport"
+                                    },
+                                    {
+                                        "key": "tableView1234",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                                        "entitySet": "Countries"
+                                    },
+                                    {
+                                        "key": "tableView12345",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                                        "entitySet": "Currencies"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "controlAggregation": "beginColumnPages",
+                    "contextPattern": ""
+                },
+                "FuelPricesObjectPage": {
+                    "type": "Component",
+                    "id": "FuelPricesObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "navigation": {},
+                            "contextPath": "/FuelPrices"
+                        }
+                    },
+                    "controlAggregation": "midColumnPages",
+                    "contextPattern": "/FuelPrices({FuelPricesKey})"
+                },
+                "FuelConsumptionsObjectPage": {
+                    "type": "Component",
+                    "id": "FuelConsumptionsObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "navigation": {},
+                            "contextPath": "/FuelConsumptions"
+                        }
+                    },
+                    "controlAggregation": "midColumnPages",
+                    "contextPattern": "/FuelConsumptions({FuelConsumptionsKey})"
+                },
+                "PaymentMethodsObjectPage": {
+                    "type": "Component",
+                    "id": "PaymentMethodsObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "navigation": {},
+                            "contextPath": "/PaymentMethods"
+                        }
+                    },
+                    "controlAggregation": "midColumnPages",
+                    "contextPattern": "/PaymentMethods({PaymentMethodsKey})"
+                },
+                "MeansOfTransportObjectPage": {
+                    "type": "Component",
+                    "id": "MeansOfTransportObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "navigation": {},
+                            "contextPath": "/MeansOfTransport"
+                        }
+                    },
+                    "controlAggregation": "midColumnPages",
+                    "contextPattern": "/MeansOfTransport({MeansOfTransportKey})"
+                }
+            }
+        },
+        "rootView": {
+            "viewName": "sap.fe.templates.RootContainer.view.Fcl",
+            "type": "XML",
+            "async": true,
+            "id": "appRootView"
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    },
+    "sap.cloud": {
+        "public": true,
+        "service": "kikuld_router"
+    }
+}

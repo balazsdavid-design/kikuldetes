@@ -1,6 +1,6 @@
 sap.ui.define([
-    "sap/m/MessageToast"
-], function(MessageToast) {
+    "sap/m/MessageToast", "sap/m/MessageBox"
+], function(MessageToast,MessageBox) {
     'use strict';
 
     return {
@@ -20,8 +20,15 @@ sap.ui.define([
                 return response.json(); // A válasz JSON-ként való feldolgozása
               })
               .then(data => {
+                console.log(data.value)
+                if(data.value[0] == "CurrencyNotFound"){
+                  MessageBox.error("A(z) "+data.value[1]+" valuta árfolyama nem kérhető le!")
+                }
+                else if(data.value == "DateError"){
+                  MessageBox.error("Árfolyam nem kérdezhető le a mai napnál későbbre!")
+                }
                 // Ellenőrizzük, hogy a válasz tartalmazza-e a szükséges adatokat
-                if (data && data.value && data.value.data) {
+                else if (data && data.value && data.value.data) {
                   // Uint8Array létrehozása a bináris adatokból
                   const uint8Array = new Uint8Array(data.value.data);
             

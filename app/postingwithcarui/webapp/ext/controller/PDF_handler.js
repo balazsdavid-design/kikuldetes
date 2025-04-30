@@ -27,6 +27,9 @@ sap.ui.define([
                 if(data.value=='FuelPriceNotFound'){
                   MessageBox.error("Nem található üzemanyagár az adott hónapra")
                 }
+                else if(data.value == 'NoVolume'){
+                  MessageBox.error("Belső égésű motor esetén töltse ki a hengerűrtartalmat!")
+                }
                 // Ellenőrzöm, hogy a válasz tartalmazza-e a szükséges adatokat
                 else if (data && data.value && data.value.data) {
                   

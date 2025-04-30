@@ -148,6 +148,7 @@ entity FuelTypes  {
 
 
 entity PaymentMethods {
+    @readonly
     key ID: Integer;
     @mandatory
     name : String;
@@ -166,6 +167,7 @@ entity HighwayStickers {
 }
 
 entity MeansOfTransport {
+    @readonly
     key ID : Integer;
     @mandatory
     name : String;
@@ -182,6 +184,7 @@ entity FuelPrices {
 }
 
 entity FuelConsumptions {
+    @readonly
     key ID : Integer;
     @mandatory
     fuelType : Association to one FuelTypes;
