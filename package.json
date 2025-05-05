@@ -34,9 +34,11 @@
   },
   "cds": {
     "requires": {
-      "auth": "xsuaa",
+      "[test]": {
+        "auth":"none"
+      },
       "db": {
-        "[hybrid]": {
+        "[test]": {
           "kind": "sqlite",
           "credentials": {
             "url": "./db/kikuldetesek.sqlite"

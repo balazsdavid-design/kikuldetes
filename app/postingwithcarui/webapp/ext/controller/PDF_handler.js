@@ -14,7 +14,10 @@ sap.ui.define([
             
             const filename = "AutosKikuldetes_"+obj["goal"]+".pdf"
             let id = obj["ID"];
-            var url = `/odata/v4/app/getPDFCar?ID=${id}`
+            
+            const serviceUrl = oEvent.oModel.oRequestor.sServiceUrl
+
+            var url = `${serviceUrl}/getPDFCar?ID=${id}`
             fetch(url).then(response => {
                
                 if (!response.ok) {
