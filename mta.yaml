@@ -16,8 +16,8 @@ modules:
     type: nodejs
     path: gen/srv
     parameters:
-      instances: 1
-      buildpack: nodejs_buildpack
+      memory: 256M
+      disk-quota: 1024M
     build-parameters:
       builder: npm-ci
     provides:
@@ -173,4 +173,4 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: postgresql-db
-      service-plan: development
+      service-plan: free
