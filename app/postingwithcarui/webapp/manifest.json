@@ -385,6 +385,6 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "kikuld_router"
+    "service": "kikuldetesek.service"
   }
 }

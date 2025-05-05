@@ -35,8 +35,15 @@
             "parameters": {},
             "additionalParameters": "allowed"
           }
+        },
+        "postingwithcarui-display": {
+          "semanticObject": "postingwithcarui",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
-        
       }
     }
   },
@@ -287,6 +294,6 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "kikuld_router"
+    "service": "kikuldetesek.service"
   }
 }

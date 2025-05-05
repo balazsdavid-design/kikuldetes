@@ -29,28 +29,7 @@ modules:
       - name: kikuldetesek-destination
       - name: postgre_msg
 
-  - name: kikuldetesek
-    type: approuter.nodejs
-    path: app/router
-    parameters:
-      keep-existing-routes: true
-      disk-quota: 256M
-      memory: 256M
-    requires:
-      - name: srv-api
-        group: destinations
-        properties:
-          name: srv-api # must be used in xs-app.json as well
-          url: ~{srv-url}
-          forwardAuthToken: true
-      - name: kikuldetesek-auth
-      - name: kikuldetesek-destination
-      - name: kikuldetesek-html5-runtime
-    provides:
-      - name: app-api
-        properties:
-          app-protocol: ${protocol}
-          app-uri: ${default-uri}
+  
 
   - name: kikuldetesek-app-deployer
     type: com.sap.application.content
@@ -194,4 +173,4 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: postgresql-db
-      service-plan: free
+      service-plan: development
