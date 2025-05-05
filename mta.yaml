@@ -27,7 +27,7 @@ modules:
     requires:
       - name: kikuldetesek-auth
       - name: kikuldetesek-destination
-      - name: kikuldetesek-postgres
+      - name: postgre_msg
 
   - name: kikuldetesek
     type: approuter.nodejs
@@ -105,7 +105,7 @@ modules:
         - name: deploy-to-postgresql
           command: npm start
     requires:
-      - name: kikuldetesek-postgres
+      - name: postgre_msg
 
   - name: kikuldetesek-destinations
     type: com.sap.application.content
@@ -190,8 +190,8 @@ resources:
     parameters:
       service: html5-apps-repo
       service-plan: app-runtime
-  - name: kikuldetesek-postgres
+  - name: postgre_msg
     type: org.cloudfoundry.managed-service
     parameters:
       service: postgresql-db
-      service-plan: development
+      service-plan: free
