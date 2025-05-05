@@ -18,7 +18,7 @@ sap.ui.define([
                 if (!response.ok) {
                   throw new Error('Hiba történt a fájl letöltése során.');
                 }
-                return response.json(); // A válasz JSON-ként való feldolgozása
+                return response.json(); 
               })
               .then(data => {
                 console.log(data.value)
