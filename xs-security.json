@@ -3,13 +3,14 @@
  "tenant-mode": "dedicated",
  "scopes": [
   {
-   "name": "$XSAP PNAME.Backoffice",
-   "description": "Backoffice"
+   "name": "$XSAPPNAME.Backoffice",
+   "description": "Back Office user"
   },
   {
-   "name": "$XSAPPNAME.Backoffice",
-   "description": "Backoffice"
+    "name":"$XSAPPNAME.PostingUser",
+    "description": "Regular user"
   }
+  
  ],
  "attributes": [],
  "role-templates": [
@@ -20,6 +21,14 @@
     "$XSAPPNAME.Backoffice"
    ],
    "attribute-references": []
+  },
+  {
+    "name":"PostingUser",
+    "description": "Regular user",
+    "scope-references": [
+        "$XSAPPNAME.PostingUser"
+    ],
+    "attribute-references" : []
   }
  ]
 }
