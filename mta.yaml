@@ -43,9 +43,9 @@ modules:
           artifacts:
             - adminpanel.zip
           target-path: app/
-        - name: kikuldetesekpostingwithcarui
+        - name: kikuldetesekpostingui
           artifacts:
-            - postingwithcarui.zip
+            - postingui.zip
           target-path: app/
 
   - name: kikuldetesekadminpanel
@@ -59,9 +59,9 @@ modules:
         - npm run build
       supported-platforms:
         []
-  - name: kikuldetesekpostingwithcarui
+  - name: kikuldetesekpostingui
     type: html5
-    path: app/postingwithcarui
+    path: app/postingui
     build-parameters:
       build-result: dist
       builder: custom

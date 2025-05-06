@@ -1,7 +1,7 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "postingwithcarui",
+    "id": "postingui",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -74,7 +74,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "postingwithcarui.i18n.i18n"
+          "bundleName": "postingui.i18n.i18n"
         }
       },
       "": {
@@ -177,7 +177,7 @@
                 "header": {
                   "actions": {
                     "savepdf": {
-                      "press": "postingwithcarui.ext.controller.PDF_handler.handle",
+                      "press": "postingui.ext.controller.PDF_handler.handle",
                       "text": "Save PDF",
                       "position": {
                         "placement": "Before",
@@ -243,7 +243,7 @@
                   "actions": {
                     "saveRegularPDF": {
                       "id": "saveRegularPDF",
-                      "press": "postingwithcarui.ext.controller.RegPDF_handler.downloadPDF",
+                      "press": "postingui.ext.controller.RegPDF_handler.downloadPDF",
                       "visible": true,
                       "enabled": "{= !${ui>/isEditable} && ${backOffice}}",
                       "text": "Save PDF",
