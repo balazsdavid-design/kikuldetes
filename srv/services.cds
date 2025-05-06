@@ -38,6 +38,7 @@ service AppService {
     action reject() returns PostingsWithCar;
     } ;
     @odata.draft.enabled
+    @requires : 'Backoffice'
     entity FuelConsumptions as projection on my.FuelConsumptions;
   
     entity FuelTypes as projection on my.FuelTypes;
@@ -45,6 +46,7 @@ service AppService {
     
     entity PostingDataWithCar as projection on my.PostingDataWithCar;
     @odata.draft.enabled
+    @requires : 'Backoffice'
     entity FuelPrices as projection on my.FuelPrices;
      
     entity HighwayStickers as projection on my.HighwayStickers;
@@ -57,8 +59,10 @@ service AppService {
   
 
    @odata.draft.enabled
+   @requires : 'Backoffice'
   entity PaymentMethods as projection on my.PaymentMethods;
   @odata.draft.enabled
+  @requires : 'Backoffice'
   entity MeansOfTransport as projection on my.MeansOfTransport;
 
   entity TripExpenses as projection on my.TripExpenses;

@@ -12,12 +12,13 @@ sap.ui.define([
             let obj = oEvent.getObject()
             const filename = "Kikuldetes_"+obj["goal"]+".pdf"
             let id = obj["ID"];
-            var url = `/odata/v4/app/getPDFRegular?ID=${id}`
+            const serviceUrl = oEvent.oModel.oRequestor.sServiceUrl
+            var url = `${serviceUrl}/getPDFRegular?ID=${id}`
             fetch(url).then(response => {
                 if (!response.ok) {
                   throw new Error('Hiba történt a fájl letöltése során.');
                 }
-                return response.json(); // A válasz JSON-ként való feldolgozása
+                return response.json(); 
               })
               .then(data => {
                 console.log(data.value)

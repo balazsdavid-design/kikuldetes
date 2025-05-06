@@ -3,7 +3,7 @@ sap.ui.define(
     function (Component) {
         "use strict";
 
-        return Component.extend("postingwithcarui.Component", {
+        return Component.extend("postingui.Component", {
             metadata: {
                 manifest: "json"
             }
