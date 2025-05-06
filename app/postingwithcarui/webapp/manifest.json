@@ -27,18 +27,10 @@
     },
     "crossNavigation": {
       "inbounds": {
-        "Posting-manage": {
-          "semanticObject": "PostingWithCar",
+        "Postings-manage": {
+          "semanticObject": "Postings",
           "action": "manage",
-          "title": "{{flpTitle}}",
-          "signature": {
-            "parameters": {},
-            "additionalParameters": "allowed"
-          }
-        },
-        "postingwithcarui-display": {
-          "semanticObject": "postingwithcarui",
-          "action": "display",
+          "title": "{{Postings-manage.flpTitle}}",
           "signature": {
             "parameters": {},
             "additionalParameters": "allowed"

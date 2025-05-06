@@ -3,7 +3,7 @@
   "tenant-mode": "dedicated",
   "scopes": [
     {
-      "name": "$XSAPPNAME.Backoffice",
+      "name": "$XSAP PNAME.Backoffice",
       "description": "Backoffice"
     }
   ],
@@ -11,7 +11,7 @@
   "role-templates": [
     {
       "name": "Backoffice",
-      "description": "generated",
+      "description": "Role for Back office users",
       "scope-references": [
         "$XSAPPNAME.Backoffice"
       ],
