@@ -1,22 +1,25 @@
 {
-  "xsappname": "kikuldetesek",
-  "tenant-mode": "dedicated",
-  "scopes": [
-    {
-      "name": "$XSAP PNAME.Backoffice",
-      "description": "Backoffice"
-    }
-  ],
-  "attributes": [],
-  "role-templates": [
-    {
-      "name": "Backoffice",
-      "description": "Role for Back office users",
-      "scope-references": [
-        "$XSAPPNAME.Backoffice"
-      ],
-      "attribute-references": []
-    }
-  ]
- 
+ "xsappname": "kikuldetesek",
+ "tenant-mode": "dedicated",
+ "scopes": [
+  {
+   "name": "$XSAP PNAME.Backoffice",
+   "description": "Backoffice"
+  },
+  {
+   "name": "$XSAPPNAME.Backoffice",
+   "description": "Backoffice"
+  }
+ ],
+ "attributes": [],
+ "role-templates": [
+  {
+   "name": "Backoffice",
+   "description": "Role for Back office users",
+   "scope-references": [
+    "$XSAPPNAME.Backoffice"
+   ],
+   "attribute-references": []
+  }
+ ]
 }

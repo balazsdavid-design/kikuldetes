@@ -29,8 +29,6 @@ modules:
       - name: kikuldetesek-destination
       - name: postgre_msg
 
-  
-
   - name: kikuldetesek-app-deployer
     type: com.sap.application.content
     path: gen
