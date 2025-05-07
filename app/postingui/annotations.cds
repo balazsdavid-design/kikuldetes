@@ -1,6 +1,5 @@
 using AppService as service from '../../srv/services';
-using from '@sap/cds/common';
-using from '../../db/schema';
+
 
 
 annotate service.PostingsWithCar with @(
@@ -9,7 +8,7 @@ annotate service.PostingsWithCar with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Label : 'Employee ',
+                Label : '{i18n>Employee}',
                 Value : employee_ID,
             },
             {
@@ -20,12 +19,12 @@ annotate service.PostingsWithCar with @(
             {
                 $Type : 'UI.DataField',
                 Value : userEmail,
-                Label : 'userEmail',
+                Label : '{i18n>UserEmail}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : serialNumber,
-                Label : 'serialNumber',
+                Label : '{i18n>SerialNumber}',
             },
         ],
     },
@@ -33,24 +32,24 @@ annotate service.PostingsWithCar with @(
         {
             $Type : 'UI.ReferenceFacet',
             ID : 'GeneratedFacet1',
-            Label : 'General Information',
+            Label : '{i18n>GeneralInformation}',
             Target : '@UI.FieldGroup#GeneratedGroup',
         },
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Car data',
+            Label : '{i18n>CarData}',
             ID : 'Cardata',
             Target : '@UI.FieldGroup#Cardata',
         },
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Data',
+            Label : '{i18n>TripData}',
             ID : 'Data',
             Target : 'data/@UI.LineItem#Data',
         },
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Highway Stickers ',
+            Label : '{i18n>HighwayStickers}',
             ID : 'HighwayStickers',
             Target : 'stickers/@UI.LineItem#HighwayStickers',
         },
@@ -58,13 +57,13 @@ annotate service.PostingsWithCar with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Label : 'Kiküldött neve',
+            Label : '{i18n>PostedName}',
             Value : employee_ID,
         },
         {
             $Type : 'UI.DataField',
             Value : goal,
-            Label : 'Kiküldetés célja',
+            Label : '{i18n>PostingGoal}',
         },
     ],
     
@@ -111,23 +110,23 @@ annotate service.PostingsWithCar with @(
             {
                 $Type : 'UI.DataField',
                 Value : plateNum,
-                Label : 'plateNum',
+                Label : '{i18n>PlateNumber}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : fuel_type_ID,
-                Label : 'fuel_type_ID',
+                Label : '{i18n>FuelType}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : cylinder_volume,
-                Label : 'cylinder_volume',
+                Label : '{i18n>CylinderVolume}',
             },
         ],
     },
     
     UI.HeaderInfo : {
-        TypeName : 'Posting with car',
+        TypeName : '{i18n>PostingCar}',
         TypeNamePlural : '',
         Title : {
             $Type : 'UI.DataField',
@@ -147,7 +146,7 @@ annotate service.PostingsWithCar with @(
             SelectOptions : [
             ],
         },
-        Text : 'Saját autós kiküldetések',
+        Text : '{i18n>PostingsCar}',
     },
     UI.SelectionFields : [
         employee_ID,
@@ -163,7 +162,7 @@ annotate service.PostingsWithCar with @(
     UI.HeaderFacets : [
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Státusza',
+            Label : '{i18n>StatusOf}',
             ID : 'Sttusz',
             Target : '@UI.FieldGroup#Sttusz',
         },
@@ -187,7 +186,7 @@ annotate service.PostingsWithCar with @(
         {
             $Type : 'UI.DataFieldForAction',
             Action : 'AppService.submit',
-            Label : 'Submit',
+            Label : '{i18n>Submit}',
             Determining : true,
             @UI.Hidden : (not submittable or backOffice or editing) ,
             
@@ -195,7 +194,7 @@ annotate service.PostingsWithCar with @(
         {
             $Type : 'UI.DataFieldForAction',
             Action : 'AppService.reject',
-            Label : 'Reject',
+            Label : '{i18n>Reject}',
             Determining : true,
             @UI.Hidden:( submittable or not backOffice or editing ) ,
             
@@ -206,7 +205,7 @@ annotate service.PostingsWithCar with @(
         {
             $Type : 'UI.DataFieldForAction',
             Action : 'AppService.unsubmit',
-            Label : 'Unsubmit',
+            Label : '{i18n>Unsubmit}',
             Determining : true,
             @UI.Hidden: ( submittable or backOffice or editing),
         },
@@ -256,7 +255,7 @@ annotate service.PostingsWithCar with {
             $value : employee.name,
             ![@UI.TextArrangement] : #TextOnly
         },
-        Common.Label : 'Kiküldött',
+        Common.Label : '{i18n>Posted}',
         Common.ValueListWithFixedValues : true,
     )
 };
@@ -300,27 +299,27 @@ annotate service.PostingDataWithCar with @(
         {
             $Type : 'UI.DataField',
             Value : posting.data.date,
-            Label : 'Date',
+            Label : '{i18n>Date}',
         },
         {
             $Type : 'UI.DataField',
             Value : posting.data.from_where,
-            Label : 'From',
+            Label : '{i18n>FromWhere}',
         },
         {
             $Type : 'UI.DataField',
             Value : posting.data.to_where,
-            Label : 'To',
+            Label : '{i18n>ToWhere}',
         },
         {
             $Type : 'UI.DataField',
             Value : posting.data.mileage,
-            Label : 'Mileage',
+            Label : '{i18n>Mileage}',
         },
         {
             $Type : 'UI.DataField',
             Value : posting.data.daily_expense,
-            Label : 'Daily expense',
+            Label : '{i18n>DailyExpense}',
         },
     ]
 );
@@ -334,7 +333,7 @@ annotate service.HighwayStickers with @(
         {
             $Type : 'UI.DataField',
             Value : price,
-            Label : 'Price',
+            Label : '{i18n>Price}',
         },
         {
             $Type : 'UI.DataField',
@@ -343,7 +342,7 @@ annotate service.HighwayStickers with @(
         {
             $Type : 'UI.DataField',
             Value : date,
-            Label : 'Date',
+            Label : '{i18n>Date}',
         },
     ]
 );
@@ -394,12 +393,12 @@ annotate service.PostingsRegular with @(
         {
             $Type : 'UI.DataField',
             Value : employee_ID,
-            Label : 'Kiküldött neve',
+            Label : '{i18n>PostedName}',
         },
         {
             $Type : 'UI.DataField',
             Value : goal,
-            Label : 'Kiküldetés célja',
+            Label : '{i18n>PostingGoal}',
         },
     ],
     UI.SelectionPresentationVariant #tableView : {
@@ -415,42 +414,42 @@ annotate service.PostingsRegular with @(
             SelectOptions : [
             ],
         },
-        Text : 'Külföldi kiküldetések',
+        Text : '{i18n>PostingsAbroad}',
     },
     UI.Facets : [
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'General Information',
+            Label : '{i18n>GeneralInformation}',
             ID : 'GeneralInformation',
             Target : '@UI.FieldGroup#GeneralInformation',
         },
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Departures and Arrivals',
+            Label : '{i18n>DepandArr}',
             ID : 'DeparturesandArrivals',
             Target : 'departures_arrivals/@UI.LineItem#DeparturesandArrivals',
         },
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Daily expenses',
+            Label : '{i18n>DailyExpenses}',
             ID : 'Dailyexpenses',
             Target : 'daily_expenses/@UI.LineItem#Dailyexpenses',
         },
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Accomodations',
+            Label : '{i18n>Accomodations}',
             ID : 'Accomodations',
             Target : 'accomodations/@UI.LineItem#Accomodations',
         },
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Material expenses',
+            Label : '{i18n>MaterialExpenses}',
             ID : 'Materialexpenses',
             Target : 'material_expenses/@UI.LineItem#Materialexpenses',
         },
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Trip expenses',
+            Label : '{i18n>TripExpenses}',
             ID : 'Tripexpenses',
             Target : 'trip_expenses/@UI.LineItem#Tripexpenses',
         },
@@ -461,12 +460,12 @@ annotate service.PostingsRegular with @(
             {
                 $Type : 'UI.DataField',
                 Value : employee_ID,
-                Label : 'Employee',
+                Label : '{i18n>Employee}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : goal,
-                Label : 'Goal',
+                Label : '{i18n>PostingGoal}',
             },
             {
                 $Type : 'UI.DataField',
@@ -475,32 +474,32 @@ annotate service.PostingsRegular with @(
             {
                 $Type : 'UI.DataField',
                 Value : travel_to,
-                Label : 'Travel to',
+                Label : '{i18n>TravelTo}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : travel_back,
-                Label : 'Travel back',
+                Label : '{i18n>TravelBack}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : userEmail,
-                Label : 'userEmail',
+                Label : '{i18n>UserEmail}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : serialNumber,
-                Label : 'serialNumber',
+                Label : '{i18n>SerialNumber}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : borrowedEUR,
-                Label : 'borrowedEUR',
+                Label : '{i18n>BorrowedEUR}',
             },
             {
                 $Type : 'UI.DataField',
                 Value : borrowedHUF,
-                Label : 'borrowedHUF',
+                Label : '{i18n>BorrowedHUF}',
             },
         ],
     },
@@ -509,28 +508,28 @@ annotate service.PostingsRegular with @(
             $Type : 'UI.DataField',
             Value : goal,
         },
-        TypeName : '',
+        TypeName : '{i18n>PostingAbroad}',
         TypeNamePlural : '',
     },
     UI.Identification : [
         {
             $Type : 'UI.DataFieldForAction',
             Action : 'AppService.submitRegular',
-            Label : 'Submit',
+            Label : '{i18n>Submit}',
             Determining : true,
             @UI.Hidden : (not submittable or backOffice or editing) 
         },
         {
             $Type : 'UI.DataFieldForAction',
             Action : 'AppService.unsubmitRegular',
-            Label : 'Unsubmit',
+            Label : '{i18n>Unsubmit}',
             Determining : true,
             @UI.Hidden : ( submittable or backOffice or editing)
         },
         {
             $Type : 'UI.DataFieldForAction',
             Action : 'AppService.rejectRegular',
-            Label : 'Reject',
+            Label : '{i18n>Reject}',
             Determining : true,
             @UI.Hidden : ( submittable or not backOffice or editing )
         },
@@ -538,7 +537,7 @@ annotate service.PostingsRegular with @(
     UI.HeaderFacets : [
         {
             $Type : 'UI.ReferenceFacet',
-            Label : 'Státusz',
+            Label : '{i18n>StatusOf}',
             ID : 'Sttusz',
             Target : '@UI.FieldGroup#Sttusz',
         },
@@ -549,7 +548,7 @@ annotate service.PostingsRegular with @(
             {
                 $Type : 'UI.DataField',
                 Value : status_ID,
-                Label : 'status_ID',
+                Label : '{i18n>Status}',
             },
         ],
     },
@@ -589,27 +588,27 @@ annotate service.DeparturesAndArrivals with @(
         {
             $Type : 'UI.DataField',
             Value : from_where,
-            Label : 'from_where',
+            Label : '{i18n>FromWhere}',
         },
         {
             $Type : 'UI.DataField',
             Value : departure,
-            Label : 'departure',
+            Label : '{i18n>Departure}',
         },
         {
             $Type : 'UI.DataField',
             Value : to_where,
-            Label : 'to_where',
+            Label : '{i18n>ToWhere}',
         },
         {
             $Type : 'UI.DataField',
             Value : arrival,
-            Label : 'arrival',
+            Label : '{i18n>Arrival}',
         },
         {
             $Type : 'UI.DataField',
             Value : meanOfTransport_ID,
-            Label : 'Utazás módja',
+            Label : '{i18n>MeanofTransport}',
         },
     ]
 );
@@ -619,17 +618,17 @@ annotate service.DailyExpenses with @(
         {
             $Type : 'UI.DataField',
             Value : date,
-            Label : 'date',
+            Label : '{i18n>Date}',
         },
         {
             $Type : 'UI.DataField',
             Value : days,
-            Label : 'days',
+            Label : '{i18n>Days}',
         },
         {
             $Type : 'UI.DataField',
             Value : daily_price,
-            Label : 'daily_price',
+            Label : '{i18n>DailyPrice}',
         },
         {
             $Type : 'UI.DataField',
@@ -638,7 +637,7 @@ annotate service.DailyExpenses with @(
         {
             $Type : 'UI.DataField',
             Value : paymentMethod_ID,
-            Label : 'paymentMethod_ID',
+            Label : '{i18n>PaymentMethod}',
             
             
             
@@ -651,22 +650,22 @@ annotate service.Accomodations with @(
         {
             $Type : 'UI.DataField',
             Value : accomodation_name,
-            Label : 'accomodation_name',
+            Label : '{i18n>AccomodationName}',
         },
         {
             $Type : 'UI.DataField',
             Value : date,
-            Label : 'date',
+            Label : '{i18n>Date}',
         },
         {
             $Type : 'UI.DataField',
             Value : days,
-            Label : 'days',
+            Label : '{i18n>Days}',
         },
         {
             $Type : 'UI.DataField',
             Value : daily_price,
-            Label : 'daily_price',
+            Label : '{i18n>DailyPrice}',
         },
         {
             $Type : 'UI.DataField',
@@ -675,7 +674,7 @@ annotate service.Accomodations with @(
         {
             $Type : 'UI.DataField',
             Value : paymentMethod_ID,
-            Label : 'paymentMethod_ID',
+            Label : '{i18n>PaymentMethod}',
         },
     ]
 );
@@ -685,22 +684,22 @@ annotate service.MaterialExpenses with @(
         {
             $Type : 'UI.DataField',
             Value : reference,
-            Label : 'reference',
+            Label : '{i18n>Reference}',
         },
         {
             $Type : 'UI.DataField',
             Value : date,
-            Label : 'date',
+            Label : '{i18n>Date}',
         },
         {
             $Type : 'UI.DataField',
             Value : name,
-            Label : 'name',
+            Label : '{i18n>Title}',
         },
         {
             $Type : 'UI.DataField',
             Value : price,
-            Label : 'price',
+            Label : '{i18n>Price}',
         },
         {
             $Type : 'UI.DataField',
@@ -709,7 +708,7 @@ annotate service.MaterialExpenses with @(
         {
             $Type : 'UI.DataField',
             Value : paymentMethod_ID,
-            Label : 'paymentMethod_ID',
+            Label : '{i18n>PaymentMethod}',
         },
     ]
 );
@@ -906,22 +905,22 @@ annotate service.TripExpenses with @(
         {
             $Type : 'UI.DataField',
             Value : posting.trip_expenses.reference,
-            Label : 'reference',
+            Label : '{i18n>Reference}',
         },
         {
             $Type : 'UI.DataField',
             Value : posting.trip_expenses.date,
-            Label : 'date',
+            Label : '{i18n>Date}',
         },
         {
             $Type : 'UI.DataField',
             Value : posting.trip_expenses.name,
-            Label : 'name',
+            Label : '{i18n>Title}',
         },
         {
             $Type : 'UI.DataField',
             Value : posting.trip_expenses.price,
-            Label : 'price',
+            Label : '{i18n>Price}',
         },
         {
             $Type : 'UI.DataField',
@@ -930,7 +929,7 @@ annotate service.TripExpenses with @(
         {
             $Type : 'UI.DataField',
             Value : paymentMethod_ID,
-            Label : 'paymentMethod_ID',
+            Label : '{i18n>PaymentMethod}',
         },
     ]
 );
@@ -981,7 +980,7 @@ annotate service.HighwayStickers with {
 
 annotate service.PostingsWithCar with {
     status @(
-        Common.Label : 'Státusz',
+        Common.Label : '{i18n>Status}',
         Common.ValueList : {
             $Type : 'Common.ValueListType',
             CollectionPath : 'Statuses',
@@ -999,6 +998,7 @@ annotate service.PostingsWithCar with {
             $value : status.statusText,
             ![@UI.TextArrangement] : #TextOnly,
         },
+        Common.FieldControl : restriction,
         )
 };
 
@@ -1058,6 +1058,7 @@ annotate service.PostingsRegular with {
             $value : status.statusText,
             ![@UI.TextArrangement] : #TextOnly,
         },
+        Common.FieldControl : restriction,
 )};
 
 annotate service.PostingsWithCar with {

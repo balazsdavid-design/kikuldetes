@@ -1,5 +1,5 @@
 using kikuldetes as my from '../db/schema';
-using from '@sap/cds-common-content';
+
 @requires: 'authenticated-user'
 service AppService {
     

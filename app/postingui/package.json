@@ -9,8 +9,7 @@
   ],
   "main": "webapp/index.html",
   "dependencies": {
-    "@nutrient-sdk/viewer": "^1.0.0",
-    "exceljs": "^4.4.0"
+    
   },
   "devDependencies": {
     "@sap/ui5-builder-webide-extension": "^1.1.9",

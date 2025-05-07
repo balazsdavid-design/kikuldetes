@@ -3,3 +3,7 @@ ID,locale,statusText
 2,hu,Beadva
 3,hu,Elutasítva
 4,hu,Elfogadva
+1,en, Created
+2,en, Submitted
+3, en, Rejected
+4, en, Accepted

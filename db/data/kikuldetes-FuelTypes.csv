@@ -1,6 +1,6 @@
 ID,name,ICE
-1,benzin,true
-2,dízel,true
-3, hibrid (benzin),true
-4, hibrid (dízel),true
-5,elektromos,false
+1,petrol,true
+2,diesel,true
+3, hybrid (petrol),true
+4, hybrid (diesel),true
+5,electric,false

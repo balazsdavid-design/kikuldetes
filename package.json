@@ -29,13 +29,20 @@
     "undeploy": "cf undeploy kikuldetesek --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
-    "watch-postingwithcarui": "cds watch --open postingwithcarui/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-postingui": "cds watch --open postingui/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-adminpanel": "cds watch --open adminpanel/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
       "[test]": {
-        "auth": "mocked"
+        "auth": "mocked",
+        "users":{
+          "david.balazs@msg-plaut.hu": {
+          "password": "teszt",
+          "roles": [ "Backoffice"]
+          
+        }
+      }
       },
       "db": {
         "[test]": {
@@ -67,7 +74,7 @@
     }
   },
   "sapux": [
-    "app/postingwithcarui",
+    "app/postingui",
     "app/adminpanel"
   ]
 }

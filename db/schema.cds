@@ -1,7 +1,7 @@
 namespace kikuldetes;
 
 using { Country,Currency} from '@sap/cds/common';
-using from '@sap/cds-common-content';
+
 
 
 
@@ -141,7 +141,7 @@ entity SerialNumbers {
 
 entity FuelTypes  {
     key ID : Integer;
-    name : String;
+    name : localized String;
     ICE : Boolean;
     
 }

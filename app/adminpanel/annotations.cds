@@ -1,6 +1,6 @@
 using AppService as service from '../../srv/services';
-using from '@sap/cds/common';
-using from '../../db/schema';
+
+
 
 
 annotate service.FuelPrices with @(
@@ -30,17 +30,17 @@ annotate service.FuelPrices with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Label : 'yearMonth',
+            Label : '{i18n>YearMonth}',
             Value : yearMonth,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'petrolPrice',
+            Label : '{i18n>PetrolPrice}',
             Value : petrolPrice,
         },
         {
             $Type : 'UI.DataField',
-            Label : 'dieselPrice',
+            Label : '{i18n>DieselPrice}',
             Value : dieselPrice,
         },
     ],
@@ -57,7 +57,7 @@ annotate service.FuelPrices with @(
             SelectOptions : [
             ],
         },
-        Text : 'Fuel prices',
+        Text : '{i18n>FuelPrices}',
     },
     UI.HeaderInfo : {
         Title : {
@@ -74,22 +74,22 @@ annotate service.FuelConsumptions with @(
         {
             $Type : 'UI.DataField',
             Value : fuelType.name,
-            Label : 'name',
+            Label : '{i18n>FuelType}',
         },
         {
             $Type : 'UI.DataField',
             Value : volumeStart,
-            Label : 'volumeStart',
+            Label : '{i18n>VolumeStart}',
         },
         {
             $Type : 'UI.DataField',
             Value : volumeEnd,
-            Label : 'volumeEnd',
+            Label : '{i18n>VolumeEnd}',
         },
         {
             $Type : 'UI.DataField',
             Value : consumption,
-            Label : 'consumption',
+            Label : '{i18n>Consumption}',
         },
     ],
     UI.SelectionPresentationVariant #tableView : {
@@ -105,7 +105,7 @@ annotate service.FuelConsumptions with @(
             SelectOptions : [
             ],
         },
-        Text : 'FuelConsumptions',
+        Text : '{i18n>FuelConsumptions}',
     },
     UI.Facets : [
         {
@@ -147,7 +147,7 @@ annotate service.PaymentMethods with @(
         {
             $Type : 'UI.DataField',
             Value : ID,
-            Label : 'Neve',
+            Label : '{i18n>Name}',
         },
     ],
     UI.SelectionPresentationVariant #tableView : {
@@ -163,7 +163,7 @@ annotate service.PaymentMethods with @(
             SelectOptions : [
             ],
         },
-        Text : 'PaymentMethods',
+        Text : '{i18n>PaymentMethods}',
     },
     UI.HeaderInfo : {
         Title : {
@@ -180,7 +180,7 @@ annotate service.MeansOfTransport with @(
         {
             $Type : 'UI.DataField',
             Value : ID,
-            Label : 'ID',
+            Label : '{i18n>Name}',
         },
     ],
     UI.SelectionPresentationVariant #tableView : {
@@ -196,7 +196,7 @@ annotate service.MeansOfTransport with @(
             SelectOptions : [
             ],
         },
-        Text : 'MeansOfTransport',
+        Text : '{i18n>MeansofTransport}',
     },
     UI.HeaderInfo : {
         Title : {
@@ -263,7 +263,7 @@ annotate service.Countries with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : texts.name,
+                Value : name,
                 Label : 'Locale name',
             },
         ],

@@ -36,7 +36,6 @@
             "additionalParameters": "allowed"
           }
         }
-       
       }
     }
   },
@@ -178,7 +177,7 @@
                   "actions": {
                     "savepdf": {
                       "press": "postingui.ext.controller.PDF_handler.handle",
-                      "text": "Save PDF",
+                      "text": "{i18n>SavePDF}",
                       "position": {
                         "placement": "Before",
                         "anchor": "EditAction"
@@ -193,16 +192,16 @@
                 "stickers/@com.sap.vocabularies.UI.v1.LineItem#HighwayStickers": {
                   "columns": {
                     "DataField::country_code": {
-                      "width": "15%"
+                      "width": "16.5%"
                     },
                     "DataField::price": {
-                      "width": "15%"
+                      "width": "16.5%"
                     },
                     "DataField::currency_code": {
-                      "width": "15%"
+                      "width": "16.5%"
                     },
                     "DataField::date": {
-                      "width": "15%"
+                      "width": "16.5%"
                     }
                   }
                 },
@@ -218,7 +217,7 @@
                       "width": "20%"
                     },
                     "DataField::posting::data::mileage": {
-                      "width": "6%"
+                      "width": "12%"
                     },
                     "DataField::posting::data::daily_expense": {
                       "width": "6%"
@@ -246,7 +245,7 @@
                       "press": "postingui.ext.controller.RegPDF_handler.downloadPDF",
                       "visible": true,
                       "enabled": "{= !${ui>/isEditable} && ${backOffice}}",
-                      "text": "Save PDF",
+                      "text": "{i18n>SavePDF}",
                       "position": {
                         "placement": "Before",
                         "anchor": "EditAction"

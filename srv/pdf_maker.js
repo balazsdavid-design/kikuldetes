@@ -27,6 +27,8 @@ async function createPDFCarDirect(PostingWithCar) {
     var consumption = 3;
     var fuel_consumption;
     var cylinder_volume = PostingWithCar.cylinder_volume
+    const fuel_type_name = await SELECT.one.from('FuelTypes.texts').where({locale:'hu',ID:PostingWithCar.fuel_type_ID})
+    
     const fuelPrices = await SELECT.one.from('FuelPrices').where({yearMonth:yearMonth})
     if(fuelPrices == null){
         return "FuelPriceNotFound"
@@ -224,7 +226,7 @@ async function createPDFCarDirect(PostingWithCar) {
                       widths: [25,40,43,70,60,50,45,60,'*'],
                       body: [
                           [{text:'Forgalmi rendszám, típus',colSpan:3},'','',{text:PostingWithCar.plateNum,colSpan:2,fillColor:'lightblue'},'',{text:'Fogyasztási normája:',colSpan:2},'',{text:consumption,fillColor:'lightblue',alignment:'center'},{text:'liter/100km'}],
-                          [{text:'Üzemanyag:',colSpan:2},'',{text:PostingWithCar.fuel_type_name,fillColor:'lightblue'},{text:'Hengerűrtartalom:'},{text:cylinder_volume,fillColor:'lightblue',alignment:'center'},{text:'Üz.ag ár:'},{text:fuelPrice},{text:'Amort. (Ft/km):'},{text:15,fillColor:'lightblue',alignment:'center'}],
+                          [{text:'Üzemanyag:',colSpan:2},'',{text:fuel_type_name,fillColor:'lightblue'},{text:'Hengerűrtartalom:'},{text:cylinder_volume,fillColor:'lightblue',alignment:'center'},{text:'Üz.ag ár:'},{text:fuelPrice},{text:'Amort. (Ft/km):'},{text:15,fillColor:'lightblue',alignment:'center'}],
                           
                           ],
                           
