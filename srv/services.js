@@ -149,8 +149,14 @@ class Service extends cds.ApplicationService {
       for(let each of results){
         
         each.editing = true
-      
-      each.backOffice = user.is('Backoffice')
+      if(user.is('Backoffice')){
+        each.backOffice = true
+        each.restriction = 2
+      }
+      else {
+        each.backOffice = false
+        each.restriction = 1
+      }
     }
       
     
