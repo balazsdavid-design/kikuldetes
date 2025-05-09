@@ -52,17 +52,8 @@
           }
         },
         "[production]": {
-          "kind": "postgres",
-          "impl": "@cap-js/postgres",
-          "dialect": "postgres",
-          "schema_evolution": "auto",
-          "credentials": {
-            "username": "f60491810ea1",
-            "password": "496f8fb7df02928937794fe40d97c4",
-            "hostname": "postgres-7493f2f9-29ac-491b-b8cf-71b7c975a0da.ce4jcviyvogb.eu-central-1.rds.amazonaws.com",
-            "dbname": "HuhcOVQUcRQT",
-            "port": "7973"
-          }
+          "kind": "postgres"
+          
         }
       },
       "destinations": true,
