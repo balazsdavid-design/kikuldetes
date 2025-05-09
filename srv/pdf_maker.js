@@ -106,7 +106,12 @@ async function createPDFCarDirect(PostingWithCar) {
             else {
                 currency = sticker.currency_code
                 price = sticker.price
-                changeRate = parseFloat(await getExchangeRates(sticker.date,currency_code))
+                try { 
+                    changeRate = parseFloat(await getExchangeRates(sticker.date,currency_code))
+                }
+                catch(error){
+                    return error
+                }
                 huf = changeRate*price
 
             }

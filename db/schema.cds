@@ -106,7 +106,7 @@ aspect Postings {
     @UI.Hidden
     restriction : Integer default 0;
     
-    userEmail : String;
+    
     
     virtual submittable : Boolean default true;
     @UI.Hidden
@@ -226,10 +226,9 @@ aspect Car {
 
 
 entity Employees {
-    key ID : Integer;
+    key ID : String;
     name : String;
     position : String;
-    employer : String;
     address : String;
     birthDate : String;
     birthPlace : String;

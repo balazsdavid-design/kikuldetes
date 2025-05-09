@@ -17,7 +17,7 @@ sap.ui.define([
             let obj = oEvent.getObject()
             const filename = "Kikuldetes_"+obj["goal"]+".pdf"
             let id = obj["ID"];
-            const serviceUrl = oEvent.oModel.oRequestor.sServiceUrl
+            const serviceUrl = this.getModel().getServiceUrl()
             var url = `${serviceUrl}/getPDFRegular?ID=${id}`
             fetch(url).then(response => {
                 if (!response.ok) {

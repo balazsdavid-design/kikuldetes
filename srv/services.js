@@ -9,7 +9,17 @@ const { createPDFCarDirect , createPDFRegularDirect} = require("./pdf_maker");
 class Service extends cds.ApplicationService {
   init() {
     
-      
+    this.before('CREATE','PostingsWithCar.drafts', async(req) => {
+      if(!req.user.is('Backoffice')){
+        req.data.employee_ID = req.user.id
+        
+      }
+    })
+    this.before('CREATE','PostingsRegular.drafts', async(req) => {
+      if(!req.user.is('Backoffice')){
+        req.data.employee_ID = req.user.id
+      }
+    })
 
 
     this.before('CREATE', 'PostingsWithCar', async(req) => {
@@ -21,14 +31,14 @@ class Service extends cds.ApplicationService {
           
           var reqDate = new Date(sticker.date)
           if(reqDate > date){
-            req.error(400,'Matricát nem lehet felvenni a mainál későbbi dátumra!')
+            req.error(400,'StickerError')
           }
         }
       }
       if(req.data.data.length < 2){
-        req.error(400,'Legalább két elemet hozzá kell adni az utazás adatokhoz!')
+        req.error(400,'TripDataAtleastTwo')
       }
-      req.data.userEmail = req.user.id
+      
       req.data.status_ID = 1
       const db = cds.transaction(req);
       const now = new Date();
@@ -59,13 +69,13 @@ class Service extends cds.ApplicationService {
           console.log(sticker)
           var reqDate = new Date(sticker.date)
           if(reqDate > date){
-            req.error(400,'Matricát nem lehet felvenni a mainál későbbi dátumra!')
+            req.error(400,'StickerError')
           }
         }
       }
 
       if(req.data.data.length < 2){
-        req.error(400,'Legalább két elemet hozzá kell adni az utazás adatokhoz!')
+        req.error(400,'TripDataAtleastTwo')
       }
       
     })
@@ -76,12 +86,51 @@ class Service extends cds.ApplicationService {
       if (!user.is('Backoffice')) {
         
           
-          req.query.where({ userEmail: user.id });
+          req.query.where({ employee_ID: user.id });
           
           
            
       }
   });
+
+  this.before('READ','Employees', async(req) => {
+    const { user } = req;
+      
+      
+      if (!user.is('Backoffice')) {
+        
+          
+          req.query.where({ ID: user.id });
+          
+          
+           
+      }
+
+  })
+  this.before('UPDATE','Employees',async(req) => {
+    const { user } = req;
+    if(!user.is('Backoffice')){
+      
+      req.error(400, "Error")
+
+    }
+
+  })
+  this.before('DELETE','Employees',async(req) => {
+    const { user } = req;
+    if(!user.is('Backoffice')){
+      req.error(400, "Error")
+
+    }
+  })
+  this.before('CREATE','Employees',async(req) => {
+    const { user } = req;
+    if(!user.is('Backoffice')){
+      req.error(400, "Error")
+
+    }
+  })
+
   this.after('READ', 'PostingsWithCar', async(results,req ) => {
     
     const { user} = req
@@ -163,7 +212,7 @@ class Service extends cds.ApplicationService {
   
   })
   
-
+  
   
   
   this.before('CREATE', 'PostingsRegular', async(req) => {
@@ -177,23 +226,23 @@ class Service extends cds.ApplicationService {
     travelBack.setMinutes(59)
     travelBack.setSeconds(59)
     if(travelTo > travelBack){
-      req.error(400,"Az indulás nem lehet nagyobb az érkezésnél")
+      req.error(400,'DepartureLaterThanArrival')
     }
       
     for(var departure_arrival of req.data.departures_arrivals){
       var arrival = new Date(departure_arrival.arrival)
       var departure = new Date(departure_arrival.departure)
       if(departure > arrival){
-        req.error(400,'Az indulási és érkezési adatok közt az indulás időpontja nem lehet nagyobb mint az érkezésé!')
+        req.error(400,'DepArrArrivalLater')
       }
       if(departure < travelTo || departure > travelBack || arrival < travelTo || arrival > travelBack){
-        req.error(400,'Az indulási és érkezési adatok dátumainak a kiküldetés idején belül kell lennie!')
+        req.error(400,'DepArrOutsideDate')
       }
     }   
     for (var daily of req.data.daily_expenses) {
         var dailyDate = new Date(daily.date)
         if(dailyDate < travelTo || dailyDate > travelBack){
-          req.error(400,'Napidíjelszámolást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+          req.error(400,'DailyDateOutside')
         }
         if(daily.paymentMethod_ID == 8){
           if(daily.currency_code == 'EUR'){
@@ -207,7 +256,7 @@ class Service extends cds.ApplicationService {
     for(var accomodation of req.data.accomodations){
       var accDate = new Date(accomodation.date)
       if(accDate < travelTo || accDate > travelBack){
-        req.error(400,'Szállásköltségelszámolást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+        req.error(400,'AccomodationDateOutside')
       }
       if(accomodation.paymentMethod_ID == 8){
         if(accomodation.currency_code == 'EUR'){
@@ -221,7 +270,7 @@ class Service extends cds.ApplicationService {
     for( var material of req.data.material_expenses){
       var matDate = new Date(material.date)
       if(matDate< travelTo || matDate > travelBack){
-        req.error(400,'Anyagi kiadást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+        req.error(400,'MaterialDateOutside')
       }
       if(material.paymentMethod_ID == 8){
         if(material.currency_code == 'EUR'){
@@ -235,7 +284,7 @@ class Service extends cds.ApplicationService {
     for( var tripexp of req.data.trip_expenses){
       var tripDate = new Date(tripexp.date)
       if(tripDate< travelTo || tripDate > travelBack){
-        req.error(400,'Útiköltséget nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+        req.error(400,'TripExpenseDateOutSide')
       }
       if(tripexp.paymentMethod_ID == 8){
         if(tripexp.currency_code == 'EUR'){
@@ -247,13 +296,13 @@ class Service extends cds.ApplicationService {
       }
     }
     if( borrowedEUR < 0 || borrowedHUF < 0){
-      req.error(400,'Az előre felvett valuta mennyiségét meghaladja az elhasznált előre felvett valuta!')
+      req.error(400,'BorrowedNegative')
     }
     
     if(req.data.departures_arrivals.length < 2){
-      req.error(400,'Legalább két elemet hozzá kell adni az indulási, érkezési adatokhoz!')
+      req.error(400,'DepArrAtLeastTwo')
     }
-    req.data.userEmail = req.user.id
+    
     req.data.status_ID = 1
     const db = cds.transaction(req);
       const now = new Date();
@@ -286,23 +335,23 @@ class Service extends cds.ApplicationService {
     travelBack.setMinutes(59)
     travelBack.setSeconds(59)
     if(travelTo > travelBack){
-      req.error(400,"Az indulás nem lehet nagyobb az érkezésnél")
+      req.error(400,'DepartureLaterThanArrival')
     }
       
     for(var departure_arrival of req.data.departures_arrivals){
       var arrival = new Date(departure_arrival.arrival)
       var departure = new Date(departure_arrival.departure)
       if(departure > arrival){
-        req.error(400,'Az indulási és érkezési adatok közt az indulás időpontja nem lehet nagyobb mint az érkezésé!')
+        req.error(400,'DepArrArrivalLater')
       }
       if(departure < travelTo || departure > travelBack || arrival < travelTo || arrival > travelBack){
-        req.error(400,'Az indulási és érkezési adatok dátumainak a kiküldetés idején belül kell lennie!')
+        req.error(400,'DepArrOutsideDate ')
       }
     }   
     for (var daily of req.data.daily_expenses) {
       var dailyDate = new Date(daily.date)
       if(dailyDate < travelTo || dailyDate > travelBack){
-        req.error(400,'Napidíjelszámolást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+        req.error(400,'DailyDateOutside')
       }
       if(daily.paymentMethod_ID == 8){
         if(daily.currency_code == 'EUR'){
@@ -316,7 +365,7 @@ class Service extends cds.ApplicationService {
   for(var accomodation of req.data.accomodations){
     var accDate = new Date(accomodation.date)
     if(accDate < travelTo || accDate > travelBack){
-      req.error(400,'Szállásköltségelszámolást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+      req.error(400,'AccomodationDateOutside')
     }
     if(accomodation.paymentMethod_ID == 8){
       if(accomodation.currency_code == 'EUR'){
@@ -330,7 +379,7 @@ class Service extends cds.ApplicationService {
   for( var material of req.data.material_expenses){
     var matDate = new Date(material.date)
     if(matDate< travelTo || matDate > travelBack){
-      req.error(400,'Anyagi kiadást nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+      req.error(400,'MaterialDateOutside')
     }
     if(material.paymentMethod_ID == 8){
       if(material.currency_code == 'EUR'){
@@ -344,7 +393,7 @@ class Service extends cds.ApplicationService {
   for( var tripexp of req.data.trip_expenses){
     var tripDate = new Date(tripexp.date)
     if(tripDate< travelTo || tripDate > travelBack){
-      req.error(400,'Útiköltséget nem lehet a kiküldetés idején kívüli dátumra felvenni!')
+      req.error(400,'TripExpenseDateOutSide ')
     }
     if(tripexp.paymentMethod_ID == 8){
       if(tripexp.currency_code == 'EUR'){
@@ -356,13 +405,13 @@ class Service extends cds.ApplicationService {
     }
   }
     if( borrowedEUR < 0 || borrowedHUF < 0){
-      req.error(400,'Az előre felvett valuta mennyiségét meghaladja az elhasznált előre felvett valuta!')
+      req.error(400,'BorrowedNegative')
     }
     
       
 
     if(req.data.departures_arrivals.length < 2){
-      req.error(400,'Legalább két elemet hozzá kell adni az indulási, érkezési adatokhoz!')
+      req.error(400,'DepArrAtLeastTwo')
     }
     
     
@@ -376,7 +425,7 @@ class Service extends cds.ApplicationService {
     var existing = await SELECT.one.from('FuelPrices').where({yearMonth:yearMonth})
     
     if(existing){
-      req.error(400,'Már rögzítve van erre a hónapra üzemanyagár!')
+      req.error(400,'FuelPriceAlready')
     }
     else {
       req.data.yearMonth = yearMonth
@@ -427,7 +476,7 @@ class Service extends cds.ApplicationService {
 
     if (!user.is('Backoffice')) {
       
-        req.query.where({ userEmail: user.id }); 
+        req.query.where({ employee_ID: user.id }); 
     }
     
 });

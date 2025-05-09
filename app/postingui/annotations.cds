@@ -18,11 +18,6 @@ annotate service.PostingsWithCar with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : userEmail,
-                Label : '{i18n>UserEmail}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : serialNumber,
                 Label : '{i18n>SerialNumber}',
             },
@@ -257,6 +252,7 @@ annotate service.PostingsWithCar with {
         },
         Common.Label : '{i18n>Posted}',
         Common.ValueListWithFixedValues : true,
+        Common.FieldControl : #Mandatory,
     )
 };
 
@@ -480,11 +476,6 @@ annotate service.PostingsRegular with @(
                 $Type : 'UI.DataField',
                 Value : travel_back,
                 Label : '{i18n>TravelBack}',
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : userEmail,
-                Label : '{i18n>UserEmail}',
             },
             {
                 $Type : 'UI.DataField',

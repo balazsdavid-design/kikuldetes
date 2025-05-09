@@ -13,6 +13,8 @@ sap.ui.define([
           const fuelpriceError = this.getModel("i18n").getResourceBundle().getText("FuelPriceError")
           const noVolume = this.getModel("i18n").getResourceBundle().getText("NoVolumeError")
           const conversionError = this.getModel("i18n").getResourceBundle().getText("ConversionError")
+          const currencyError = this.getModel("i18n").getResourceBundle().getText("FuelPriceError")
+          const dateError = this.getModel("i18n").getResourceBundle().getText("DateError")
 
           
             MessageToast.show(savingStr);
@@ -42,6 +44,12 @@ sap.ui.define([
                 }
                 else if(data.value == 'NoVolume'){
                   MessageBox.error(noVolume)
+                }
+                else if(data.value[0] == "CurrencyNotFound"){
+                  MessageBox.error(currencyError+" "+data.value[1])
+                }
+                else if(data.value == "DateError"){
+                  MessageBox.error(dateError)
                 }
                 // Ellenőrzöm, hogy a válasz tartalmazza-e a szükséges adatokat
                 else if (data && data.value && data.value.data) {

@@ -427,3 +427,94 @@ annotate service.Statuses with {
     ID @Common.FieldControl : #ReadOnly
 };
 
+annotate service.Employees with @(
+    UI.LineItem #tableView : [
+        {
+            $Type : 'UI.DataField',
+            Value : ID,
+            Label : '{i18n>ID}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : name,
+            Label : '{i18n>Name}',
+        },
+    ],
+    UI.SelectionPresentationVariant #tableView : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem#tableView',
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
+        Text : '{i18n>Employees}',
+    },
+    UI.HeaderInfo : {
+        Title : {
+            $Type : 'UI.DataField',
+            Value : name,
+        },
+        TypeName : '',
+        TypeNamePlural : '',
+    },
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : '{i18n>PersonalData}',
+            ID : 'i18nPersonalData',
+            Target : '@UI.FieldGroup#i18nPersonalData',
+        },
+    ],
+    UI.FieldGroup #i18nPersonalData : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : ID,
+                Label : '{i18n>ID}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : name,
+                Label : '{i18n>Name}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : position,
+                Label : '{i18n>Position}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : address,
+                Label : '{i18n>Address}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : birthDate,
+                Label : '{i18n>BirthDate}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : birthPlace,
+                Label : '{i18n>BirthPlace}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : mothersName,
+                Label : '{i18n>MothersName}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : taxNumber,
+                Label : '{i18n>TaxNum}',
+            },
+        ],
+    },
+);
+

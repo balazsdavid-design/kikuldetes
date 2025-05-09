@@ -1,2 +1,3 @@
-ID,name,position,employer,address,birthDate,birthPlace,mothersName,taxNumber
-1, Gipsz Jakab, Fejlesztő, 1, Budapest, 2003, Bp, anya,123
+ID,name,position,address,birthDate,birthPlace,mothersName,taxNumber
+gipsz.jakab@msg-plaut.hu, Gipsz Jakab, Fejlesztő,  Budapest, 2003, Bp, anya,123
+david.balazs@msg-plaut.hu,Balázs Dávid, Gyakornok,1 , Szigethalom,2003,Bp,any,123
