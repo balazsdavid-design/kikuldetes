@@ -228,7 +228,7 @@ annotate service.Countries with @(
             SelectOptions : [
             ],
         },
-        Text : 'Countries',
+        Text : '{i18n>Countries}',
     },
     UI.HeaderInfo : {
         Title : {
@@ -290,7 +290,7 @@ annotate service.Currencies with @(
             SelectOptions : [
             ],
         },
-        Text : 'Currencies',
+        Text : '{i18n>Currencies}',
     },
     UI.Facets : [
         {
