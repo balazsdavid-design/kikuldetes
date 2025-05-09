@@ -6,8 +6,16 @@ sap.ui.define([
     'use strict';
 
     return {
-        handle: function(oEvent) {
-            MessageToast.show("Downloading PDF");
+        handle: async function(oEvent) {
+          
+          const savingStr = this.getModel("i18n").getResourceBundle().getText("Saving")
+          const errorStr = this.getModel("i18n").getResourceBundle().getText("BasicError")
+          const fuelpriceError = this.getModel("i18n").getResourceBundle().getText("FuelPriceError")
+          const noVolume = this.getModel("i18n").getResourceBundle().getText("NoVolumeError")
+          const conversionError = this.getModel("i18n").getResourceBundle().getText("ConversionError")
+
+          
+            MessageToast.show(savingStr);
             
             
             let obj = oEvent.getObject()
@@ -15,23 +23,25 @@ sap.ui.define([
             const filename = "AutosKikuldetes_"+obj["goal"]+".pdf"
             let id = obj["ID"];
             
-            const serviceUrl = oEvent.oModel.oRequestor.sServiceUrl
+            const serviceUrl = this.getModel().getServiceUrl()
 
             var url = `${serviceUrl}/getPDFCar?ID=${id}`
             fetch(url).then(response => {
                
                 if (!response.ok) {
-                  throw new Error('Hiba történt a fájl letöltése során.');
+                  MessageBox.error(errorStr)
+                  throw new Error(errorStr);
+                  
                 }
                 return response.json(); // A válasz JSON-ként való feldolgozása
               })
               .then(data => {
                 
                 if(data.value=='FuelPriceNotFound'){
-                  MessageBox.error("Nem található üzemanyagár az adott hónapra")
+                  MessageBox.error(fuelpriceError)
                 }
                 else if(data.value == 'NoVolume'){
-                  MessageBox.error("Belső égésű motor esetén töltse ki a hengerűrtartalmat!")
+                  MessageBox.error(noVolume)
                 }
                 // Ellenőrzöm, hogy a válasz tartalmazza-e a szükséges adatokat
                 else if (data && data.value && data.value.data) {
@@ -56,7 +66,8 @@ sap.ui.define([
                   document.body.removeChild(a);
                   window.URL.revokeObjectURL(url);
                 } else {
-                  throw new Error('A válasz nem tartalmazza a szükséges adatokat.');
+                  MessageBox.error(conversionError)
+                  throw new Error(conversionError);
                 }
               })
               .catch(error => {
