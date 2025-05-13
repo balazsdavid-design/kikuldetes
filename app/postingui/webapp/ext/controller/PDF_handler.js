@@ -35,7 +35,9 @@ sap.ui.define([
                   throw new Error(errorStr);
                   
                 }
+                console.log(response.json())
                 return response.json(); // A válasz JSON-ként való feldolgozása
+                
               })
               .then(data => {
                 
