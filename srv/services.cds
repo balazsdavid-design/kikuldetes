@@ -52,7 +52,7 @@ service AppService {
     entity HighwayStickers as projection on my.HighwayStickers;
     
     entity SerialNumbers as projection on my.SerialNumbers;
-    
+  @odata.draft.enabled
   entity Employees as projection on my.Employees;
   entity Employers as projection on my.Employers;
 

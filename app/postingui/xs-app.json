@@ -9,7 +9,7 @@
       "source": "^/odata/(.*)$",
       "target": "/odata/$1",
       "destination": "kikuldetesek-srv-api",
-      "authenticationType": "none",
+      "authenticationType": "xsuaa",
       "csrfProtection": false
     },
     {

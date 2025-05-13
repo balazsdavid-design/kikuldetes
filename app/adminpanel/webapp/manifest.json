@@ -197,6 +197,11 @@
               "views": {
                 "paths": [
                   {
+                    "key": "tableView123456",
+                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                    "entitySet": "Employees"
+                  },
+                  {
                     "key": "tableView",
                     "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView"
                   },
@@ -224,11 +229,6 @@
                     "key": "tableView12345",
                     "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
                     "entitySet": "Currencies"
-                  },
-                  {
-                    "key": "tableView123456",
-                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
-                    "entitySet": "Employees"
                   }
                 ]
               }

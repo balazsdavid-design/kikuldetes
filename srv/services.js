@@ -14,11 +14,13 @@ class Service extends cds.ApplicationService {
         req.data.employee_ID = req.user.id
         
       }
+      req.data.status_ID = 1
     })
     this.before('CREATE','PostingsRegular.drafts', async(req) => {
       if(!req.user.is('Backoffice')){
         req.data.employee_ID = req.user.id
       }
+      req.data.status_ID = 1
     })
 
 
@@ -39,7 +41,7 @@ class Service extends cds.ApplicationService {
         req.error(400,'TripDataAtleastTwo')
       }
       
-      req.data.status_ID = 1
+      
       const db = cds.transaction(req);
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -81,7 +83,7 @@ class Service extends cds.ApplicationService {
     })
     this.before('READ','PostingsWithCar', async (req ) => {
       const { user } = req;
-      
+      console.log(req)
       
       if (!user.is('Backoffice')) {
         
@@ -100,7 +102,7 @@ class Service extends cds.ApplicationService {
       if (!user.is('Backoffice')) {
         
           
-          req.query.where({ ID: user.id });
+          //req.query.where({ ID: user.id });
           
           
            
@@ -111,7 +113,7 @@ class Service extends cds.ApplicationService {
     const { user } = req;
     if(!user.is('Backoffice')){
       
-      req.error(400, "Error")
+      //req.error(400, "Restricted)
 
     }
 
@@ -119,14 +121,14 @@ class Service extends cds.ApplicationService {
   this.before('DELETE','Employees',async(req) => {
     const { user } = req;
     if(!user.is('Backoffice')){
-      req.error(400, "Error")
+      //req.error(400, "Restricted")
 
     }
   })
   this.before('CREATE','Employees',async(req) => {
     const { user } = req;
     if(!user.is('Backoffice')){
-      req.error(400, "Error")
+      //req.error(400, "Restricted)
 
     }
   })
@@ -303,7 +305,7 @@ class Service extends cds.ApplicationService {
       req.error(400,'DepArrAtLeastTwo')
     }
     
-    req.data.status_ID = 1
+    
     const db = cds.transaction(req);
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -481,7 +483,9 @@ class Service extends cds.ApplicationService {
     
 });
 
-    this.on('getPDFCar',this.getPDFCar)
+    this.on('getPDFCar',async(req) => {
+      return req.user
+    })
 
     this.on('getPDFRegular',this.getPDFRegular)
 
