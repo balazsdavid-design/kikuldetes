@@ -36,6 +36,7 @@ sap.ui.define([
                   
                 }
                 // teszt build
+                console.log(response) // response tesztelése
                 return response.json(); // A válasz JSON-ként való feldolgozása
                 
               })
