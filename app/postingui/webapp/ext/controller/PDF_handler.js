@@ -35,7 +35,7 @@ sap.ui.define([
                   throw new Error(errorStr);
                   
                 }
-                console.log(response.json())
+                console.log(response.json()) // teszt build
                 return response.json(); // A válasz JSON-ként való feldolgozása
                 
               })
