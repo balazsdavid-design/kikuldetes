@@ -484,6 +484,7 @@ class Service extends cds.ApplicationService {
 });
 
     this.on('getPDFCar',async(req) => {
+      console.log(req.user)
       return req.user  
     })
 
