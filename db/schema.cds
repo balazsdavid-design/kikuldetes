@@ -99,7 +99,7 @@ aspect Postings {
     @mandatory
     goal : String;
     employee : Association to one Employees;
-    employer : Association to one Employers;
+    
     
     status : Association to one Statuses;
 

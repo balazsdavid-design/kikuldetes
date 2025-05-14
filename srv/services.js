@@ -483,12 +483,13 @@ class Service extends cds.ApplicationService {
     
 });
 
-    this.on('getPDFCar',async(req) => {
-      console.log(req.user)
-      return req.user  
-    })
+    this.on('getPDFCar',this.getPDFCar)
+    
 
-    this.on('getPDFRegular',this.getPDFRegular)
+    this.on('getPDFRegular',async(req) => {
+      console.log(req.user)
+      return this.getPDFCar(req.params[0]['ID'])
+    })
 
     this.on('submit', async(req) => {
       

@@ -36,12 +36,12 @@ sap.ui.define([
                   
                 }
                 // teszt build
-                console.log(response) // response tesztelése
+                
                 return response.json(); // A válasz JSON-ként való feldolgozása
                 
               })
               .then(data => {
-                console.log(data) // Test user data in request
+                
                 if(data.value=='FuelPriceNotFound'){
                   MessageBox.error(fuelpriceError)
                 }

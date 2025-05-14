@@ -186,7 +186,7 @@ async function createPDFCarDirect(PostingWithCar) {
                         body : [
                             [{text:'A munkáltató',colSpan:2},''],
                             [{text:'Neve:'},{text: 'msg Plaut Hungary',fillColor:'lightblue'}],
-                            [{text:'Címe:'},{text: '1065 Budapest Bajcsy-Zsilinszky út. 65. 1/3.',fillColor:'lightblue'}],
+                            [{text:'Címe:'},{text: '1066 Budapest, Nyugati tér 1.',fillColor:'lightblue'}],
                             [{text:'Adószáma'},{text: '28957795-2-42',fillColor:'lightblue'}],
                             
                             
