@@ -11,11 +11,7 @@ annotate service.PostingsWithCar with @(
                 Label : '{i18n>Employee}',
                 Value : employee_ID,
             },
-            {
-                $Type : 'UI.DataField',
-                Label : 'Employer',
-                Value : employer_ID,
-            },
+            
             {
                 $Type : 'UI.DataField',
                 Value : serialNumber,
@@ -227,6 +223,12 @@ annotate service.PostingsWithCar with {
     
 
     employee @(
+        Common.Text : {
+            $value : employee.name,
+            ![@UI.TextArrangement] : #TextOnly
+        },
+        Common.Label : '{i18n>Posted}',
+        Common.FieldControl : #Mandatory,
         Common.ValueList : {
             $Type : 'Common.ValueListType',
             CollectionPath : 'Employees',
@@ -236,57 +238,13 @@ annotate service.PostingsWithCar with {
                     LocalDataProperty : employee_ID,
                     ValueListProperty : 'ID',
                 },
-                {
-                    $Type : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'name',
-                },
-                {
-                    $Type : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'position',
-                },
             ],
         },
-        Common.Text : {
-            $value : employee.name,
-            ![@UI.TextArrangement] : #TextOnly
-        },
-        Common.Label : '{i18n>Posted}',
         Common.ValueListWithFixedValues : true,
-        Common.FieldControl : #Mandatory,
     )
 };
 
-annotate service.PostingsWithCar with {
-    employer @(
-        Common.ValueList : {
-            $Type : 'Common.ValueListType',
-            CollectionPath : 'Employers',
-            Parameters : [
-                {
-                    $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : employer_ID,
-                    ValueListProperty : 'ID',
-                },
-                {
-                    $Type : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'name',
-                },
-                {
-                    $Type : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'address',
-                },
-                {
-                    $Type : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'taxNumber',
-                },
-            ],
-        },
-        Common.Text : {
-            $value : employer.name,
-            ![@UI.TextArrangement] : #TextOnly
-        },
-    )
-};
+
 
 
 
@@ -569,7 +527,7 @@ annotate service.PostingsRegular with {
 
 annotate service.Employees with {
     ID @Common.Text : {
-        $value : ID,
+        $value : name,
         ![@UI.TextArrangement] : #TextOnly,
     }
 };
