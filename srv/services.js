@@ -657,7 +657,7 @@ class Service extends cds.ApplicationService {
     
       
     const entity =  await SELECT.one('PostingsWithCar', p => {
-      p`.*`,p.employee (e => {e`.*`}),p.employer (emp => emp`.*`), 
+      p`.*`,p.employee (e => {e`.*`}), 
       p.fuel_type.name, p.data ( d => { d`.*`}), p.stickers ( s => {s`*`}, )
     }).where({ID:id})
     try {
@@ -677,7 +677,7 @@ class Service extends cds.ApplicationService {
   
   async getPDFRegular(id) {
     const entity = await SELECT.one('PostingsRegular', p => {
-      p`.*`,p.employee (e => {e`.*`}),p.employer (emp => emp`.*`), 
+      p`.*`,p.employee (e => {e`.*`}), 
       p.departures_arrivals ( d => {d`.*`,d.meanOfTransport.name} ), p.daily_expenses ( daily => {daily`.*`,daily.paymentMethod.name}),
       p.accomodations ( acc => {acc`.*`,acc.paymentMethod.name}), p.material_expenses ( mat=> {mat`.*`,mat.paymentMethod.name}), p.trip_expenses ( trip=> {trip`.*`,trip.paymentMethod.name})
     }).where({ID:id})
