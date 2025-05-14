@@ -40,7 +40,7 @@ sap.ui.define([
                 
               })
               .then(data => {
-                console.log(data)
+                console.log(data) // Test user data in request
                 if(data.value=='FuelPriceNotFound'){
                   MessageBox.error(fuelpriceError)
                 }
