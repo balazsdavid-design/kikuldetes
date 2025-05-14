@@ -22,6 +22,9 @@ async function createPDFCarDirect(PostingWithCar) {
     const day = date.getDate().toString().padStart(2,"0")
     const yearMonth = year+"-"+month
     const employee = PostingWithCar.employee;
+    if(isEmployeeDataMissing(employee)){
+        return "EmployeeDataMissing"
+    }
     const data = PostingWithCar.data.sort(compareByDate);
     const stickers = PostingWithCar.stickers.sort(compareByDate);
     var consumption = 3;
@@ -341,6 +344,9 @@ async function createPDFRegularDirect(PostingRegular){
     const month =  date.getMonth().toString().padStart(2,"0")
     const day = date.getDate().toString().padStart(2,"0")
     const employee = PostingRegular.employee;
+    if(isEmployeeDataMissing(employee)){
+        return "EmployeeDataMissing"
+    }
     const departures_arrivals = PostingRegular.departures_arrivals.sort((a,b) => (
         a.departure > b.departure ? 1 : b.departure > a.departure ? -1 : 0
     ));
@@ -1028,6 +1034,12 @@ function compareByDate(a,b) {
         return 1;
     }
     return 0;
+}
+function isEmployeeDataMissing(employee){
+    return  (employee.position == null || employee.address == null || employee.birthDate || null 
+        || employee.birthPlace == null || employee.taxNumber == null || employee.mothersName == null )
+            
+        
 }
 
 module.exports = { createPDFCarDirect, createPDFRegularDirect }

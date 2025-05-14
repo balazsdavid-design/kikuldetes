@@ -15,7 +15,7 @@ sap.ui.define([
           const conversionError = this.getModel("i18n").getResourceBundle().getText("ConversionError")
           const currencyError = this.getModel("i18n").getResourceBundle().getText("FuelPriceError")
           const dateError = this.getModel("i18n").getResourceBundle().getText("DateError")
-
+          const employeeError = this.getModel("i18n").getResourceBundle().getText("EmployeeDataMissing")
           
             MessageToast.show(savingStr);
             
@@ -53,6 +53,9 @@ sap.ui.define([
                 }
                 else if(data.value == "DateError"){
                   MessageBox.error(dateError)
+                }
+                else if(data.value == "EmployeeDataMissing"){
+                  MessageBox.error(employeeError)
                 }
                 // Ellenőrzöm, hogy a válasz tartalmazza-e a szükséges adatokat
                 else if (data && data.value && data.value.data) {

@@ -39,11 +39,16 @@
         "users":{
           "david.balazs@msg-plaut.hu": {
           "password": "teszt",
-          "roles": [ "Backoffice"]
-          
+          "roles": { "": 1, "Backoffice": 1 },
+          "attr": {
+            "logonName": "david.balazs@msg-plaut.hu",
+            "givenName":"David",
+            "familyName":"balazs"
+
         }
       }
-      },
+      }
+    },
       "db": {
         "[test]": {
           "kind": "sqlite",

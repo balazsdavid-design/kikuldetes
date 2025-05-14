@@ -527,7 +527,7 @@ annotate service.PostingsRegular with {
 
 annotate service.Employees with {
     ID @Common.Text : {
-        $value : name,
+        $value : ID,
         ![@UI.TextArrangement] : #TextOnly,
     }
 };

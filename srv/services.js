@@ -10,6 +10,15 @@ class Service extends cds.ApplicationService {
   init() {
     
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
+      const { user } = req;
+      const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
+    
+    if(employee == null){
+      const fullName = user.attr.familyName+" "+user.attr.givenName
+      
+      
+      await INSERT.into`Employees`.entries({ID:user.id,name:fullName})
+    }
       if(!req.user.is('Backoffice')){
         req.data.employee_ID = req.user.id
         
@@ -17,6 +26,15 @@ class Service extends cds.ApplicationService {
       req.data.status_ID = 1
     })
     this.before('CREATE','PostingsRegular.drafts', async(req) => {
+      const { user } = req;
+      const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
+    
+    if(employee == null){
+      const fullName = user.attr.familyName+" "+user.attr.givenName
+      
+      
+      await INSERT.into`Employees`.entries({ID:user.id,name:fullName})
+    }
       if(!req.user.is('Backoffice')){
         req.data.employee_ID = req.user.id
       }
@@ -51,7 +69,7 @@ class Service extends cds.ApplicationService {
         SELECT`lastNumber`.from`SerialNumbers`.where`yearMonth = ${yearMonth}`
         ) ?? [];
         const  {lastNumber = 0} = result[0] || {};
-        console.log(lastNumber)
+        
         const newNumber = lastNumber + 1;
         const formattedNumber = String(newNumber).padStart(2, '0'); 
 
@@ -68,7 +86,7 @@ class Service extends cds.ApplicationService {
       if(req.data.stickers){
         var date = new Date();
         for(var sticker of req.data.stickers){
-          console.log(sticker)
+          
           var reqDate = new Date(sticker.date)
           if(reqDate > date){
             req.error(400,'StickerError')
@@ -83,7 +101,7 @@ class Service extends cds.ApplicationService {
     })
     this.before('READ','PostingsWithCar', async (req ) => {
       const { user } = req;
-      console.log(req)
+      
       
       if (!user.is('Backoffice')) {
         
@@ -161,6 +179,7 @@ class Service extends cds.ApplicationService {
   this.after('READ', 'PostingsRegular', async(results,req ) => {
     
     const { user} = req
+
     
     for(let each of results){
       
@@ -486,10 +505,7 @@ class Service extends cds.ApplicationService {
     this.on('getPDFCar',this.getPDFCar)
     
 
-    this.on('getPDFRegular',async(req) => {
-      console.log(req.user)
-      return this.getPDFCar(req.params[0]['ID'])
-    })
+    this.on('getPDFRegular',this.getPDFRegular)
 
     this.on('submit', async(req) => {
       
@@ -553,7 +569,7 @@ class Service extends cds.ApplicationService {
       const updated = await SELECT.one('PostingsWithCar', p=> {
         p`.*`,p.status ( s => {s`.*` })
       }).where({ID:id});
-      console.log(updated)
+      
       updated.submittable = true
       updated.backOffice = req.user.is('Backoffice')
     
