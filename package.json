@@ -36,19 +36,21 @@
     "requires": {
       "[test]": {
         "auth": "mocked",
-        "users":{
+        "users": {
           "david.balazs@msg-plaut.hu": {
-          "password": "teszt",
-          "roles": { "": 1, "Backoffice": 1 },
-          "attr": {
-            "logonName": "david.balazs@msg-plaut.hu",
-            "givenName":"David",
-            "familyName":"balazs"
-
+            "password": "teszt",
+            "roles": {
+              "": 1,
+              "Backoffice": 1
+            },
+            "attr": {
+              "logonName": "david.balazs@msg-plaut.hu",
+              "givenName": "David",
+              "familyName": "Balazs"
+            }
+          }
         }
-      }
-      }
-    },
+      },
       "db": {
         "[test]": {
           "kind": "sqlite",
@@ -58,7 +60,6 @@
         },
         "[production]": {
           "kind": "postgres"
-          
         }
       },
       "destinations": true,
@@ -71,6 +72,7 @@
   },
   "sapux": [
     "app/postingui",
-    "app/adminpanel"
+    "app/adminpanel",
+    "app/employeeteszt"
   ]
 }

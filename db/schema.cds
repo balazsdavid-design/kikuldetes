@@ -226,6 +226,7 @@ aspect Car {
 
 
 entity Employees {
+    @readonly
     key ID : String;
     name : String;
     position : String;

@@ -525,13 +525,6 @@ annotate service.PostingsRegular with {
     )
 };
 
-annotate service.Employees with {
-    ID @Common.Text : {
-        $value : ID,
-        ![@UI.TextArrangement] : #TextOnly,
-    }
-};
-
 annotate service.DeparturesAndArrivals with @(
     UI.LineItem #DeparturesandArrivals : [
         {
@@ -1013,4 +1006,29 @@ annotate service.PostingsRegular with {
 annotate service.PostingsWithCar with {
     cylinder_volume @Common.FieldControl : #Optional
 };
+
+annotate service.Employees with @(
+    UI.LineItem #tableView1 : [
+        {
+            $Type : 'UI.DataField',
+            Value : ID,
+            Label : '{i18n>ID}',
+        },
+    ],
+    UI.SelectionPresentationVariant #tableView1 : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem#tableView1',
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
+        Text : '{i18n>PersonalData}',
+    }
+);
 

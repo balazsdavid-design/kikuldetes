@@ -141,14 +141,6 @@
             "FuelPricesList",
             "MeansOfTransportObjectPage"
           ]
-        },
-        {
-          "name": "EmployeesObjectPage",
-          "pattern": "Employees({EmployeesKey}):?query:",
-          "target": [
-            "FuelPricesList",
-            "EmployeesObjectPage"
-          ]
         }
       ],
       "targets": {
@@ -180,11 +172,6 @@
                   "detail": {
                     "route": "MeansOfTransportObjectPage"
                   }
-                },
-                "Employees": {
-                  "detail": {
-                    "route": "EmployeesObjectPage"
-                  }
                 }
               },
               "controlConfiguration": {
@@ -196,11 +183,6 @@
               },
               "views": {
                 "paths": [
-                  {
-                    "key": "tableView123456",
-                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
-                    "entitySet": "Employees"
-                  },
                   {
                     "key": "tableView",
                     "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView"
@@ -288,19 +270,6 @@
           },
           "controlAggregation": "midColumnPages",
           "contextPattern": "/MeansOfTransport({MeansOfTransportKey})"
-        },
-        "EmployeesObjectPage": {
-          "type": "Component",
-          "id": "EmployeesObjectPage",
-          "name": "sap.fe.templates.ObjectPage",
-          "controlAggregation": "beginColumnPages",
-          "options": {
-            "settings": {
-              "navigation": {},
-              "contextPath": "/Employees"
-            }
-          },
-          "contextPattern": "/Employees({EmployeesKey})"
         }
       }
     },

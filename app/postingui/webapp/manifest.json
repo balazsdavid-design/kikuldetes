@@ -110,6 +110,11 @@
           "name": "PostingsRegularObjectPage",
           "pattern": "PostingsRegular({PostingsRegularKey}):?query:",
           "target": "PostingsRegularObjectPage"
+        },
+        {
+          "name": "EmployeesObjectPage",
+          "pattern": "Employees({EmployeesKey}):?query:",
+          "target": "EmployeesObjectPage"
         }
       ],
       "targets": {
@@ -131,6 +136,11 @@
                   "detail": {
                     "route": "PostingsRegularObjectPage"
                   }
+                },
+                "Employees": {
+                  "detail": {
+                    "route": "EmployeesObjectPage"
+                  }
                 }
               },
               "controlConfiguration": {
@@ -141,6 +151,22 @@
                   "columns": {
                     "DataField::pdf": {
                       "width": "5em"
+                    }
+                  }
+                },
+                "/Employees/@com.sap.vocabularies.UI.v1.LineItem#tableView1": {
+                  "tableSettings": {
+                    "selectionLimit": 1,
+                    "type": "ResponsiveTable",
+                    "quickVariantSelection": {
+                      "showCounts": false
+                    }
+                  }
+                },
+                "/PostingsRegular/@com.sap.vocabularies.UI.v1.LineItem#tableView": {
+                  "tableSettings": {
+                    "quickVariantSelection": {
+                      "showCounts": true
                     }
                   }
                 }
@@ -156,8 +182,14 @@
                     "key": "tableView1",
                     "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
                     "entitySet": "PostingsRegular"
+                  },
+                  {
+                    "key": "tableView11",
+                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView1",
+                    "entitySet": "Employees"
                   }
-                ]
+                ],
+                "showCounts": false
               },
               "hideFilterBar": false
             }
@@ -360,6 +392,17 @@
                   }
                 }
               }
+            }
+          }
+        },
+        "EmployeesObjectPage": {
+          "type": "Component",
+          "id": "EmployeesObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/Employees"
             }
           }
         }

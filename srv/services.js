@@ -10,15 +10,8 @@ class Service extends cds.ApplicationService {
   init() {
     
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
-      const { user } = req;
-      const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
-    
-    if(employee == null){
-      const fullName = user.attr.familyName+" "+user.attr.givenName
       
       
-      await INSERT.into`Employees`.entries({ID:user.id,name:fullName})
-    }
       if(!req.user.is('Backoffice')){
         req.data.employee_ID = req.user.id
         
@@ -26,15 +19,7 @@ class Service extends cds.ApplicationService {
       req.data.status_ID = 1
     })
     this.before('CREATE','PostingsRegular.drafts', async(req) => {
-      const { user } = req;
-      const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
-    
-    if(employee == null){
-      const fullName = user.attr.familyName+" "+user.attr.givenName
       
-      
-      await INSERT.into`Employees`.entries({ID:user.id,name:fullName})
-    }
       if(!req.user.is('Backoffice')){
         req.data.employee_ID = req.user.id
       }
@@ -73,7 +58,7 @@ class Service extends cds.ApplicationService {
         const newNumber = lastNumber + 1;
         const formattedNumber = String(newNumber).padStart(2, '0'); 
 
-        // Frissítjük a SerialNumbers táblát
+        
         await db.run(
             UPSERT.into`SerialNumbers`.entries({ yearMonth, lastNumber: newNumber })
         );
@@ -116,39 +101,57 @@ class Service extends cds.ApplicationService {
   this.before('READ','Employees', async(req) => {
     const { user } = req;
       
+    
+    const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
+  
+    if(!employee){
+      const fullName = user.attr.familyName+" "+user.attr.givenName
+    
+    
+      await INSERT.into`Employees`.entries({ID:user.id,name:fullName})
+    }
       
-      if (!user.is('Backoffice')) {
         
           
-          //req.query.where({ ID: user.id });
+          req.query.where({ ID: user.id });
           
           
            
-      }
+      
 
   })
   this.before('UPDATE','Employees',async(req) => {
     const { user } = req;
-    if(!user.is('Backoffice')){
+    
+      if(req.data.ID != user.id){
+        req.error(400, "Restricted")
+      }
       
-      //req.error(400, "Restricted)
 
-    }
+    
 
   })
   this.before('DELETE','Employees',async(req) => {
     const { user } = req;
-    if(!user.is('Backoffice')){
-      //req.error(400, "Restricted")
-
+    if(req.data.ID != user.id){
+      req.error(400, "Restricted")
     }
   })
-  this.before('CREATE','Employees',async(req) => {
-    const { user } = req;
-    if(!user.is('Backoffice')){
-      //req.error(400, "Restricted)
-
+ 
+  this.before('CREATE','Employees.drafts', async(req) => {
+    
+    const { user } = req
+    
+    
+    const employee = await SELECT.one.from('Employees').where({ID:user.id})
+    if(employee){
+      req.error(400,"Restricted")
     }
+    else {
+      req.data.ID = req.user.id
+    }
+    
+    
   })
 
   this.after('READ', 'PostingsWithCar', async(results,req ) => {
@@ -366,7 +369,7 @@ class Service extends cds.ApplicationService {
         req.error(400,'DepArrArrivalLater')
       }
       if(departure < travelTo || departure > travelBack || arrival < travelTo || arrival > travelBack){
-        req.error(400,'DepArrOutsideDate ')
+        req.error(400,'DepArrOutsideDate')
       }
     }   
     for (var daily of req.data.daily_expenses) {
