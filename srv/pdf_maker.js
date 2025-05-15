@@ -1036,7 +1036,8 @@ function compareByDate(a,b) {
     return 0;
 }
 function isEmployeeDataMissing(employee){
-    return  (employee.position == null || employee.address == null || employee.birthDate || null 
+   
+    return  (employee.position == null || employee.address == null || employee.birthDate == null 
         || employee.birthPlace == null || employee.taxNumber == null || employee.mothersName == null )
             
         
