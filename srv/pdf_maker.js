@@ -35,6 +35,7 @@ async function createPDFCarDirect(PostingWithCar) {
     const fuelPrices = await SELECT.one.from('FuelPrices').where({yearMonth:yearMonth})
     if(fuelPrices == null){
         return "FuelPriceNotFound"
+      
     }
     else if(cylinder_volume == null && PostingWithCar.fuel_type_ID != 5){
         return "NoVolume"
@@ -98,6 +99,7 @@ async function createPDFCarDirect(PostingWithCar) {
         var ind = 1
        for( const sticker of stickers){
             var country = await getLocalCountryName(sticker.country_code)
+            
             currency = ''
             changeRate = ''
             price = ''
@@ -110,9 +112,11 @@ async function createPDFCarDirect(PostingWithCar) {
                 currency = sticker.currency_code
                 price = sticker.price
                 try { 
-                    changeRate = parseFloat(await getExchangeRates(sticker.date,currency_code))
+                    changeRate = parseFloat(await getExchangeRates(sticker.date,currency))
+                    
                 }
                 catch(error){
+                    console.log(error)
                     return error
                 }
                 huf = changeRate*price
