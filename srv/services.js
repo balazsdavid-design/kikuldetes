@@ -112,8 +112,11 @@ class Service extends cds.ApplicationService {
     }
       
         
-          
+        if(!user.is('Backoffice')){
           req.query.where({ ID: user.id });
+
+        }  
+          
           
           
            
