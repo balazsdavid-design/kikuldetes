@@ -1047,4 +1047,4 @@ function isEmployeeDataMissing(employee){
         
 }
 
-module.exports = { createPDFCarDirect, createPDFRegularDirect }
+module.exports = { createPDFCarDirect, createPDFRegularDirect, getExchangeRates }

@@ -153,6 +153,7 @@
                       "width": "5em"
                     }
                   }
+                  
                 },
                 "/Employees/@com.sap.vocabularies.UI.v1.LineItem#tableView1": {
                   "tableSettings": {

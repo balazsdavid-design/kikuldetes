@@ -1,5 +1,5 @@
 using kikuldetes as my from '../db/schema';
-
+@impl : 'srv/services.js'
 @requires: 'authenticated-user'
 service AppService {
     

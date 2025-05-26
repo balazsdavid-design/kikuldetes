@@ -6,7 +6,7 @@ const { createPDFCarDirect , createPDFRegularDirect} = require("./pdf_maker");
 
 
 
-class Service extends cds.ApplicationService {
+class AppService extends cds.ApplicationService {
   init() {
     
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
@@ -669,7 +669,7 @@ class Service extends cds.ApplicationService {
     })
 
 
-    super.init()
+    return super.init()
   }
  
   
@@ -714,5 +714,5 @@ class Service extends cds.ApplicationService {
   }
 }
 
-module.exports = Service
+module.exports = AppService
 
