@@ -30,8 +30,12 @@ async function createPDFCarDirect(PostingWithCar) {
     var consumption = 3;
     var fuel_consumption;
     var cylinder_volume = PostingWithCar.cylinder_volume
+    var fuel_type_name
     const fuel_type = await SELECT.one.from('FuelTypes.texts').where({locale:'hu',ID:PostingWithCar.fuel_type_ID})
-    const fuel_type_name = fuel_type.name
+    if(fuel_type){
+        fuel_type_name = fuel_type.name
+    }
+    
     
     const fuelPrices = await SELECT.one.from('FuelPrices').where({yearMonth:yearMonth})
     if(fuelPrices == null){
