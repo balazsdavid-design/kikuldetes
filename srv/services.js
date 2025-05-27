@@ -39,6 +39,16 @@ class AppService extends cds.ApplicationService {
             req.error(400,'StickerError')
           }
         }
+       outerloop: for(var data of req.data.data){
+          for(var nextdata of req.data.data){
+            if(data != nextdata){
+              if(data.daily_expense > 0 && nextdata.daily_expense > 0 && data.date == nextdata.date){
+                req.error(400,'DailyExpenseError')
+                break outerloop;
+              }
+            }
+          }
+        }
       }
       if(req.data.data.length < 2){
         req.error(400,'TripDataAtleastTwo')
@@ -75,6 +85,19 @@ class AppService extends cds.ApplicationService {
           var reqDate = new Date(sticker.date)
           if(reqDate > date){
             req.error(400,'StickerError')
+          }
+        }
+      }
+      outerloop : for(var data of req.data.data){
+        for(var nextdata of req.data.data){
+          if(data != nextdata){
+            if(data.daily_expense > 0 && nextdata.daily_expense > 0 && data.date == nextdata.date){
+              
+              
+              req.error(400,'DailyExpenseError')
+              break outerloop;
+              
+            }
           }
         }
       }
@@ -701,10 +724,10 @@ class AppService extends cds.ApplicationService {
     const entity = await SELECT.one('PostingsRegular', p => {
       p`.*`,p.employee (e => {e`.*`}), 
       p.departures_arrivals ( d => {d`.*`,d.meanOfTransport.name} ), p.daily_expenses ( daily => {daily`.*`,daily.paymentMethod.name}),
-      p.accomodations ( acc => {acc`.*`,acc.paymentMethod.name}), p.material_expenses ( mat=> {mat`.*`,mat.paymentMethod.name}), p.trip_expenses ( trip=> {trip`.*`,trip.paymentMethod.name})
+      p.accomodations ( acc => {acc`.*`,acc.paymentMethod.name}), p.material_expenses ( mat=> {mat`.*`,mat.name,mat.paymentMethod.name}), p.trip_expenses ( trip=> {trip`.*`,trip.name,trip.paymentMethod.name})
     }).where({ID:id})
 
-
+    
     const buffer = await createPDFRegularDirect(entity)
     
     return buffer

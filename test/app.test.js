@@ -3,7 +3,7 @@ const { default: axios } = require('axios')
 const { GET, POST, expect,test } = cds.test(__dirname + '/..')
 const { createPDFCarDirect , createPDFRegularDirect, getExchangeRates} = require("../srv/pdf_maker");
 cds.User.default = cds.User.privileged 
-//axios.defaults.auth = { username:'david.balazs@msg-plaut.hu',password:'teszt', }
+
 
 beforeEach(async() => {
   await test.data.reset()

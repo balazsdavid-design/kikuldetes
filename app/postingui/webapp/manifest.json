@@ -153,7 +153,6 @@
                       "width": "5em"
                     }
                   }
-                  
                 },
                 "/Employees/@com.sap.vocabularies.UI.v1.LineItem#tableView1": {
                   "tableSettings": {
@@ -175,6 +174,11 @@
               "views": {
                 "paths": [
                   {
+                    "key": "tableView11",
+                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView1",
+                    "entitySet": "Employees"
+                  },
+                  {
                     "key": "tableView",
                     "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
                     "visible": true
@@ -183,11 +187,6 @@
                     "key": "tableView1",
                     "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
                     "entitySet": "PostingsRegular"
-                  },
-                  {
-                    "key": "tableView11",
-                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView1",
-                    "entitySet": "Employees"
                   }
                 ],
                 "showCounts": false
@@ -225,10 +224,10 @@
                 "stickers/@com.sap.vocabularies.UI.v1.LineItem#HighwayStickers": {
                   "columns": {
                     "DataField::country_code": {
-                      "width": "16.5%"
+                      "width": "18.5%"
                     },
                     "DataField::price": {
-                      "width": "16.5%"
+                      "width": "33%"
                     },
                     "DataField::currency_code": {
                       "width": "16.5%"
@@ -236,12 +235,17 @@
                     "DataField::date": {
                       "width": "16.5%"
                     }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
+                    }
                   }
                 },
                 "data/@com.sap.vocabularies.UI.v1.LineItem#Data": {
                   "columns": {
                     "DataField::posting::data::date": {
-                      "width": "8%"
+                      "width": "10%"
                     },
                     "DataField::posting::data::from_where": {
                       "width": "20%"
@@ -254,6 +258,11 @@
                     },
                     "DataField::posting::data::daily_expense": {
                       "width": "6%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
                     }
                   }
                 }
@@ -294,35 +303,45 @@
                       "width": "16%"
                     },
                     "DataField::departure": {
-                      "width": "10%"
+                      "width": "12%"
                     },
                     "DataField::to_where": {
                       "width": "16%"
                     },
                     "DataField::arrival": {
-                      "width": "10%"
+                      "width": "12%"
                     },
                     "DataField::meanOfTransport_ID": {
                       "width": "8%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
                     }
                   }
                 },
                 "daily_expenses/@com.sap.vocabularies.UI.v1.LineItem#Dailyexpenses": {
                   "columns": {
                     "DataField::date": {
-                      "width": "14%"
+                      "width": "16%"
                     },
                     "DataField::days": {
                       "width": "12%"
                     },
                     "DataField::daily_price": {
-                      "width": "12%"
+                      "width": "24%"
                     },
                     "DataField::currency_code": {
                       "width": "12%"
                     },
                     "DataField::paymentMethod_ID": {
-                      "width": "10%"
+                      "width": "12%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
                     }
                   }
                 },
@@ -332,19 +351,24 @@
                       "width": "20%"
                     },
                     "DataField::date": {
-                      "width": "6%"
+                      "width": "10%"
                     },
                     "DataField::days": {
                       "width": "6%"
                     },
                     "DataField::daily_price": {
-                      "width": "8%"
+                      "width": "18%"
                     },
                     "DataField::currency_code": {
                       "width": "10%"
                     },
                     "DataField::paymentMethod_ID": {
                       "width": "10%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
                     }
                   }
                 },
@@ -354,19 +378,24 @@
                       "width": "16%"
                     },
                     "DataField::date": {
-                      "width": "6%"
+                      "width": "10%"
                     },
                     "DataField::name": {
                       "width": "16%"
                     },
                     "DataField::price": {
-                      "width": "6%"
+                      "width": "12%"
                     },
                     "DataField::currency_code": {
                       "width": "6%"
                     },
                     "DataField::paymentMethod_ID": {
                       "width": "10%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
                     }
                   }
                 },
@@ -376,19 +405,24 @@
                       "width": "16%"
                     },
                     "DataField::posting::trip_expenses::date": {
-                      "width": "6%"
+                      "width": "10%"
                     },
                     "DataField::posting::trip_expenses::name": {
                       "width": "16%"
                     },
                     "DataField::posting::trip_expenses::price": {
-                      "width": "6%"
+                      "width": "12%"
                     },
                     "DataField::currency_code": {
                       "width": "6%"
                     },
                     "DataField::paymentMethod_ID": {
                       "width": "10%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
                     }
                   }
                 }

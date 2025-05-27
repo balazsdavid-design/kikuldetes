@@ -59,7 +59,7 @@ service AppService {
   
 
    @odata.draft.enabled
-   @requires : 'Backoffice'
+   //@requires : 'Backoffice'
   entity PaymentMethods as projection on my.PaymentMethods;
   @odata.draft.enabled
   

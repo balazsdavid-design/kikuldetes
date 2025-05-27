@@ -30,7 +30,8 @@ async function createPDFCarDirect(PostingWithCar) {
     var consumption = 3;
     var fuel_consumption;
     var cylinder_volume = PostingWithCar.cylinder_volume
-    const fuel_type_name = await SELECT.one.from('FuelTypes.texts').where({locale:'hu',ID:PostingWithCar.fuel_type_ID})
+    const fuel_type = await SELECT.one.from('FuelTypes.texts').where({locale:'hu',ID:PostingWithCar.fuel_type_ID})
+    const fuel_type_name = fuel_type.name
     
     const fuelPrices = await SELECT.one.from('FuelPrices').where({yearMonth:yearMonth})
     if(fuelPrices == null){
@@ -268,7 +269,7 @@ async function createPDFCarDirect(PostingWithCar) {
                   widths: [100,100,70,100,100],
                   
                   body:[
-                      [{text:'Igazolta:',border: [false,false,false,false]}, {text:'Bartha Levente',alignment:'center',border: [false,false,false,true]},{text:'',border: [false,false,false,false]},{text:'Utalványozta:',border: [false,false,false,false]}, {text:'Bartha Levente',alignment:'center',border: [false,false,false,true]}],
+                      [{text:'Igazolta:',border: [false,false,false,false]}, {text:'',alignment:'center',border: [false,false,false,true]},{text:'',border: [false,false,false,false]},{text:'Utalványozta:',border: [false,false,false,false]}, {text:'',alignment:'center',border: [false,false,false,true]}],
                       
                      
                       ]
@@ -434,6 +435,10 @@ async function createPDFRegularDirect(PostingRegular){
             if(currency == 'EUR'){
                 priceEUR = price
                 priceText = priceEUR
+                if(priceText.toString().includes('.')){
+                    priceText = priceText.toFixed(2)
+                }
+                current.daily_price = current.daily_price.toFixed(2)
              }
              else if(currency == 'HUF'){
                  priceHUF = price
@@ -509,7 +514,9 @@ async function createPDFRegularDirect(PostingRegular){
                 [{text:"",style:'fill',colSpan:2,marginTop:8},'',{text:'',style:'fill'},{text:''},{text:'',style:'fill'},{text:''},{text:''},{text:''},{text:'',bold:true,rowSpan:1}]
             )
         }
-
+        if(sumDailyEUR.toString().includes('.')){
+            sumDailyEUR = sumDailyEUR.toFixed(2)
+        }
         sumHUF += sumDailyHUF
         sumEUR += sumDailyEUR
         
@@ -549,6 +556,10 @@ async function createPDFRegularDirect(PostingRegular){
         if(currency == 'EUR'){
            priceEUR = price
            priceText = priceEUR
+           if(priceText.toString().includes('.')){
+            priceText = parseFloat(priceText).toFixed(2)
+            accomodation.daily_price = accomodation.daily_price.toFixed(2)
+        }
         }
         else if(currency == 'HUF'){
             priceHUF = price
@@ -625,7 +636,9 @@ async function createPDFRegularDirect(PostingRegular){
        
     sumEUR += sumAccomodationEUR;
     sumHUF += sumAccomodationHUF;
-    
+    if(sumAccomodationEUR.toString().includes('.')){
+        sumAccomodationEUR = sumAccomodationEUR.toFixed(2)
+    }
     tableBody.push( 
         [{text:'',border:[]},{text:'',border:[]},{text:'',border:[]},{text:'',border:[]},{text:'EUR'},{text:sumAccomodationEUR == 0 ? "-" : sumAccomodationEUR,bold:true},{text:'HUF',bold:true,border:[]},{text:sumAccomodationHUF == 0 ? "-" : sumAccomodationHUF,bold:true},{text:'',border:[]}],
 
@@ -653,6 +666,10 @@ async function createPDFRegularDirect(PostingRegular){
         if(currency == 'EUR'){
            priceEUR = price
            priceText = priceEUR
+           if(priceText.toString().includes('.')){
+            priceText = priceText.toFixed(2)
+            
+        }
         }
         else if(currency == 'HUF'){
             priceHUF = price
@@ -710,6 +727,7 @@ async function createPDFRegularDirect(PostingRegular){
         sumMaterialHUF += priceHUF
         sumMaterialEUR += priceEUR
         //filling 5th table
+        
         tableBody.push(
             [{text:expense.reference,style:'fill'},{text:expense.date,style:'fill'},{text:expense.name,style:'fill',colSpan:2},'',currencyText,{text:priceText,style:'fill'},changeRate,hufText,expense.paymentMethod_name]
         )
@@ -731,7 +749,9 @@ async function createPDFRegularDirect(PostingRegular){
     }
     sumEUR += sumMaterialEUR;
     sumHUF += sumMaterialHUF
-    
+    if(sumMaterialEUR.toString().includes('.')){
+        sumMaterialEUR = sumMaterialEUR.toFixed(2)
+    }
     tableBody.push([{text:'',border:[false,false,false,false],colSpan:4},'','','',{text:'EUR'},{text:sumMaterialEUR == 0 ? "-" : sumMaterialEUR,bold:true},{text:'HUF',bold:true,border:[]},{text:sumMaterialHUF == 0 ? "-" : sumMaterialHUF,bold:true},{text:'',border:[]}],
                 
         [{text:'',border:[false,false,false,false],colSpan:9,marginTop:15},'','','','','','','',''],
@@ -760,6 +780,10 @@ async function createPDFRegularDirect(PostingRegular){
         if(currency == 'EUR'){
            priceEUR = price
            priceText = priceEUR
+           if(priceText.toString().includes('.')){
+            priceText = parseFloat(priceText).toFixed(2)
+            
+        }
         }
         else if(currency == 'HUF'){
             priceHUF = price
@@ -840,7 +864,9 @@ async function createPDFRegularDirect(PostingRegular){
 
     sumEUR += sumTripEUR
     sumHUF+= sumTripHUF
-    
+    if(sumTripEUR.toString().includes('.')){
+        sumTripEUR = sumTripEUR.toFixed(2)
+    }
 
     
 
@@ -850,7 +876,29 @@ async function createPDFRegularDirect(PostingRegular){
         month: "long",
         day: "numeric",
       };
-    const totalEUR = (PostingRegular.borrowedEUR-borrowedEUR)+paidByCompanyEUR+paidByEmployeeEUR-sumDailyEUR
+      if(sumEUR.toString().includes('.')){
+        sumEUR = sumEUR.toFixed(2)  
+    }
+
+     
+    
+
+    var totalEUR = (PostingRegular.borrowedEUR-borrowedEUR)+paidByCompanyEUR+paidByEmployeeEUR-sumDailyEUR
+    if(totalEUR.toString().includes('.')){
+        totalEUR = totalEUR.toFixed(2)
+    }
+    if(borrowedEUR.toString().includes('.')){
+        borrowedEUR = borrowedEUR.toFixed(2)  
+    }
+    if(PostingRegular.borrowedEUR.toString().includes('.')){
+        PostingRegular.borrowedEUR = PostingRegular.borrowedEUR.toFixed(2)
+    }
+    if(paidByCompanyEUR.toString().includes('.')){
+        paidByCompanyEUR = paidByCompanyEUR.toFixed(2)
+    }
+    if(paidByEmployeeEUR.toString().includes('.')){
+        paidByEmployeeEUR = paidByEmployeeEUR.toFixed(2)
+    }
     const totalHUF = (PostingRegular.borrowedHUF-borrowed)+paidByCompany+paidByEmployee-sumDailyHUF
     
     tableBody.push(

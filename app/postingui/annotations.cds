@@ -17,6 +17,11 @@ annotate service.PostingsWithCar with @(
                 Value : serialNumber,
                 Label : '{i18n>SerialNumber}',
             },
+            {
+                $Type : 'UI.DataField',
+                Value : goal,
+                Label : '{i18n>PostingGoal}',
+            },
         ],
     },
     UI.Facets : [
@@ -119,10 +124,6 @@ annotate service.PostingsWithCar with @(
     UI.HeaderInfo : {
         TypeName : '{i18n>PostingCar}',
         TypeNamePlural : '',
-        Title : {
-            $Type : 'UI.DataField',
-            Value : goal,
-        },
     },
     UI.SelectionPresentationVariant #tableView : {
         $Type : 'UI.SelectionPresentationVariantType',
@@ -291,10 +292,6 @@ annotate service.HighwayStickers with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : currency_code,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : date,
             Label : '{i18n>Date}',
         },
@@ -413,13 +410,18 @@ annotate service.PostingsRegular with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Value : employee_ID,
-                Label : '{i18n>Employee}',
+                Value : goal,
+                Label : '{i18n>PostingGoal}',
             },
             {
                 $Type : 'UI.DataField',
-                Value : goal,
-                Label : '{i18n>PostingGoal}',
+                Value : serialNumber,
+                Label : '{i18n>SerialNumber}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : employee_ID,
+                Label : '{i18n>Employee}',
             },
             {
                 $Type : 'UI.DataField',
@@ -437,11 +439,6 @@ annotate service.PostingsRegular with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : serialNumber,
-                Label : '{i18n>SerialNumber}',
-            },
-            {
-                $Type : 'UI.DataField',
                 Value : borrowedEUR,
                 Label : '{i18n>BorrowedEUR}',
             },
@@ -453,10 +450,6 @@ annotate service.PostingsRegular with @(
         ],
     },
     UI.HeaderInfo : {
-        Title : {
-            $Type : 'UI.DataField',
-            Value : goal,
-        },
         TypeName : '{i18n>PostingAbroad}',
         TypeNamePlural : '',
     },
@@ -574,10 +567,6 @@ annotate service.DailyExpenses with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : currency_code,
-        },
-        {
-            $Type : 'UI.DataField',
             Value : paymentMethod_ID,
             Label : '{i18n>PaymentMethod}',
             
@@ -607,11 +596,7 @@ annotate service.Accomodations with @(
         {
             $Type : 'UI.DataField',
             Value : daily_price,
-            Label : '{i18n>DailyPrice}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : currency_code,
+            Label : '{i18n>PricePerNight}',
         },
         {
             $Type : 'UI.DataField',
@@ -642,10 +627,6 @@ annotate service.MaterialExpenses with @(
             $Type : 'UI.DataField',
             Value : price,
             Label : '{i18n>Price}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : currency_code,
         },
         {
             $Type : 'UI.DataField',
@@ -702,7 +683,10 @@ annotate service.DailyExpenses with {
 };
 
 annotate service.DailyExpenses with {
-    daily_price @Common.FieldControl : #Mandatory
+    daily_price @(
+        Common.FieldControl : #Mandatory,
+        Measures.ISOCurrency : currency_code,
+    )
 };
 
 annotate service.PostingsWithCar with {
@@ -863,10 +847,6 @@ annotate service.TripExpenses with @(
             $Type : 'UI.DataField',
             Value : posting.trip_expenses.price,
             Label : '{i18n>Price}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : currency_code,
         },
         {
             $Type : 'UI.DataField',
@@ -1031,4 +1011,20 @@ annotate service.Employees with @(
         Text : '{i18n>PersonalData}',
     }
 );
+
+annotate service.Accomodations with {
+    daily_price @Measures.ISOCurrency : currency_code
+};
+
+annotate service.MaterialExpenses with {
+    price @Measures.ISOCurrency : currency_code
+};
+
+annotate service.TripExpenses with {
+    price @Measures.ISOCurrency : currency_code
+};
+
+annotate service.HighwayStickers with {
+    price @Measures.ISOCurrency : country_code
+};
 

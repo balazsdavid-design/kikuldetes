@@ -6,8 +6,10 @@ using { Country,Currency} from '@sap/cds/common';
 
 
 entity PostingsRegular : Postings {
-    borrowedEUR : Decimal;
-    borrowedHUF : Decimal;
+    @mandatory
+    borrowedEUR : Decimal ;
+    @mandatory
+    borrowedHUF : Decimal ;
     country : Country;
     @mandatory
     travel_to : Date;
@@ -45,7 +47,7 @@ aspect Expense {
     @mandatory
     currency : Currency;
     @mandatory
-    daily_price : Decimal;
+    daily_price : Decimal(10,2);
     key ID : UUID;
 
     
@@ -81,7 +83,7 @@ aspect OtherExpense {
     name : String;
     currency : Currency;
     @mandatory
-    price : Decimal;
+    price : Decimal(10,2);
     posting : Association to PostingsRegular;
     paymentMethod : Association to one PaymentMethods;
 }
@@ -159,7 +161,7 @@ entity HighwayStickers {
     key ID : UUID;
     @mandatory
     country : Country;
-    price : Decimal;
+    price : Decimal(10,2);
     currency : Currency;
     @mandatory
     date : Date;
