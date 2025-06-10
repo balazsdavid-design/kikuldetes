@@ -1,7 +1,9 @@
 
 const cds = require("@sap/cds");
 
-const { createPDFCarDirect , createPDFRegularDirect} = require("./pdf_maker");
+
+const createRegularPDF = require("./regular");
+const createCarPDF = require("./car");
 
 
 
@@ -33,7 +35,7 @@ class AppService extends cds.ApplicationService {
       if(req.data.stickers){
         var date = new Date();
         for(var sticker of req.data.stickers){
-          
+          // Validálom az autópálya matricák dátumát
           var reqDate = new Date(sticker.date)
           if(reqDate > date){
             req.error(400,'StickerError')
@@ -50,7 +52,7 @@ class AppService extends cds.ApplicationService {
           }
         }
       }
-      if(req.data.data.length < 2){
+      if(req.data.data.length < 2){ // Ha kevesebb mint két sor akkor hiba
         req.error(400,'TripDataAtleastTwo')
       }
       
@@ -58,7 +60,7 @@ class AppService extends cds.ApplicationService {
       const db = cds.transaction(req);
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-
+      // Sorszám létrehozása
       
       const result = await db.run(
         SELECT`lastNumber`.from`SerialNumbers`.where`yearMonth = ${yearMonth}`
@@ -266,8 +268,7 @@ class AppService extends cds.ApplicationService {
   
   
   this.before('CREATE', 'PostingsRegular', async(req) => {
-    var borrowedHUF = req.data.borrowedHUF
-    var borrowedEUR = req.data.borrowedEUR
+   
     
     
     var travelTo = new Date(req.data.travel_to)
@@ -294,66 +295,34 @@ class AppService extends cds.ApplicationService {
         if(dailyDate < travelTo || dailyDate > travelBack){
           req.error(400,'DailyDateOutside')
         }
-        if(daily.paymentMethod_ID == 8){
-          if(daily.currency_code == 'EUR'){
-            borrowedEUR -= daily.days*daily.daily_price
-          }
-          else {
-            borrowedHUF -= daily.days*daily.daily_price
-          }
-        }
+       
     }
     for(var accomodation of req.data.accomodations){
       var accDate = new Date(accomodation.date)
       if(accDate < travelTo || accDate > travelBack){
         req.error(400,'AccomodationDateOutside')
       }
-      if(accomodation.paymentMethod_ID == 8){
-        if(accomodation.currency_code == 'EUR'){
-          borrowedEUR -= accomodation.days*accomodation.daily_price
-        }
-        else {
-          borrowedHUF -= accomodation.days*accomodation.daily_price
-        }
-      }
+     
     } 
     for( var material of req.data.material_expenses){
       var matDate = new Date(material.date)
       if(matDate< travelTo || matDate > travelBack){
         req.error(400,'MaterialDateOutside')
       }
-      if(material.paymentMethod_ID == 8){
-        if(material.currency_code == 'EUR'){
-          borrowedEUR -= material.price
-        }
-        else {
-          borrowedHUF -= material.price
-        }
-      }
+      
     }
     for( var tripexp of req.data.trip_expenses){
       var tripDate = new Date(tripexp.date)
       if(tripDate< travelTo || tripDate > travelBack){
         req.error(400,'TripExpenseDateOutSide')
       }
-      if(tripexp.paymentMethod_ID == 8){
-        if(tripexp.currency_code == 'EUR'){
-          borrowedEUR -= tripexp.price
-        }
-        else {
-          borrowedHUF -= tripexp.price
-        }
-      }
-    }
-    if( borrowedEUR < 0 || borrowedHUF < 0){
-      req.error(400,'BorrowedNegative')
-    }
+      
     
     if(req.data.departures_arrivals.length < 2){
       req.error(400,'DepArrAtLeastTwo')
     }
     
-    
+  }
     const db = cds.transaction(req);
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -403,60 +372,28 @@ class AppService extends cds.ApplicationService {
       if(dailyDate < travelTo || dailyDate > travelBack){
         req.error(400,'DailyDateOutside')
       }
-      if(daily.paymentMethod_ID == 8){
-        if(daily.currency_code == 'EUR'){
-          borrowedEUR -= daily.days*daily.daily_price
-        }
-        else {
-          borrowedHUF -= daily.days*daily.daily_price
-        }
-      }
+      
   }
   for(var accomodation of req.data.accomodations){
     var accDate = new Date(accomodation.date)
     if(accDate < travelTo || accDate > travelBack){
       req.error(400,'AccomodationDateOutside')
     }
-    if(accomodation.paymentMethod_ID == 8){
-      if(accomodation.currency_code == 'EUR'){
-        borrowedEUR -= accomodation.days*accomodation.daily_price
-      }
-      else {
-        borrowedHUF -= accomodation.days*accomodation.daily_price
-      }
-    }
+    
   } 
   for( var material of req.data.material_expenses){
     var matDate = new Date(material.date)
     if(matDate< travelTo || matDate > travelBack){
       req.error(400,'MaterialDateOutside')
     }
-    if(material.paymentMethod_ID == 8){
-      if(material.currency_code == 'EUR'){
-        borrowedEUR -= material.price
-      }
-      else {
-        borrowedHUF -= material.price
-      }
-    }
+    
   }
   for( var tripexp of req.data.trip_expenses){
     var tripDate = new Date(tripexp.date)
     if(tripDate< travelTo || tripDate > travelBack){
       req.error(400,'TripExpenseDateOutSide ')
     }
-    if(tripexp.paymentMethod_ID == 8){
-      if(tripexp.currency_code == 'EUR'){
-        borrowedEUR -= tripexp.price
-      }
-      else {
-        borrowedHUF -= tripexp.price
-      }
-    }
-  }
-    if( borrowedEUR < 0 || borrowedHUF < 0){
-      req.error(400,'BorrowedNegative')
-    }
+    
     
       
 
@@ -465,7 +402,8 @@ class AppService extends cds.ApplicationService {
     }
     
     
-  })
+  }}
+)
 
   
   this.before("CREATE", 'FuelPrices.drafts', async(req) => {
@@ -525,7 +463,7 @@ class AppService extends cds.ApplicationService {
     const { user } = req;
 
     if (!user.is('Backoffice')) {
-      
+      // Ha a user nem Backoffice, a query-ben szűrök a saját kiküldetéseire
         req.query.where({ employee_ID: user.id }); 
     }
     
@@ -543,14 +481,16 @@ class AppService extends cds.ApplicationService {
      
       
       await UPDATE ('PostingsWithCar',id).set({status_ID : 2})
+      // Frissítem az entitásoldalon a státuszt
       const updated = await SELECT.one('PostingsWithCar', p=> {
         p`.*`,p.status ( s => {s`.*` })
       }).where({ID:id});
+      // Beállítom a virtuális mezőket
       updated.submittable = false
       updated.backOffice = req.user.is('Backoffice')
      
       updated.IsActiveEntity =true
-      
+      // Lekérem a lokalizált szövegét 
       var text = await SELECT.one('Statuses.texts').where({ID:2,locale:'hu'})
       
       updated.status.statusText = text.statusText
@@ -700,14 +640,15 @@ class AppService extends cds.ApplicationService {
 
   async getPDFCar(id)  {
     
-      
+      // Lekérdezem az entity-t
     const entity =  await SELECT.one('PostingsWithCar', p => {
       p`.*`,p.employee (e => {e`.*`}), 
       p.fuel_type.name, p.data ( d => { d`.*`}), p.stickers ( s => {s`*`}, )
     }).where({ID:id})
     try {
-      const buffer = await createPDFCarDirect(entity)
-    
+      // A segédfüggvényemmel elkészítem buffer formátumba a PDF-et
+      const buffer = await createCarPDF(entity)
+      
     return buffer
     }
     catch(err) {
@@ -728,8 +669,8 @@ class AppService extends cds.ApplicationService {
     }).where({ID:id})
 
     
-    const buffer = await createPDFRegularDirect(entity)
-    
+    const buffer = await createRegularPDF(entity)
+   
     return buffer
 
   

@@ -1,358 +1,19 @@
+const { isEmployeeDataMissing, compareByDate, getLocalCountryName ,getExchangeRates} = require("./functions");
 
-
-
-
-const soap = require('soap')
-const xml2js = require('xml2js');
 var pdfMake = require('pdfmake/build/pdfmake.js');
 var pdfFonts = require('pdfmake/build/vfs_fonts.js');
 
 
 
+
 pdfMake.addVirtualFileSystem(pdfFonts);
-
-async function createPDFCarDirect(PostingWithCar) {
-    
-    
-    
-    
-    const date = new Date();
-    const year = date.getFullYear()
-    const month =  (date.getMonth()+1).toString().padStart(2,"0")
-    const day = date.getDate().toString().padStart(2,"0")
-    const yearMonth = year+"-"+month
-    const employee = PostingWithCar.employee;
-    if(isEmployeeDataMissing(employee)){
-        return "EmployeeDataMissing"
-    }
-    const data = PostingWithCar.data.sort(compareByDate);
-    const stickers = PostingWithCar.stickers.sort(compareByDate);
-    var consumption = 3;
-    var fuel_consumption;
-    var cylinder_volume = PostingWithCar.cylinder_volume
-    var fuel_type_name
-    const fuel_type = await SELECT.one.from('FuelTypes.texts').where({locale:'hu',ID:PostingWithCar.fuel_type_ID})
-    if(fuel_type){
-        fuel_type_name = fuel_type.name
-    }
-    
-    
-    const fuelPrices = await SELECT.one.from('FuelPrices').where({yearMonth:yearMonth})
-    if(fuelPrices == null){
-        return "FuelPriceNotFound"
-      
-    }
-    else if(cylinder_volume == null && PostingWithCar.fuel_type_ID != 5){
-        return "NoVolume"
-    }
-    var fuelPrice = fuelPrices.petrolPrice
-    if(PostingWithCar.fuel_type_ID == 2 || PostingWithCar.fuel_type_ID == 4){
-        fuelPrice = fuelPrices.dieselPrice
-    }
-    if(PostingWithCar.fuel_type_ID != 5) {
-        if(cylinder_volume < 3001){
-            fuel_consumption = await SELECT.one.from('FuelConsumptions')
-    .where(`${PostingWithCar.cylinder_volume} >= volumeStart and ${PostingWithCar.cylinder_volume} <= volumeEnd and fuelType_ID = ${PostingWithCar.fuel_type_ID} `)
-        }
-        else {
-            fuel_consumption =  await SELECT.one.from('FuelConsumptions')
-            .where(`3001 = volumeStart and fuelType_ID = ${PostingWithCar.fuel_type_ID} `)
-            
-            
-        }
-        consumption = fuel_consumption.consumption
-    
-    }
-    else {
-        cylinder_volume = '-'
-    }
-     
-    if( PostingWithCar.fuel_type_ID == 3 || PostingWithCar.fuel_type_ID == 4){
-        consumption = consumption*0.7
-    }
-    var tableBody =  [
-        [{text :'Ssz.'},{text: 'A kiküldetés, külszolgálat',colSpan : 4},'','','',{text :'Futástelje-sítmény (km)', rowSpan: 2},{ text:'Üzemanyag-költség (Ft)',rowSpan : 2},{text:'Személygépkocsi normaköltség (Ft)',rowSpan :2}, {text:'Napidíj (Ft)', rowSpan:2}],
-        ['','Dátuma','Honnan','Hova','elrendelőjének aláírása','','','',''],
-        
-        
-      ]
-      
-      var index = 1;
-      var sumMileage = 0;
-      var sumFuel = 0; 
-      var sumNorm = 0;
-      var sumDaily = 0;  
-    data.forEach( trip => {
-        var fuel = Math.round( fuelPrice*(trip.mileage/100*consumption));
-        var norm = trip.mileage*15;
-       var tripData = [
-        {text:index+"."},{text:trip.date,fillColor:'lightblue'},{text:trip.from_where,fillColor:'lightblue'},{text:trip.to_where,fillColor:'lightblue'},'',{text:trip.mileage,fillColor:'lightblue'},{text:fuel,fillColor:'lightblue'},{text:norm,fillColor:'lightblue'},{text:trip.daily_expense,fillColor:'lightblue'}]
-        tableBody.push(tripData)
-        sumMileage+= trip.mileage;
-        sumFuel+= fuel;
-        sumNorm += norm;
-        sumDaily += trip.daily_expense
-        index++;
-    })  
-    
-        var total = sumDaily+sumFuel+sumNorm
-        tableBody.push([{text:'Összesen:',colSpan:5,bold:true,alignment:'left',},'','','','',sumMileage,sumFuel,sumNorm,sumDaily],
-            [{text:'',border:[false,false,false,false]},{text:'',border:[false]},{text:'',border:[false]},{text:'',border:[false]},{text:'',border:[false]},{text:'',border:[false]},{text:'',border:[false]},{text:'',border:[false]},{text:'',border:[false,false,false,false],marginBottom:10}],
-            ['Ssz',{text:'Egyéb tételek',colSpan:3},'','',{text:'Valutanem',rowSpan:2},{text:'Összeg',rowSpan:2},{text:'Árfolyam',rowSpan:2},{text:'Forint',rowSpan:2,colSpan:2},''],
-            ['','Dátuma',{text:'Megnevezése',colSpan:2},'','','','','','']
-        )
-        var ind = 1
-       for( const sticker of stickers){
-            var country = await getLocalCountryName(sticker.country_code)
-            
-            currency = ''
-            changeRate = ''
-            price = ''
-            huf = ''
-            
-            if (sticker.currency_code == 'HUF'){
-                huf = sticker.price
-            }
-            else {
-                currency = sticker.currency_code
-                price = sticker.price
-                try { 
-                    changeRate = parseFloat(await getExchangeRates(sticker.date,currency))
-                    
-                }
-                catch(error){
-                    console.log(error)
-                    return error
-                }
-                huf = changeRate*price
-
-            }
-            total+= huf
-            var string = `Autopálya matrica ${country}`
-            
-            stickerData =  [ind+".",sticker.date,{text:string,colSpan:2,alignment:'left'},'',currency,price,{text:changeRate},{text:huf,colSpan:2},'']
-             tableBody.push(stickerData)
-            ind++;
-        }
-        if(stickers.length == 0){
-            tableBody.push(['','',{text:'',marginTop:8,colSpan:2,alignment:'left'},'','','',{text:''},{text:'',colSpan:2},''])
-        }
-       
-      tableBody.push(
-        [{text:'Költségtérítés mindösszesen:',colSpan:6,alignment:'right',bold:true},'','','','','',{text:total,colSpan:3,alignment:'center',bold:true},'','']
-      )  
-    var docDefinition = {
-        
-        font:'Roboto',
-        content: [
-            { text: 'Kiküldetési rendelvény', style: 'header', marginBottom : 5},
-             { text: 'a hivatali, üzleti utazás költségtéritéséhez, saját gépjármű használatával',
-             style: 'subHeader' ,marginBottom : 5},
-             
-             
-             
-             
-             
-          
-              {
-                  
-                  
-                  marginLeft :220,
-                  
-                  marginBottom: 5,
-                  layout: 'noBorders',
-                  style: 'textBold',
-                  alignment:'center',
-                  
-              table: {
-                  
-                  body:
-                  [
-                      [{text:year},{text:month,fillColor:'lightblue'},{text:'hó'}  ]
-                      ],
-                      widths: [19,40,10]
-              }
-              },
-              {
-                  layout: 'noBorders',
-                  style: 'textBold',
-                  marginLeft: 347,
-                  
-                  table: {
-                      widths: [60,100],
-                      body : [
-                          ['ssz.',{text:PostingWithCar.serialNumber,fillColor:'lightblue',alignment:'center'}]
-                          ]
-                  }
-                  
-              },
-              {
-                  marginBottom:10,
-                  marginRight:25,
-                  style : 'textBold',
-              columns : [
-                  {
-                      layout: 'noBorders',
-                      alignment: 'left',
-                      table : {
-                        body : [
-                            [{text:'A munkáltató',colSpan:2},''],
-                            [{text:'Neve:'},{text: 'msg Plaut Hungary',fillColor:'lightblue'}],
-                            [{text:'Címe:'},{text: '1066 Budapest, Nyugati tér 1.',fillColor:'lightblue'}],
-                            [{text:'Adószáma'},{text: '28957795-2-42',fillColor:'lightblue'}],
-                            
-                            
-                            ], 
-                            widths: [60,170],
-                      },
-                      
-                      
-                      
-                     
-                      
-                  },
-                  {
-                    layout: 'noBorders',
-                      alignment: 'left',
-                      table : {
-                        body : [
-                            [{text:'A munkavállaló',colSpan:2},''],
-                            [{text:'Neve:'},{text: employee.name,fillColor:'lightblue'}],
-                            [{text:'Lakcíme:'},{text: employee.address,fillColor:'lightblue'}],
-                            [{text:'Születési helye, ideje'},{text: employee.birthPlace+", " + PostingWithCar.employee.birthDate,fillColor:'lightblue'}],
-                            [{text:'anyja neve'},{text: employee.mothersName,fillColor:'lightblue'}],
-                            [{text:'Adóazonosító jele'},{text: employee.taxNumber,fillColor:'lightblue'}],
-                            
-                            ],
-                            widths: [80,170],
-                      },
-      
-                  },
-                  
-                  ],
-                  
-                  columnGap : 0,
-                  
-              },
-             
-              {
-                  marginBottom: 20,
-                  style: 'textBold',
-                  
-                  table: {
-                      widths: [25,40,43,70,60,50,45,60,'*'],
-                      body: [
-                          [{text:'Forgalmi rendszám, típus',colSpan:3},'','',{text:PostingWithCar.plateNum,colSpan:2,fillColor:'lightblue'},'',{text:'Fogyasztási normája:',colSpan:2},'',{text:consumption,fillColor:'lightblue',alignment:'center'},{text:'liter/100km'}],
-                          [{text:'Üzemanyag:',colSpan:2},'',{text:fuel_type_name,fillColor:'lightblue'},{text:'Hengerűrtartalom:'},{text:cylinder_volume,fillColor:'lightblue',alignment:'center'},{text:'Üz.ag ár:'},{text:fuelPrice},{text:'Amort. (Ft/km):'},{text:15,fillColor:'lightblue',alignment:'center'}],
-                          
-                          ],
-                          
-                      
-                  },
-                  
-              },
-              
-              
-              {
-                  
-            table: {
-                                               
-              widths: ['auto',50,54,54,'auto',60,55,71,'*'],
-              
-               
-              body: tableBody 
-              
-              
-            },
-            alignment:'center',
-            marginBottom: 40,
-          },
-          {
-             
-              table: {
-                  widths: [100,100,70,100,100],
-                  
-                  body:[
-                      [{text:'Igazolta:',border: [false,false,false,false]}, {text:'',alignment:'center',border: [false,false,false,true]},{text:'',border: [false,false,false,false]},{text:'Utalványozta:',border: [false,false,false,false]}, {text:'',alignment:'center',border: [false,false,false,true]}],
-                      
-                     
-                      ]
-              },
-              marginBottom: 20,
-          },
-          {
-             
-              table: {
-                  widths: [50,150,70,50,150],
-                  
-                  body:[
-                     
-                      
-                      [{text:'Dátum:',border: [false,false,false,false]},{text:'',border: [false,false,false,true]},{text:'',border: [false,false,false,false]},{text:'Dátum:',border: [false,false,false,false]},{text:'',border: [false,false,false,true]}]
-                      ]
-              },
-          },
-          
-          
-        ],
-        styles: {
-          header: {
-            fontSize: 16,
-            bold: true,
-            alignment: 'center'
-          },
-          subHeader : {
-              fontsize:12,
-              bold: true,
-              alignment: 'center'
-          },
-          textStyle : {
-              fontSize :10
-          },
-          textBold : {
-              fontsize:10,
-              bold : true
-          }
-         
-        },
-        
-        defaultStyle: {
-          fontSize: 8,
-          font: 'Roboto'
-          
-          
-          
-        },
-
-    }
-    
-    
-    var pdf = pdfMake.createPdf(docDefinition)
-    return new Promise((resolve, reject) => {
-        pdf.getBuffer((blob) => {
-          if (blob) {
-            resolve(blob);  // Ha van blob, akkor teljesítjük a Promise-t
-          } else {
-            reject(new Error('Nem sikerült a blob lekérése'));
-          }
-        });
-      });
-
-   
-   
-    
-    
-    
-    
-}
-
-async function createPDFRegularDirect(PostingRegular){
-    
+async function createRegularPDF(PostingRegular){
     const date = new Date();
     const year = date.getFullYear()
     const month =  date.getMonth().toString().padStart(2,"0")
     const day = date.getDate().toString().padStart(2,"0")
     const employee = PostingRegular.employee;
+    
     if(isEmployeeDataMissing(employee)){
         return "EmployeeDataMissing"
     }
@@ -432,25 +93,34 @@ async function createPDFRegularDirect(PostingRegular){
         
             var currency = current.currency_code;
             var currencyText = currency;
-            
+            var daily_price = current.daily_price
             var priceText = '';
             var hufText = '';
             var changeRate = ""
-            if(currency == 'EUR'){
-                priceEUR = price
-                priceText = priceEUR
-                if(priceText.toString().includes('.')){
-                    priceText = priceText.toFixed(2)
-                }
-                current.daily_price = current.daily_price.toFixed(2)
-             }
-             else if(currency == 'HUF'){
+            
+             if(currency == 'HUF'){
                  priceHUF = price
-                 currencyText = ''
+                 currencyText = 'EUR'
                  hufText = priceHUF
+                 try {
+                    changeRate = parseFloat(await getExchangeRates(current.date,'EUR'))
+                    }
+                    catch(err){
+                       return err
+                    }
+                    daily_price = daily_price/changeRate
+                    priceEUR = (daily_price*current.days)
+                    priceText = priceEUR
              }
              else {
-                 
+                if(currency == 'EUR'){
+                    priceEUR = price
+                    
+                    if(priceText.toString().includes('.')){
+                        priceText = priceText.toFixed(2)
+                    }
+                    current.daily_price = current.daily_price.toFixed(2)
+                 }
                  priceText = price
                  try {
                  changeRate = parseFloat(await getExchangeRates(current.date,currency))
@@ -465,42 +135,37 @@ async function createPDFRegularDirect(PostingRegular){
                  
      
              }
+             
              sumDailyHUF+= priceHUF;
              sumDailyEUR += priceEUR;
-             if(currency == 'EUR'){
-                if(current.paymentMethod_ID < 4){
-                    paidByCompanyEUR += price
-
-                }
-                else if(current.paymentMethod_ID < 8){
-                    paidByEmployeeEUR += price
-
-                }
-                else {
-                    borrowedEUR -= price
-
-                }
-
-             }
-             else {
-                if(current.paymentMethod_ID < 4){
-                    paidByCompany += price
-
-                }
-                else if(current.paymentMethod_ID < 8){
-                    paidByEmployee += price
-
-                }
-                else {
-                    borrowed-= price
-
-                }
-
-             }
             
+                if(current.paymentMethod_ID < 4){
+                    paidByCompanyEUR += priceEUR
+                    paidByCompany += priceHUF
+
+                }
+                else if(current.paymentMethod_ID < 8){
+                    paidByEmployeeEUR += priceEUR
+                    paidByEmployee += priceHUF
+
+                }
+                else {
+                    borrowedEUR -= priceHUF
+                    borrowed-= priceHUF
+
+                }
+                
+                
+             
+             
+                
+
+             
+            daily_price = daily_price.toString().includes('.') ? daily_price.toFixed(2) : daily_price
+           priceText = priceText.toString().includes('.') ? priceText.toFixed(2) : priceText
             
             tableBody.push(
-                [{text:current.date,style:'fill',colSpan:2},'',{text:current.days,style:'fill'},{text:currency},{text:current.daily_price,style:'fill'},{text:price},{text:changeRate},{text:hufText},{text:current.paymentMethod_name,bold:true,rowSpan:1}]
+                [{text:current.date,style:'fill',colSpan:2},'',{text:current.days,style:'fill'},{text:currencyText},{text:daily_price,style:'fill'},{text:priceText},{text:changeRate},{text:hufText},{text:current.paymentMethod_name,bold:true,rowSpan:1}]
             )
 
         }
@@ -518,11 +183,12 @@ async function createPDFRegularDirect(PostingRegular){
                 [{text:"",style:'fill',colSpan:2,marginTop:8},'',{text:'',style:'fill'},{text:''},{text:'',style:'fill'},{text:''},{text:''},{text:''},{text:'',bold:true,rowSpan:1}]
             )
         }
+        sumHUF += sumDailyHUF
+        sumEUR += sumDailyEUR
         if(sumDailyEUR.toString().includes('.')){
             sumDailyEUR = sumDailyEUR.toFixed(2)
         }
-        sumHUF += sumDailyHUF
-        sumEUR += sumDailyEUR
+        
         
         
         tableBody.push(
@@ -554,25 +220,35 @@ async function createPDFRegularDirect(PostingRegular){
         var acc_date = new Date(accomodation.date)
         var endDate = new Date(accomodation.date)
         endDate.setDate(acc_date.getDate()+accomodation.days)
-        
+        daily_price = accomodation.daily_price
         const endDateString = (endDate.getMonth()+1).toString().padStart(2,"0")+"-"+endDate.getDate().toString().padStart(2,"0")
         const accomodation_string = `${accomodation.accomodation_name}, ${accomodation.date}-tól ${endDateString}-ig`
-        if(currency == 'EUR'){
-           priceEUR = price
-           priceText = priceEUR
-           if(priceText.toString().includes('.')){
-            priceText = parseFloat(priceText).toFixed(2)
-            accomodation.daily_price = accomodation.daily_price.toFixed(2)
-        }
-        }
-        else if(currency == 'HUF'){
+        
+         if(currency == 'HUF'){
             priceHUF = price
-            currencyText = ''
+            currencyText = 'EUR'
             hufText = priceHUF
+            try {
+                changeRate = parseFloat(await getExchangeRates(accomodation.date,'EUR'))
+                }
+                catch(err){
+                    return err
+                }
+                daily_price = daily_price/changeRate
+                priceEUR = daily_price*accomodation.days
+                priceText = priceEUR
         }
         else {
+            if(currency == 'EUR'){
+                priceEUR = price
+                
+                if(priceText.toString().includes('.')){
+                 priceText = parseFloat(priceText).toFixed(2)
+                 accomodation.daily_price = accomodation.daily_price.toFixed(2)
+             }
+             }
+             priceText = price
             
-            priceText = price
             try {
             changeRate = parseFloat(await getExchangeRates(accomodation.date,currency))
             }
@@ -586,41 +262,36 @@ async function createPDFRegularDirect(PostingRegular){
             
 
         }
-        if(currency == 'EUR'){
+        
+        
             if(accomodation.paymentMethod_ID < 4){
-                paidByCompanyEUR += price
+                paidByCompanyEUR += priceEUR
+                paidByCompany += priceHUF
 
             }
             else if(accomodation.paymentMethod_ID < 8){
-                paidByEmployeeEUR += price
+                paidByEmployeeEUR += priceEUR
+                paidByEmployee += priceHUF
 
             }
             else {
-                borrowedEUR -= price
+                borrowedEUR -= priceEUR
+                borrowed -= priceHUF
 
             }
 
-         }
-         else {
-            if(accomodation.paymentMethod_ID < 4){
-                paidByCompany += price
+            
+         
+            
 
-            }
-            else if(accomodation.paymentMethod_ID < 8){
-                paidByEmployee += price
-
-            }
-            else {
-                borrowed -= price
-
-            }
-
-         }
+         
 
         sumAccomodationHUF+= priceHUF;
         sumAccomodationEUR += priceEUR;
+        daily_price = daily_price.toString().includes('.') ? daily_price.toFixed(2) : daily_price
+        priceText = priceText.toString().includes('.') ? priceText.toFixed(2) : priceText
         tableBody.push(
-            [{text:accomodation_string,style:'fill',colSpan:2},'',{text:accomodation.days,style:'fill'},currencyText,{text:accomodation.daily_price,style:'fill'},priceText,changeRate,hufText,{text:accomodation.paymentMethod_name}],
+            [{text:accomodation_string,style:'fill',colSpan:2},'',{text:accomodation.days,style:'fill'},currencyText,{text:daily_price,style:'fill'},priceText,changeRate,hufText,{text:accomodation.paymentMethod_name,bold:true}],
              )
     }
     if(accomodations.length == 1){
@@ -667,21 +338,30 @@ async function createPDFRegularDirect(PostingRegular){
         var hufText = '';
         var changeRate = ""
         
-        if(currency == 'EUR'){
-           priceEUR = price
-           priceText = priceEUR
-           if(priceText.toString().includes('.')){
-            priceText = priceText.toFixed(2)
-            
-        }
-        }
-        else if(currency == 'HUF'){
+        
+        if(currency == 'HUF'){
             priceHUF = price
-            currencyText = ''
+            currencyText = 'EUR'
             hufText = priceHUF
+            try {
+                changeRate = parseFloat(await getExchangeRates(expense.date,'EUR'))
+                }
+                catch(err){
+                    return err
+                }
+                
+                priceEUR = priceHUF/changeRate
+                priceText = priceEUR
         }
         else {
-            
+            if(currency == 'EUR'){
+                priceEUR = price
+                
+                if(priceText.toString().includes('.')){
+                 priceText = priceText.toFixed(2)
+                 
+             }
+             }
             priceText = price
             try {
                 changeRate = parseFloat(await getExchangeRates(expense.date,currency))
@@ -696,44 +376,34 @@ async function createPDFRegularDirect(PostingRegular){
             hufText = priceHUF
         }
 
-        if(currency == 'EUR'){
+        
             if(expense.paymentMethod_ID < 4){
-                paidByCompanyEUR += price
+                paidByCompanyEUR += priceEUR
+                paidByCompany += priceHUF
 
             }
             else if(expense.paymentMethod_ID < 8){
-                paidByEmployeeEUR += price
+                paidByEmployeeEUR += priceEUR
+                paidByEmployee += priceHUF
 
             }
             else {
-                borrowedEUR -= price
+                borrowedEUR -= priceEUR
+                borrowed -= priceHUF
 
             }
 
-         }
-         else {
-            if(expense.paymentMethod_ID < 4){
-                paidByCompany += price
-
-            }
-            else if(expense.paymentMethod_ID < 8){
-                paidByEmployee += price
-
-            }
-            else {
-                borrowed -= price
-
-            }
-
-         }
+         
+         
 
         
         sumMaterialHUF += priceHUF
         sumMaterialEUR += priceEUR
         //filling 5th table
         
+           priceText = priceText.toString().includes('.') ? priceText.toFixed(2) : priceText
         tableBody.push(
-            [{text:expense.reference,style:'fill'},{text:expense.date,style:'fill'},{text:expense.name,style:'fill',colSpan:2},'',currencyText,{text:priceText,style:'fill'},changeRate,hufText,expense.paymentMethod_name]
+            [{text:expense.reference,style:'fill'},{text:expense.date,style:'fill'},{text:expense.name,style:'fill',colSpan:2},'',currencyText,{text:priceText,style:'fill'},changeRate,hufText,{text:expense.paymentMethod_name,bold:true}]
         )
              
 
@@ -781,21 +451,33 @@ async function createPDFRegularDirect(PostingRegular){
         var hufText = '';
         var changeRate = ""
         
-        if(currency == 'EUR'){
-           priceEUR = price
-           priceText = priceEUR
-           if(priceText.toString().includes('.')){
-            priceText = parseFloat(priceText).toFixed(2)
-            
-        }
-        }
-        else if(currency == 'HUF'){
+        
+        if(currency == 'HUF'){
             priceHUF = price
             currencyText = ''
             hufText = priceHUF
+            priceHUF = price
+            currencyText = 'EUR'
+            hufText = priceHUF
+            try {
+                changeRate = parseFloat(await getExchangeRates(tripexp.date,'EUR'))
+                }
+                catch(err){
+                    return err
+                }
+                
+                priceEUR = priceHUF/changeRate
+                priceText = priceEUR
         }
         else {
-            
+            if(currency == 'EUR'){
+                priceEUR = price
+                
+                if(priceText.toString().includes('.')){
+                 priceText = parseFloat(priceText).toFixed(2)
+                 
+             }
+             }
             priceText = price
             try {
                 changeRate = parseFloat(await getExchangeRates(tripexp.date,currency))
@@ -812,42 +494,35 @@ async function createPDFRegularDirect(PostingRegular){
             hufText = priceHUF
         }
 
-        if(currency == 'EUR'){
+       
             if(tripexp.paymentMethod_ID < 4){
-                paidByCompanyEUR += price
+                paidByCompanyEUR += priceEUR
+                paidByCompany += priceHUF
 
             }
             else if(tripexp.paymentMethod_ID < 8){
-                paidByEmployeeEUR += price
+                paidByEmployeeEUR += priceEUR
+                paidByEmployee += priceHUF
 
             }
             else {
-                borrowedEUR -= price
+                borrowedEUR -= priceEUR
+                borrowed -= priceHUF
 
             }
 
-         }
-         else {
-            if(tripexp.paymentMethod_ID < 4){
-                paidByCompany += price
+         
+         
+            
 
-            }
-            else if(tripexp.paymentMethod_ID < 8){
-                paidByEmployee += price
-
-            }
-            else {
-                borrowed -= price
-
-            }
-
-         }
+         
 
         sumTripEUR += priceEUR
         sumTripHUF += priceHUF
-
+        
+        priceText = priceText.toString().includes('.') ? priceText.toFixed(2) : priceText
         tableBody.push(
-            [{text:tripexp.reference,style:'fill'},{text:tripexp.date,style:'fill'},{text:tripexp.name,style:'fill',colSpan:2},'',currency,{text:priceText,style:'fill'},changeRate,hufText,tripexp.paymentMethod_name],
+            [{text:tripexp.reference,style:'fill'},{text:tripexp.date,style:'fill'},{text:tripexp.name,style:'fill',colSpan:2},'',currency,{text:priceText,style:'fill'},changeRate,hufText,{text:tripexp.paymentMethod_name,bold:true}],
         )
 
 
@@ -885,15 +560,35 @@ async function createPDFRegularDirect(PostingRegular){
     }
 
      
-    
-
+    var HUFback = 0
+    var EURback = 0
+    var EURmore = 0
+    var HUFmore = 0
+    console.log(borrowed+" "+borrowedEUR)
+    if(borrowed < 0){
+        HUFmore = borrowed*(-1)
+    }
+    else {
+        HUFback = borrowed
+    }
+    if(borrowedEUR < 0){
+        EURmore = borrowedEUR*(-1)
+        if(EURmore.toString().includes('.')){
+            EURmore = EURmore.toFixed(2)  
+        }
+    }
+    else {
+        EURback = borrowedEUR
+        if(EURback.toString().includes('.')){
+            EURback = EURback.toFixed(2)  
+        }
+    }
+    console.log(borrowed+" "+borrowedEUR)
     var totalEUR = (PostingRegular.borrowedEUR-borrowedEUR)+paidByCompanyEUR+paidByEmployeeEUR-sumDailyEUR
     if(totalEUR.toString().includes('.')){
         totalEUR = totalEUR.toFixed(2)
     }
-    if(borrowedEUR.toString().includes('.')){
-        borrowedEUR = borrowedEUR.toFixed(2)  
-    }
+   
     if(PostingRegular.borrowedEUR.toString().includes('.')){
         PostingRegular.borrowedEUR = PostingRegular.borrowedEUR.toFixed(2)
     }
@@ -903,7 +598,7 @@ async function createPDFRegularDirect(PostingRegular){
     if(paidByEmployeeEUR.toString().includes('.')){
         paidByEmployeeEUR = paidByEmployeeEUR.toFixed(2)
     }
-    const totalHUF = (PostingRegular.borrowedHUF-borrowed)+paidByCompany+paidByEmployee-sumDailyHUF
+    const totalHUF = sumHUF-sumDailyHUF
     
     tableBody.push(
         
@@ -929,8 +624,8 @@ async function createPDFRegularDirect(PostingRegular){
                 [{text:'Cég által előre kifizetett összeg',alignment:'left',colSpan:4},'','','', {text:'EUR'},{text:paidByCompanyEUR,style:'fill'},{text:'-'},{text:paidByCompany},{text:'',border:[]}],
                 [{text:'Dolgozó által fizetett összeg',alignment:'left',colSpan:4},'','','', {text:'EUR'},{text:paidByEmployeeEUR,style:'fill'},{text:'-'},{text:paidByEmployee},{text:'',border:[]}],
                 [{text:'Elszámolt költségek (napidíjon kívül)',alignment:'left',bold:true,colSpan:4},'','','', {text:'EUR'},{text:totalEUR,style:'fill'},{text:'-'},{text:totalHUF},{text:'',border:[]}],
-                [{text:'Visszafizetendő valuta',alignment:'left',colSpan:4},'','','', {text:'EUR'},{text:borrowedEUR,style:'fill'},{text:'-'},{text:borrowed},{text:'',border:[]}],
-                [{text:'Még jár az utazónak valuta',alignment:'left',bold:true,colSpan:4},'','','', {text:'EUR'},{text:paidByEmployeeEUR,style:'fill'},{text:'-'},{text:paidByEmployee},{text:'',border:[]}],
+                [{text:'Visszafizetendő valuta',alignment:'left',colSpan:4},'','','', {text:'EUR'},{text:EURback,style:'fill'},{text:'-'},{text:HUFback},{text:'',border:[]}],
+                [{text:'Még jár az utazónak valuta',alignment:'left',bold:true,colSpan:4},'','','', {text:'EUR'},{text:EURmore,style:'fill'},{text:'-'},{text:HUFmore},{text:'',border:[]}],
                 
                 [{text:'',border:[false,false,false,false],colSpan:9,marginTop:30},'','','','','','',''],
                 [{text:date.toLocaleDateString('hu-HU',options),border:[false,false,false,true],colSpan:3},'','',{text:'',border:[false,false,false,false],colSpan:2},'',{text:'',border:[false,false,false,true],colSpan:3},'','',{text:'',border:[]}],
@@ -1018,85 +713,6 @@ async function createPDFRegularDirect(PostingRegular){
           }
         });
       });
-
 }
 
-async function getExchangeRates(date,currency){
-   
-    var d = new Date(date)
-    
-    var today = new Date()
-    
-    if(d > today){
-       
-        throw 'DateError'
-        
-        
-    }
-    const url = 'http://www.mnb.hu/arfolyamok.asmx?wsdl';
-    try {
-        // 1️⃣ SOAP kliens létrehozása
-        const client = await soap.createClientAsync(url);
-
-        // 2️⃣ Paraméterek beállítása
-        const params = {
-            startDate: date,
-            endDate: date,
-            currencyNames: currency
-        };
-
-        // 3️⃣ SOAP kérés elküldése
-        const [result] = await client.GetExchangeRatesAsync(params);
-        
-        const xmlData = result.GetExchangeRatesResult;
-
-        // 4️⃣ XML -> JSON konvertálás
-        const parser = new xml2js.Parser({ explicitArray: false });
-        return new Promise((resolve, reject) => {
-            parser.parseString(xmlData, (err, parsedResult) => {
-                if (err) {
-                    reject('XML feldolgozási hiba: ' + err);
-                    return;
-                }
- 
-                try {
-                    // 5️⃣ Árfolyam kinyerése
-                    
-                    const rate = parsedResult.MNBExchangeRates.Day.Rate["_"];
-                    resolve(rate);
-                } catch (error) {
-                   
-                   reject(['CurrencyNotFound',currency])
-                }
-            });
-        });
-
-    } catch (error) {
-        throw new Error('Hiba történt: ' + error);
-    }
-
-    
-
-}
-async function getLocalCountryName(country_code){
-    const country = await SELECT.one.from('sap.common.Countries.texts').where({locale:'hu',code:country_code})
-    return country.name
-}
-function compareByDate(a,b) {
-    if(a.date  < b.date) {
-        return -1;
-    }
-    if(a.date > b.date){
-        return 1;
-    }
-    return 0;
-}
-function isEmployeeDataMissing(employee){
-   
-    return  (employee.position == null || employee.address == null || employee.birthDate == null 
-        || employee.birthPlace == null || employee.taxNumber == null || employee.mothersName == null )
-            
-        
-}
-
-module.exports = { createPDFCarDirect, createPDFRegularDirect, getExchangeRates }
+module.exports = createRegularPDF

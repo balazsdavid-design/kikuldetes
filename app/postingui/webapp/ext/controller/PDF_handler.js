@@ -43,6 +43,7 @@ sap.ui.define([
               .then(data => {
                 
                 if(data.value=='FuelPriceNotFound'){
+                  // Lokalizált hibaüzenetet megjelenítem
                   MessageBox.error(fuelpriceError)
                 }
                 else if(data.value == 'NoVolume'){

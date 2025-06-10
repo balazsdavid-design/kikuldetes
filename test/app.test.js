@@ -12,7 +12,9 @@ beforeEach(async() => {
 describe('Test PDF errors',() =>{
   it("MissingEmployeeData", async() => {
     await expect(await createPDFCarDirect({employee : {}})).to.be.equal("EmployeeDataMissing")
+    0
   }
+  
   )
 
   it("FuelPriceNotFound", async() => {

@@ -70,7 +70,7 @@ service AppService {
   function getPDFCar ( ID: String) returns Binary;
 
 
-  @requires : 'Backoffice'
+  //@requires : 'Backoffice'
   function getPDFRegular(ID : String) returns Binary;
   
 
