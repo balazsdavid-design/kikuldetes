@@ -236,7 +236,7 @@ entity Employees {
     birthDate : Date;
     birthPlace : String;
     mothersName : String;
-    taxNumber : String(10);
+    taxNumber : String;
 
 }
 
