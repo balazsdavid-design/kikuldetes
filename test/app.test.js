@@ -1,7 +1,9 @@
 const cds = require('@sap/cds')
 const { default: axios } = require('axios')
 const { GET, POST, expect,test } = cds.test(__dirname + '/..')
-const { createPDFCarDirect , createPDFRegularDirect, getExchangeRates} = require("../srv/pdf_maker");
+
+const createCarPDF = require('../srv/car');
+const { getExchangeRates } = require('../srv/functions');
 cds.User.default = cds.User.privileged 
 
 
@@ -11,14 +13,14 @@ beforeEach(async() => {
 
 describe('Test PDF errors',() =>{
   it("MissingEmployeeData", async() => {
-    await expect(await createPDFCarDirect({employee : {}})).to.be.equal("EmployeeDataMissing")
+    await expect(await createCarPDF({employee : {}})).to.be.equal("EmployeeDataMissing")
     0
   }
   
   )
 
   it("FuelPriceNotFound", async() => {
-    await expect(await createPDFCarDirect({data : [],stickers: [],employee : { 
+    await expect(await createCarPDF({data : [],stickers: [],employee : { 
       ID:'david.balazs@msg-plaut.hu',
       name:'Balázs Dávid',
       position:"Dev",
