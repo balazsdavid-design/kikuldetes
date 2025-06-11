@@ -139,21 +139,7 @@ async function createRegularPDF(PostingRegular){
              sumDailyHUF+= priceHUF;
              sumDailyEUR += priceEUR;
             
-                if(current.paymentMethod_ID < 4){
-                    paidByCompanyEUR += priceEUR
-                    paidByCompany += priceHUF
-
-                }
-                else if(current.paymentMethod_ID < 8){
-                    paidByEmployeeEUR += priceEUR
-                    paidByEmployee += priceHUF
-
-                }
-                else {
-                    borrowedEUR -= priceHUF
-                    borrowed-= priceHUF
-
-                }
+                
                 
                 
              
