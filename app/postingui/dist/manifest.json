@@ -35,6 +35,14 @@
                         "parameters": {},
                         "additionalParameters": "allowed"
                     }
+                },
+                "postingui-display": {
+                    "semanticObject": "postingui",
+                    "action": "display",
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    }
                 }
             }
         }
@@ -110,6 +118,11 @@
                     "name": "PostingsRegularObjectPage",
                     "pattern": "PostingsRegular({PostingsRegularKey}):?query:",
                     "target": "PostingsRegularObjectPage"
+                },
+                {
+                    "name": "EmployeesObjectPage",
+                    "pattern": "Employees({EmployeesKey}):?query:",
+                    "target": "EmployeesObjectPage"
                 }
             ],
             "targets": {
@@ -131,6 +144,11 @@
                                     "detail": {
                                         "route": "PostingsRegularObjectPage"
                                     }
+                                },
+                                "Employees": {
+                                    "detail": {
+                                        "route": "EmployeesObjectPage"
+                                    }
                                 }
                             },
                             "controlConfiguration": {
@@ -143,10 +161,31 @@
                                             "width": "5em"
                                         }
                                     }
+                                },
+                                "/Employees/@com.sap.vocabularies.UI.v1.LineItem#tableView1": {
+                                    "tableSettings": {
+                                        "selectionLimit": 1,
+                                        "type": "ResponsiveTable",
+                                        "quickVariantSelection": {
+                                            "showCounts": false
+                                        }
+                                    }
+                                },
+                                "/PostingsRegular/@com.sap.vocabularies.UI.v1.LineItem#tableView": {
+                                    "tableSettings": {
+                                        "quickVariantSelection": {
+                                            "showCounts": true
+                                        }
+                                    }
                                 }
                             },
                             "views": {
                                 "paths": [
+                                    {
+                                        "key": "tableView11",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView1",
+                                        "entitySet": "Employees"
+                                    },
                                     {
                                         "key": "tableView",
                                         "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
@@ -157,7 +196,8 @@
                                         "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
                                         "entitySet": "PostingsRegular"
                                     }
-                                ]
+                                ],
+                                "showCounts": false
                             },
                             "hideFilterBar": false
                         }
@@ -177,7 +217,7 @@
                                     "actions": {
                                         "savepdf": {
                                             "press": "postingui.ext.controller.PDF_handler.handle",
-                                            "text": "Save PDF",
+                                            "text": "{i18n>SavePDF}",
                                             "position": {
                                                 "placement": "Before",
                                                 "anchor": "EditAction"
@@ -192,23 +232,28 @@
                                 "stickers/@com.sap.vocabularies.UI.v1.LineItem#HighwayStickers": {
                                     "columns": {
                                         "DataField::country_code": {
-                                            "width": "15%"
+                                            "width": "18.5%"
                                         },
                                         "DataField::price": {
-                                            "width": "15%"
+                                            "width": "33%"
                                         },
                                         "DataField::currency_code": {
-                                            "width": "15%"
+                                            "width": "16.5%"
                                         },
                                         "DataField::date": {
-                                            "width": "15%"
+                                            "width": "16.5%"
+                                        }
+                                    },
+                                    "tableSettings": {
+                                        "creationMode": {
+                                            "createAtEnd": true
                                         }
                                     }
                                 },
                                 "data/@com.sap.vocabularies.UI.v1.LineItem#Data": {
                                     "columns": {
                                         "DataField::posting::data::date": {
-                                            "width": "8%"
+                                            "width": "10%"
                                         },
                                         "DataField::posting::data::from_where": {
                                             "width": "20%"
@@ -217,10 +262,15 @@
                                             "width": "20%"
                                         },
                                         "DataField::posting::data::mileage": {
-                                            "width": "6%"
+                                            "width": "12%"
                                         },
                                         "DataField::posting::data::daily_expense": {
                                             "width": "6%"
+                                        }
+                                    },
+                                    "tableSettings": {
+                                        "creationMode": {
+                                            "createAtEnd": true
                                         }
                                     }
                                 }
@@ -245,7 +295,7 @@
                                             "press": "postingui.ext.controller.RegPDF_handler.downloadPDF",
                                             "visible": true,
                                             "enabled": "{= !${ui>/isEditable} && ${backOffice}}",
-                                            "text": "Save PDF",
+                                            "text": "{i18n>SavePDF}",
                                             "position": {
                                                 "placement": "Before",
                                                 "anchor": "EditAction"
@@ -261,35 +311,45 @@
                                             "width": "16%"
                                         },
                                         "DataField::departure": {
-                                            "width": "10%"
+                                            "width": "12%"
                                         },
                                         "DataField::to_where": {
                                             "width": "16%"
                                         },
                                         "DataField::arrival": {
-                                            "width": "10%"
+                                            "width": "12%"
                                         },
                                         "DataField::meanOfTransport_ID": {
                                             "width": "8%"
+                                        }
+                                    },
+                                    "tableSettings": {
+                                        "creationMode": {
+                                            "createAtEnd": true
                                         }
                                     }
                                 },
                                 "daily_expenses/@com.sap.vocabularies.UI.v1.LineItem#Dailyexpenses": {
                                     "columns": {
                                         "DataField::date": {
-                                            "width": "14%"
+                                            "width": "16%"
                                         },
                                         "DataField::days": {
                                             "width": "12%"
                                         },
                                         "DataField::daily_price": {
-                                            "width": "12%"
+                                            "width": "24%"
                                         },
                                         "DataField::currency_code": {
                                             "width": "12%"
                                         },
                                         "DataField::paymentMethod_ID": {
-                                            "width": "10%"
+                                            "width": "12%"
+                                        }
+                                    },
+                                    "tableSettings": {
+                                        "creationMode": {
+                                            "createAtEnd": true
                                         }
                                     }
                                 },
@@ -299,19 +359,24 @@
                                             "width": "20%"
                                         },
                                         "DataField::date": {
-                                            "width": "6%"
+                                            "width": "10%"
                                         },
                                         "DataField::days": {
                                             "width": "6%"
                                         },
                                         "DataField::daily_price": {
-                                            "width": "8%"
+                                            "width": "18%"
                                         },
                                         "DataField::currency_code": {
                                             "width": "10%"
                                         },
                                         "DataField::paymentMethod_ID": {
                                             "width": "10%"
+                                        }
+                                    },
+                                    "tableSettings": {
+                                        "creationMode": {
+                                            "createAtEnd": true
                                         }
                                     }
                                 },
@@ -321,19 +386,24 @@
                                             "width": "16%"
                                         },
                                         "DataField::date": {
-                                            "width": "6%"
+                                            "width": "10%"
                                         },
                                         "DataField::name": {
                                             "width": "16%"
                                         },
                                         "DataField::price": {
-                                            "width": "6%"
+                                            "width": "12%"
                                         },
                                         "DataField::currency_code": {
                                             "width": "6%"
                                         },
                                         "DataField::paymentMethod_ID": {
                                             "width": "10%"
+                                        }
+                                    },
+                                    "tableSettings": {
+                                        "creationMode": {
+                                            "createAtEnd": true
                                         }
                                     }
                                 },
@@ -343,13 +413,13 @@
                                             "width": "16%"
                                         },
                                         "DataField::posting::trip_expenses::date": {
-                                            "width": "6%"
+                                            "width": "10%"
                                         },
                                         "DataField::posting::trip_expenses::name": {
                                             "width": "16%"
                                         },
                                         "DataField::posting::trip_expenses::price": {
-                                            "width": "6%"
+                                            "width": "12%"
                                         },
                                         "DataField::currency_code": {
                                             "width": "6%"
@@ -357,9 +427,25 @@
                                         "DataField::paymentMethod_ID": {
                                             "width": "10%"
                                         }
+                                    },
+                                    "tableSettings": {
+                                        "creationMode": {
+                                            "createAtEnd": true
+                                        }
                                     }
                                 }
                             }
+                        }
+                    }
+                },
+                "EmployeesObjectPage": {
+                    "type": "Component",
+                    "id": "EmployeesObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "navigation": {},
+                            "contextPath": "/Employees"
                         }
                     }
                 }

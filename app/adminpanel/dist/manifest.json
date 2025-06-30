@@ -36,8 +36,8 @@
                         "additionalParameters": "allowed"
                     }
                 },
-                "postingwithcarui-display": {
-                    "semanticObject": "postingwithcarui",
+                "postingui-display": {
+                    "semanticObject": "postingui",
                     "action": "display",
                     "signature": {
                         "parameters": {},
