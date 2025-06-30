@@ -155,6 +155,7 @@ async function createRegularPDF(PostingRegular){
             )
 
         }
+        // Minimum két sora legyen minden esetben, hogy nézzen ki valahogy
         if(daily.length == 1 ){
             
                 tableBody.push(

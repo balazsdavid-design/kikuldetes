@@ -1025,6 +1025,6 @@ annotate service.TripExpenses with {
 };
 
 annotate service.HighwayStickers with {
-    price @Measures.ISOCurrency : country_code
+    price @Measures.ISOCurrency : currency_code
 };
 
