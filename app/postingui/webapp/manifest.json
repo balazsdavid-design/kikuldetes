@@ -35,6 +35,14 @@
             "parameters": {},
             "additionalParameters": "allowed"
           }
+        },
+        "postingui-display": {
+          "semanticObject": "postingui",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     }

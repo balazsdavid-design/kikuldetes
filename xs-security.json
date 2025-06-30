@@ -7,10 +7,9 @@
    "description": "Back Office user"
   },
   {
-    "name":"$XSAPPNAME.PostingUser",
-    "description": "Regular user"
+   "name": "$XSAPPNAME.PostingUser",
+   "description": "Regular user"
   }
-  
  ],
  "attributes": [],
  "role-templates": [
@@ -23,15 +22,12 @@
    "attribute-references": []
   },
   {
-    "name":"PostingUser",
-    "description": "Regular user",
-    "scope-references": [
-        "$XSAPPNAME.PostingUser"
-    ],
-    "attribute-references" : []
+   "name": "PostingUser",
+   "description": "Regular user",
+   "scope-references": [
+    "$XSAPPNAME.PostingUser"
+   ],
+   "attribute-references": []
   }
  ]
- 
-   
-
 }

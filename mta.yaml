@@ -27,7 +27,7 @@ modules:
     requires:
       - name: kikuldetesek-auth
       - name: kikuldetesek-destination
-      - name: postgre_msg
+      - name: kikuldetesek-db
 
   - name: kikuldetesek-app-deployer
     type: com.sap.application.content
@@ -71,18 +71,7 @@ modules:
       supported-platforms:
         []
 
-  - name: kikuldetesek-postgres-deployer
-    type: nodejs
-    path: gen/pg
-    parameters:
-      buildpack: nodejs_buildpack
-      no-route: true
-      no-start: true
-      tasks:
-        - name: deploy-to-postgresql
-          command: npm start
-    requires:
-      - name: postgre_msg
+ 
 
   - name: kikuldetesek-destinations
     type: com.sap.application.content
@@ -115,6 +104,14 @@ modules:
               ServiceInstanceName: kikuldetesek-auth
               ServiceKeyName: kikuldetesek-auth-key
               sap.cloud.service: kikuldetesek.service
+
+  - name: kikuldetesek-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: kikuldetesek-db
 
 resources:
   - name: kikuldetesek-auth
@@ -167,8 +164,9 @@ resources:
     parameters:
       service: html5-apps-repo
       service-plan: app-runtime
-  - name: postgre_msg
-    type: org.cloudfoundry.managed-service
+ 
+  - name: kikuldetesek-db
+    type: com.sap.xs.hdi-container
     parameters:
-      service: postgresql-db
-      service-plan: free
+      service: hana
+      service-plan: hdi-shared
