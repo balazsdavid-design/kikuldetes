@@ -113,7 +113,7 @@ class AppService extends cds.ApplicationService {
       const { user } = req;
       
       //var vcap_services = JSON.parse(process.env.VCAP_SERVICES)
-      console.log(process.env) 
+      console.log(process.env.VCAP_SERVICES) 
       if (!user.is('Backoffice')) {
         
           
