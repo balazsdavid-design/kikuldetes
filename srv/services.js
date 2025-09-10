@@ -135,7 +135,8 @@ class AppService extends cds.ApplicationService {
         else {
           return
         }
-        var auth = 'Basic ' + Buffer.from(string[username + ':' + password]).toString('base64');
+        
+        var auth = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
      var tokenOptions = {
             'method': 'POST',
             'url': authURL + "/oauth/token?grant_type=client_credentials",
