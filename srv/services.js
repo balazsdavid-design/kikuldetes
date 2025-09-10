@@ -1,7 +1,8 @@
 
 const cds = require("@sap/cds");
 
-
+const tx = cds.tx();
+const axios = require('axios');
 const createRegularPDF = require("./regular");
 const createCarPDF = require("./car");
 
@@ -111,13 +112,8 @@ class AppService extends cds.ApplicationService {
     })
     this.before('READ','PostingsWithCar', async (req ) => {
       const { user } = req;
-      try {
-        var vcap_services = JSON.parse(process.env.VCAP_SERVICES)
-        console.log(vcap_services.adsrestapi)
-      }
-      catch(error){
-        console.log(error)
-      }
+      
+        
       
       
       if (!user.is('Backoffice')) {
@@ -128,6 +124,46 @@ class AppService extends cds.ApplicationService {
           
            
       }
+      var vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+        if(vcap_services.adsrestapi !== undefined){
+          
+          var username = vcap_services.adsrestapi[0].credentials.uaa.clientid
+        var password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
+        var authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
+        var apiURL =   vcap_services.adsrestapi[0].credentials.uri
+        }
+        else {
+          return
+        }
+        var auth = 'Basic ' + Buffer.from(string[username + ':' + password]).toString('base64');
+     var tokenOptions = {
+            'method': 'POST',
+            'url': authURL + "/oauth/token?grant_type=client_credentials",
+            'headers': {
+                'Authorization': 'Basic ' + auth,
+                'Content-Type': 'application/json'
+            },
+            'redirect': 'follow'
+        };
+
+       const tokenResponse = await axios(tokenOptions);
+        const tokenjson = await tokenResponse.json();
+        const token = tokenjson.access_token;
+        console.log(tokenResponse)
+
+        
+        var options = {
+            'method': 'GET',
+            'url': apiURL + "/v1/forms",
+            'headers': {
+                'Authorization': 'Bearer ' + token,
+                
+            },
+            
+        };
+        const pdfContent = await axios(options)
+        console.log(pdfContent)
+
   });
 
   this.before('READ','Employees', async(req) => {
