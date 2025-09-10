@@ -28,6 +28,7 @@ modules:
       - name: kikuldetesek-auth
       - name: kikuldetesek-destination
       - name: postgre_msg
+      - name: forms_restapi
 
   - name: kikuldetesek-app-deployer
     type: com.sap.application.content
@@ -117,6 +118,12 @@ modules:
               sap.cloud.service: kikuldetesek.service
 
 resources:
+  - name: forms_restapi
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: adsrestapi
+      service-plan: free
+
   - name: kikuldetesek-auth
     type: org.cloudfoundry.managed-service
     parameters:
