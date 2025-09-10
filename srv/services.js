@@ -111,9 +111,15 @@ class AppService extends cds.ApplicationService {
     })
     this.before('READ','PostingsWithCar', async (req ) => {
       const { user } = req;
+      try {
+        var vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+        console.log(vcap_services.adsrestapi)
+      }
+      catch(error){
+        console.log(error)
+      }
       
-      //var vcap_services = JSON.parse(process.env.VCAP_SERVICES)
-      console.log(process.env.VCAP_SERVICES) 
+      
       if (!user.is('Backoffice')) {
         
           
