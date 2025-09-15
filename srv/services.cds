@@ -46,7 +46,7 @@ service AppService {
     
     entity PostingDataWithCar as projection on my.PostingDataWithCar;
     @odata.draft.enabled
-    @requires : 'Backoffice'
+    //@requires : 'Backoffice'
     entity FuelPrices as projection on my.FuelPrices;
      
     entity HighwayStickers as projection on my.HighwayStickers;

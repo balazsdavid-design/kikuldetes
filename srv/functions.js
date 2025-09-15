@@ -1,6 +1,12 @@
 
 const soap = require('soap')
 const xml2js = require('xml2js');
+const tx = cds.tx();
+const axios = require('axios');
+
+const { serialize } = require('@sap/cds/lib/utils/csv-reader');
+const { Builder } = require('xml2js');
+const builder = new Builder()
 async function getExchangeRates(date,currency){
    
     var d = new Date(date)
@@ -79,4 +85,67 @@ function isEmployeeDataMissing(employee){
         
 }
 
-module.exports = { getExchangeRates, getLocalCountryName, compareByDate, isEmployeeDataMissing}
+async function getBearerToken(username,password,authURL){
+     var auth = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
+         var tokenOptions = {
+                'method': 'POST',
+                'url': authURL + "/oauth/token?grant_type=client_credentials",
+                'headers': {
+                    'Authorization': auth,
+                    'Content-Type': 'application/json'
+                },
+                'redirect': 'follow'
+            };
+    
+           const tokenResponse = await axios(tokenOptions);
+           
+            const token = tokenResponse.data.access_token
+            return token
+}
+async function getFormsInfo(token,apiURL){
+    var options = {
+            'method': 'GET',
+            'url': apiURL + "/v1/forms",
+            'headers': {
+                'Authorization': 'Bearer ' + token,
+                
+            },
+            
+        };
+        const response = await axios(options)
+        return response
+}
+async function getPDF(token,apiURL,templateStr,xmlData){
+    if(xmlData.length<30){
+        
+        return xmlData
+    }
+    
+    xmlData = Buffer.from(xmlData).toString('base64')
+    
+    var body =  JSON.stringify({
+            "xdpTemplate": templateStr,
+            "xmlData": xmlData,
+            "formType": "print",
+            "formLocale": "",
+            "taggedPdf": 1,
+            "embedFont": 0
+        })
+    var options = {
+            'method': 'POST',
+            'url': apiURL + "/v1/adsRender/pdf?templateSource=storageName",
+            'headers': {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+                
+            },
+            'data': body
+            
+        };
+        const response = await axios(options)
+        return response.data.fileContent
+}
+
+
+
+module.exports = { getExchangeRates, getLocalCountryName, compareByDate, isEmployeeDataMissing, getBearerToken, getFormsInfo,getPDF}

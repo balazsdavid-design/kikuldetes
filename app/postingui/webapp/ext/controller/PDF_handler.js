@@ -41,7 +41,7 @@ sap.ui.define([
                 
               })
               .then(data => {
-                
+                //console.log(data)
                 if(data.value=='FuelPriceNotFound'){
                   // Lokalizált hibaüzenetet megjelenítem
                   MessageBox.error(fuelpriceError)
@@ -59,10 +59,30 @@ sap.ui.define([
                   MessageBox.error(employeeError)
                 }
                 // Ellenőrzöm, hogy a válasz tartalmazza-e a szükséges adatokat
-                else if (data && data.value && data.value.data) {
-                  
+                else if (data && data.value ) {
+                  console.log(data)
+                  data = atob(data.value);
+                   var byteArray = new Uint8Array(data.length)
+            for(var i=0; i<data.length; i++){
+                byteArray[i] = data.charCodeAt(i);
+            }
+            var blob = new Blob([byteArray.buffer], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            
+                  // <a> elem létrehozása a letöltéshez
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = filename; // A letöltött fájl neve
+                  document.body.appendChild(a);
+                  a.click();
+            
+                  // <a> elem eltávolítása és az URL felszabadítása
+                  document.body.removeChild(a);
+                  window.URL.revokeObjectURL(url); 
+                // deprecated solution below 
                   // Uint8Array létrehozása a bináris adatokból
-                  const uint8Array = new Uint8Array(data.value.data);
+                  /*
+                  const uint8Array = new Uint8Array(data);
             
                   // Blob létrehozása a bináris adatokból
                   const blob = new Blob([uint8Array], { type: 'application/pdf' });
@@ -79,7 +99,7 @@ sap.ui.define([
             
                   // <a> elem eltávolítása és az URL felszabadítása
                   document.body.removeChild(a);
-                  window.URL.revokeObjectURL(url);
+                  window.URL.revokeObjectURL(url); */
                 } else {
                   MessageBox.error(conversionError)
                   throw new Error(conversionError);

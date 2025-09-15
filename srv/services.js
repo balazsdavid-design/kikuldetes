@@ -3,10 +3,18 @@ const cds = require("@sap/cds");
 
 const tx = cds.tx();
 const axios = require('axios');
-const createRegularPDF = require("./regular");
-const createCarPDF = require("./car");
-
-
+const { createRegularXML } = require("./regular");
+const { createCarXML } = require("./car");
+const { getPDF, getBearerToken,  } = require("./functions");
+var vcap_services
+ try {
+  vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+ }
+ catch(exception){}
+const username =  vcap_services.adsrestapi[0].credentials.uaa.clientid
+const password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
+const authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
+const apiURL =    vcap_services.adsrestapi[0].credentials.uri
 
 
 class AppService extends cds.ApplicationService {
@@ -105,7 +113,7 @@ class AppService extends cds.ApplicationService {
         }
       }
 
-      if(req.data.data.length < 2){
+      if(req.data.data.length < 2){//var vcap_services = JSON.parse(process.env.VCAP_SERVICES)
         req.error(400,'TripDataAtleastTwo')
       }
       
@@ -124,46 +132,16 @@ class AppService extends cds.ApplicationService {
           
            
       }
-      var vcap_services = JSON.parse(process.env.VCAP_SERVICES)
-        if(vcap_services.adsrestapi !== undefined){
+      
+       
           
-          var username = vcap_services.adsrestapi[0].credentials.uaa.clientid
-        var password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
-        var authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
-        var apiURL =   vcap_services.adsrestapi[0].credentials.uri
-        }
-        else {
-          return
-        }
-        
-        var auth = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
-     var tokenOptions = {
-            'method': 'POST',
-            'url': authURL + "/oauth/token?grant_type=client_credentials",
-            'headers': {
-                'Authorization': 'Basic ' + auth,
-                'Content-Type': 'application/json'
-            },
-            'redirect': 'follow'
-        };
-
-       const tokenResponse = await axios(tokenOptions);
-        const tokenjson = await tokenResponse.json();
-        const token = tokenjson.access_token;
-        console.log(tokenResponse)
+         
+          
+          
 
         
-        var options = {
-            'method': 'GET',
-            'url': apiURL + "/v1/forms",
-            'headers': {
-                'Authorization': 'Bearer ' + token,
-                
-            },
-            
-        };
-        const pdfContent = await axios(options)
-        console.log(pdfContent)
+        
+        
 
   });
 
@@ -229,9 +207,9 @@ class AppService extends cds.ApplicationService {
   this.after('READ', 'PostingsWithCar', async(results,req ) => {
     
     const { user} = req
-    
+   
     for(let each of results){
-      
+       
       if(user.is('Backoffice')){
         
 
@@ -258,7 +236,7 @@ class AppService extends cds.ApplicationService {
     
     for(let each of results){
       
-      each.backOffice = user.is('Backoffice')
+      each.backOffice = !user.is('Backoffice')
       if(each.status_ID == 1 || each.status_ID == 3){
         each.submittable = true
       }
@@ -691,9 +669,13 @@ class AppService extends cds.ApplicationService {
     }).where({ID:id})
     try {
       // A segédfüggvényemmel elkészítem buffer formátumba a PDF-et
-      const buffer = await createCarPDF(entity)
       
-    return buffer
+      
+          var token = await getBearerToken(username,password,authURL)
+          const xml = await createCarXML(entity)
+          const base64pdf = await getPDF(token,apiURL,"CarPosting/carposting",xml)
+      
+    return base64pdf
     }
     catch(err) {
       console.log(err)
@@ -713,9 +695,12 @@ class AppService extends cds.ApplicationService {
     }).where({ID:id})
 
     
-    const buffer = await createRegularPDF(entity)
-   
-    return buffer
+    
+    
+          var token = await getBearerToken(username,password,authURL)
+          const xml = await createRegularXML(entity)
+          const base64pdf = await getPDF(token,apiURL,"RegularPosting/regularposting",xml)
+    return base64pdf 
 
   
 
