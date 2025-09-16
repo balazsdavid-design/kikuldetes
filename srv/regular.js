@@ -78,10 +78,7 @@ async function createRegularXML(PostingRegular){
                 if(currency == 'EUR'){
                     priceEUR = price
                     
-                    if(priceText.toString().includes('.')){
-                        priceText = priceText.toFixed(2)
-                    }
-                    current.daily_price = current.daily_price.toFixed(2)
+                   
                  }
                  priceText = price
                  try {
@@ -145,10 +142,7 @@ async function createRegularXML(PostingRegular){
             if(currency == 'EUR'){
                 priceEUR = price
                 
-                if(priceText.toString().includes('.')){
-                 priceText = parseFloat(priceText).toFixed(2)
-                 accomodation.daily_price = accomodation.daily_price.toFixed(2)
-             }
+                
              }
              priceText = price
             
@@ -227,10 +221,7 @@ async function createRegularXML(PostingRegular){
             if(currency == 'EUR'){
                 priceEUR = price
                 
-                if(priceText.toString().includes('.')){
-                 priceText = priceText.toFixed(2)
-                 
-             }
+               
              }
             priceText = price
             try {
@@ -309,10 +300,7 @@ async function createRegularXML(PostingRegular){
             if(currency == 'EUR'){
                 priceEUR = price
                 
-                if(priceText.toString().includes('.')){
-                 priceText = parseFloat(priceText).toFixed(2)
-                 
-             }
+                
              }
             priceText = price
             try {
@@ -371,19 +359,7 @@ async function createRegularXML(PostingRegular){
     else {
         HUFback = borrowed
     }
-    if(borrowedEUR < 0){
-        EURmore = borrowedEUR*(-1)
-        if(EURmore.toString().includes('.')){
-            EURmore = EURmore.toFixed(2)  
-        }
-    }
-    else {
-        EURback = borrowedEUR
-        if(EURback.toString().includes('.')){
-            EURback = EURback.toFixed(2)  
-        }
-    }
-
+    
     const xml = {
         PostingRegular : {
             Year : year,

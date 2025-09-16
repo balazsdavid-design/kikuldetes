@@ -41,7 +41,7 @@ sap.ui.define([
                 
               })
               .then(data => {
-                //console.log(data)
+                console.log(data)
                 if(data.value=='FuelPriceNotFound'){
                   // Lokalizált hibaüzenetet megjelenítem
                   MessageBox.error(fuelpriceError)
