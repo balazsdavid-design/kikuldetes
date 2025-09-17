@@ -60,7 +60,7 @@ sap.ui.define([
                 }
                 // Ellenőrzöm, hogy a válasz tartalmazza-e a szükséges adatokat
                 else if (data && data.value ) {
-                  console.log(data)
+                  
                   data = atob(data.value);
                    var byteArray = new Uint8Array(data.length)
             for(var i=0; i<data.length; i++){

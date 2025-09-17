@@ -228,7 +228,7 @@ class AppService extends cds.ApplicationService {
     
     for(let each of results){
       
-      each.backOffice = user.is('Backoffice')
+      each.backOffice =  true //user.is('Backoffice')
       if(each.status_ID == 1 || each.status_ID == 3){
         each.submittable = true
       }
@@ -662,17 +662,22 @@ class AppService extends cds.ApplicationService {
     try {
       // A segédfüggvényemmel elkészítem buffer formátumba a PDF-et
         var vcap_services
+           var username
+           var password
+           var authURL
+           var apiURL
       try {
-      vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+      //vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+      
+    
       }
   catch(exception){
     console.log(exception)
   }
-    var username =  vcap_services.adsrestapi[0].credentials.uaa.clientid
-    var password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
-    var authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
-    var apiURL =    vcap_services.adsrestapi[0].credentials.uri
-      
+     username = vcap_services.adsrestapi[0].credentials.uaa.clientid
+     password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
+    authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
+     apiURL =  vcap_services.adsrestapi[0].credentials.uri
           var token = await getBearerToken(username,password,authURL)
           const xml = await createCarXML(entity)
           const base64pdf = await getPDF(token,apiURL,"CarPosting/carposting",xml)
@@ -696,17 +701,23 @@ class AppService extends cds.ApplicationService {
       p.accomodations ( acc => {acc`.*`,acc.paymentMethod.name}), p.material_expenses ( mat=> {mat`.*`,mat.name,mat.paymentMethod.name}), p.trip_expenses ( trip=> {trip`.*`,trip.name,trip.paymentMethod.name})
     }).where({ID:id})
            var vcap_services
+           var username
+           var password
+           var authURL
+           var apiURL
       try {
       vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+       
       }
   catch(exception){
     console.log(exception)
   }
-    var username =  vcap_services.adsrestapi[0].credentials.uaa.clientid
-    var password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
-    var authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
-    var apiURL =    vcap_services.adsrestapi[0].credentials.uri
+  username = vcap_services.adsrestapi[0].credentials.uaa.clientid
+     password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
+    authURL = vcap_services.adsrestapi[0].credentials.uaa.url
+     apiURL =  vcap_services.adsrestapi[0].credentials.uri
     
+   
     
     
           var token = await getBearerToken(username,password,authURL)

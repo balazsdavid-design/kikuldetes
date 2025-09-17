@@ -28,7 +28,7 @@ sap.ui.define([
                 return response.json(); 
               })
               .then(data => {
-                console.log(data.value)
+                console.log(data)
                 if(data.value[0] == "CurrencyNotFound"){
                   MessageBox.error(currencyError+" "+data.value[1])
                 }
