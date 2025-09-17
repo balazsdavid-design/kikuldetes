@@ -251,7 +251,7 @@ class AppService extends cds.ApplicationService {
       }
       else {
         each.backOffice = false
-        each.restriction = 1
+        each.restriction = 2//1
       }
       
     }
