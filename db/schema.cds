@@ -6,6 +6,8 @@ using { Country,Currency} from '@sap/cds/common';
 
 
 entity PostingsRegular : Postings {
+    
+    
     @mandatory
     borrowedEUR : Decimal ;
     @mandatory
@@ -231,7 +233,10 @@ entity Employees {
     @readonly
     key ID : String;
     name : String;
+    //lastName : String;
     position : String;
+    //postal_code: Integer;
+    //city : String;
     address : String;
     birthDate : Date;
     birthPlace : String;

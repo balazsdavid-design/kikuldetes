@@ -294,6 +294,18 @@
                       }
                     }
                   }
+                },
+                "body": {
+                  "sections": {
+                    "Uploader": {
+                      "template": "postingui.ext.fragment.Uploader",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "GeneralInformation"
+                      },
+                      "title": "Upload filezla"
+                    }
+                  }
                 }
               },
               "controlConfiguration": {

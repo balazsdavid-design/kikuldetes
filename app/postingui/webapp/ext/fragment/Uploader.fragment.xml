@@ -1,0 +1,107 @@
+<core:FragmentDefinition xmlns:plugins="sap.m.plugins" xmlns:upload="sap.m.upload" xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:macros="sap.fe.macros">
+	<VBox id="_IDGenVBox" core:require="{ handler: 'postingui/ext/fragment/Uploader'}">
+		
+		<Table id="_IDGenTable">
+				
+					<headerToolbar>
+					<OverflowToolbar id="_IDGenOverflowToolbar">
+						
+						<ToolbarSpacer id="_IDGenToolbarSpacer" />
+
+						
+
+						<upload:ActionsPlaceholder id="uploadButton" placeholderFor="UploadButtonPlaceholder" />
+						
+
+						
+						
+						
+					</OverflowToolbar>
+				</headerToolbar>
+					<dependents>
+					<plugins:UploadSetwithTable id="_IDGenUploadSetwithTable"
+						uploadUrl="/uploadFiles"
+						multiple="true"
+						beforeUploadStarts="onBeforeUploadStarts"
+						itemRenamed="onDocumentRenamedSuccess"
+						uploadCompleted="onUploadCompleted"
+						onActivated="onPluginActivated"
+						cloudFilePickerEnabled="true"
+						actions="uploadButton"
+						>
+						
+							<upload:UploadItemConfiguration id="_IDGenUploadItemConfiguration"
+								fileNamePath="fileName"
+								mediaTypePath="mediaType"
+								urlPath="url"
+								previewablePath="previewable"
+								fileSizePath="fileSize"
+								isTrustedSourcePath="trustedSource"
+							/>
+						
+					</plugins:UploadSetwithTable>
+				</dependents>
+				<columns>
+					<Column id="fileName" importance="High">
+						<header>
+							<Label id="_IDGenLabel1" text="File Name" />
+						</header>
+					</Column>
+					
+					
+					
+					<Column id="fileSize">
+						<header>
+							<Label id="_IDGenLabel5" text="File Size" />
+						</header>
+					</Column>
+					
+					<Column id="actionButton" importance="High" />
+				</columns>
+				<items>
+					<ColumnListItem id="_IDGenColumnListItem1"
+						
+					>
+	
+					<!-- Cells with cell template defining content for each column (cells and columns work with 1:1 mapping) -->
+						<cells>
+							<HBox id="_IDGenHBox">
+								
+								<core:Icon id="_IDGenIcon"
+									src=""
+									
+									class="sapMUSTItemImage sapMUSTItemIcon"
+								/>
+								<VBox id="_IDGenVBox1"
+									class="sapUiTinyMargin sapUiSmallMarginBegin"
+								>
+									<Link id="_IDGenLink"
+										text="text"
+										press="openPreview"
+										class="sapUiTinyMarginBottom"
+									/>
+									
+								</VBox>
+							</HBox>
+							<Text id="_IDGenText1" text="text" />
+							
+							
+							
+						
+							
+							<Button id="_IDGenButton"
+								class="sapUiTinyMarginBegin"
+								type="Transparent"
+								icon="sap-icon://decline"
+								press="onRemoveHandler"
+							/>
+						</cells>
+					</ColumnListItem>
+					</items>
+				
+				
+
+
+				</Table>
+	</VBox>
+</core:FragmentDefinition>
