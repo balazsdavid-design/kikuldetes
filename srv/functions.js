@@ -143,6 +143,11 @@ async function getPDF(token,apiURL,templateStr,xmlData){
             
         };
         const response = await axios(options)
+        if(response.data.fileContent == null){
+            console.log(response.data)
+            return response.data
+
+        }
         return response.data.fileContent
 }
 

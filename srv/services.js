@@ -6,20 +6,12 @@ const axios = require('axios');
 const { createRegularXML } = require("./regular");
 const { createCarXML } = require("./car");
 const { getPDF, getBearerToken,  } = require("./functions");
-var vcap_services
- try {
-  vcap_services = JSON.parse(process.env.VCAP_SERVICES)
- }
- catch(exception){}
-const username =  vcap_services.adsrestapi[0].credentials.uaa.clientid
-const password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
-const authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
-const apiURL =    vcap_services.adsrestapi[0].credentials.uri
+
 
 
 class AppService extends cds.ApplicationService {
   init() {
-    
+      
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
       
       
@@ -669,7 +661,17 @@ class AppService extends cds.ApplicationService {
     }).where({ID:id})
     try {
       // A segédfüggvényemmel elkészítem buffer formátumba a PDF-et
-      
+        var vcap_services
+      try {
+      vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+      }
+  catch(exception){
+    console.log(exception)
+  }
+    var username =  vcap_services.adsrestapi[0].credentials.uaa.clientid
+    var password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
+    var authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
+    var apiURL =    vcap_services.adsrestapi[0].credentials.uri
       
           var token = await getBearerToken(username,password,authURL)
           const xml = await createCarXML(entity)
@@ -693,7 +695,17 @@ class AppService extends cds.ApplicationService {
       p.departures_arrivals ( d => {d`.*`,d.meanOfTransport.name} ), p.daily_expenses ( daily => {daily`.*`,daily.paymentMethod.name}),
       p.accomodations ( acc => {acc`.*`,acc.paymentMethod.name}), p.material_expenses ( mat=> {mat`.*`,mat.name,mat.paymentMethod.name}), p.trip_expenses ( trip=> {trip`.*`,trip.name,trip.paymentMethod.name})
     }).where({ID:id})
-
+           var vcap_services
+      try {
+      vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+      }
+  catch(exception){
+    console.log(exception)
+  }
+    var username =  vcap_services.adsrestapi[0].credentials.uaa.clientid
+    var password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
+    var authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
+    var apiURL =    vcap_services.adsrestapi[0].credentials.uri
     
     
     
