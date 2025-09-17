@@ -672,7 +672,7 @@ class AppService extends cds.ApplicationService {
            var authURL
            var apiURL
       try {
-      //vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+      vcap_services = JSON.parse(process.env.VCAP_SERVICES)
       
     
       }
