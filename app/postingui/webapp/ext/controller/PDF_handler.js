@@ -41,21 +41,27 @@ sap.ui.define([
                 
               })
               .then(data => {
-                console.log(data)
+                
+                
                 if(data.value=='FuelPriceNotFound'){
                   // Lokalizált hibaüzenetet megjelenítem
+                  console.log(data)
                   MessageBox.error(fuelpriceError)
                 }
                 else if(data.value == 'NoVolume'){
+                  console.log(data)
                   MessageBox.error(noVolume)
                 }
                 else if(data.value[0] == "CurrencyNotFound"){
+                  console.log(data)
                   MessageBox.error(currencyError+" "+data.value[1])
                 }
                 else if(data.value == "DateError"){
+                  console.log(data)
                   MessageBox.error(dateError)
                 }
                 else if(data.value == "EmployeeDataMissing"){
+                  console.log(data)
                   MessageBox.error(employeeError)
                 }
                 // Ellenőrzöm, hogy a válasz tartalmazza-e a szükséges adatokat
@@ -101,6 +107,7 @@ sap.ui.define([
                   document.body.removeChild(a);
                   window.URL.revokeObjectURL(url); */
                 } else {
+                  console.log(data)
                   MessageBox.error(conversionError)
                   throw new Error(conversionError);
                 }

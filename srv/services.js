@@ -32,7 +32,7 @@ class AppService extends cds.ApplicationService {
 
     this.before('CREATE', 'PostingsWithCar', async(req) => {
      
-
+      /*
       if(req.data.stickers){
         var date = new Date();
         for(var sticker of req.data.stickers){
@@ -41,7 +41,8 @@ class AppService extends cds.ApplicationService {
           if(reqDate > date){
             req.error(400,'StickerError')
           }
-        }
+        } 
+      }*/
        outerloop: for(var data of req.data.data){
           for(var nextdata of req.data.data){
             if(data != nextdata){
@@ -51,7 +52,7 @@ class AppService extends cds.ApplicationService {
               }
             }
           }
-        }
+        
       }
       if(req.data.data.length < 2){ // Ha kevesebb mint két sor akkor hiba
         req.error(400,'TripDataAtleastTwo')
@@ -80,7 +81,7 @@ class AppService extends cds.ApplicationService {
     })
     this.before('UPDATE', 'PostingsWithCar', async(req) => {
       
-
+      /*
       if(req.data.stickers){
         var date = new Date();
         for(var sticker of req.data.stickers){
@@ -90,7 +91,7 @@ class AppService extends cds.ApplicationService {
             req.error(400,'StickerError')
           }
         }
-      }
+      }*/
       outerloop : for(var data of req.data.data){
         for(var nextdata of req.data.data){
           if(data != nextdata){
@@ -228,7 +229,7 @@ class AppService extends cds.ApplicationService {
     
     for(let each of results){
       
-      each.backOffice =  true //user.is('Backoffice')
+      each.backOffice =  user.is('Backoffice')
       if(each.status_ID == 1 || each.status_ID == 3){
         each.submittable = true
       }
@@ -251,7 +252,7 @@ class AppService extends cds.ApplicationService {
       }
       else {
         each.backOffice = false
-        each.restriction = 2//1
+        each.restriction = 1
       }
       
     }
@@ -311,6 +312,7 @@ class AppService extends cds.ApplicationService {
         }
        
     }
+    /*
     for(var accomodation of req.data.accomodations){
       var accDate = new Date(accomodation.date)
       if(accDate < travelTo || accDate > travelBack){
@@ -330,13 +332,14 @@ class AppService extends cds.ApplicationService {
       if(tripDate< travelTo || tripDate > travelBack){
         req.error(400,'TripExpenseDateOutSide')
       }
+    }
       
-    
+    */
     if(req.data.departures_arrivals.length < 2){
       req.error(400,'DepArrAtLeastTwo')
     }
     
-  }
+  
     const db = cds.transaction(req);
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -388,6 +391,7 @@ class AppService extends cds.ApplicationService {
       }
       
   }
+  /*
   for(var accomodation of req.data.accomodations){
     var accDate = new Date(accomodation.date)
     if(accDate < travelTo || accDate > travelBack){
@@ -407,6 +411,7 @@ class AppService extends cds.ApplicationService {
     if(tripDate< travelTo || tripDate > travelBack){
       req.error(400,'TripExpenseDateOutSide ')
     }
+    } */
     
     
       
@@ -416,7 +421,7 @@ class AppService extends cds.ApplicationService {
     }
     
     
-  }}
+  }
 )
 
   

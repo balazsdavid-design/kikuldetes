@@ -28,15 +28,21 @@ sap.ui.define([
                 return response.json(); 
               })
               .then(data => {
-                console.log(data)
-                console.log(data.value)
+                
+                  
+                
+
+                
                 if(data.value[0] == "CurrencyNotFound"){
+                  console.log(data)
                   MessageBox.error(currencyError+" "+data.value[1])
                 }
                 else if(data.value == "DateError"){
+                  console.log(data)
                   MessageBox.error(dateError)
                 }
-                else if(data.value == "EmployeeDataMissing"){
+                else if(data.value == "EmployeeDataMissing"){ű
+                  console.log(data)
                   MessageBox.error(employeeError)
                 }
                 // Ellenőrizzük, hogy a válasz tartalmazza-e a szükséges adatokat
@@ -83,6 +89,7 @@ sap.ui.define([
                   window.URL.revokeObjectURL(url); */
                 
                 } else {
+                  console.log(data)
                   MessageBox.error(conversionError)
                   throw new Error(conversionError);
                 }
