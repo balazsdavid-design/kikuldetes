@@ -686,9 +686,22 @@ class AppService extends cds.ApplicationService {
      apiURL =  vcap_services.adsrestapi[0].credentials.uri
           var token = await getBearerToken(username,password,authURL)
           const xml = await createCarXML(entity)
+          try {
           const base64pdf = await getPDF(token,apiURL,"CarPosting/carposting",xml)
-      
-    return base64pdf
+           if(base64pdf.length > 30 && entity.attachments.length != 0){
+            var pdf = base64pdf
+            for(const attachment of entity.attachments){
+              pdf = attachFile(token,apiURL,pdf,attachment)
+            }
+            return pdf
+            
+          }
+            return base64pdf 
+          } catch(exception){
+            console.log(exception.response.data)
+            return exception.response.data.trace
+          }
+    
     }
     catch(err) {
       console.log(err)
@@ -723,15 +736,12 @@ class AppService extends cds.ApplicationService {
     //console.log(exception)
     
   }
-  if(vcap_services){
+ 
     username = vcap_services.adsrestapi[0].credentials.uaa.clientid
      password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
     authURL = vcap_services.adsrestapi[0].credentials.uaa.url
      apiURL =  vcap_services.adsrestapi[0].credentials.uri
-  }
-  else {
   
-  }
   
     
    

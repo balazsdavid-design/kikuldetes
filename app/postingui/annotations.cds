@@ -51,6 +51,12 @@ annotate service.PostingsWithCar with @(
             ID : 'HighwayStickers',
             Target : 'stickers/@UI.LineItem#HighwayStickers',
         },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : '{i18n>Attachments}',
+            ID : 'i18nAttachments',
+            Target : 'attachments/@UI.LineItem#i18nAttachments',
+        },
     ],
     UI.LineItem : [
         {
@@ -1053,5 +1059,20 @@ annotate service.PostingsRegular.attachments with @(
             Label : '{i18n>MediaType}',
         },
     ],
+);
+
+annotate service.PostingsWithCar.attachments with @(
+    UI.LineItem #i18nAttachments : [
+        {
+            $Type : 'UI.DataField',
+            Value : content,
+            Label : '{i18n>Attachment}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : mimeType,
+            Label : '{i18n>MediaType}',
+        },
+    ]
 );
 
