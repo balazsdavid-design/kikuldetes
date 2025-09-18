@@ -229,8 +229,8 @@ class AppService extends cds.ApplicationService {
 
     
     for(let each of results){
-      //DELETE
-      each.backOffice =  !user.is('Backoffice')
+      
+      each.backOffice =  user.is('Backoffice')
       if(each.status_ID == 1 || each.status_ID == 3){
         each.submittable = true
       }
