@@ -730,10 +730,7 @@ class AppService extends cds.ApplicationService {
      apiURL =  vcap_services.adsrestapi[0].credentials.uri
   }
   else {
-    username = "sb-628254ee-e7e1-4445-9211-1f24b63c724e!b530272|ads-xsappname!b102452"
-    password = "6bee82b9-4733-4917-84b7-954c5f9fcb79$LbJNBIBMcdW_m-fJmmIgiTNOYg0qXQd9Zm42fuhMlog="
-    authURL = "https://msg-btp-p836hvph.authentication.eu10.hana.ondemand.com"
-    apiURL = "https://adsrestapi-formsprocessing.cfapps.eu10.hana.ondemand.com"
+  
   }
   
     
