@@ -2,6 +2,8 @@ namespace kikuldetes;
 
 using { Country,Currency} from '@sap/cds/common';
 
+using {Attachments } from '@cap-js/attachments';
+
 
 
 
@@ -24,8 +26,8 @@ entity PostingsRegular : Postings {
     accomodations : Composition of many Accomodations on accomodations.posting = $self;
     material_expenses : Composition of many MaterialExpenses 
     on material_expenses.posting = $self;
-    trip_expenses : Composition of many TripExpenses on trip_expenses.posting = $self
-
+    trip_expenses : Composition of many TripExpenses on trip_expenses.posting = $self;
+    attachments : Composition of many Attachments; 
 }
 
 entity DeparturesAndArrivals {

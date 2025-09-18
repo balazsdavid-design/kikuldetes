@@ -11,7 +11,13 @@ const { getPDF, getBearerToken,  } = require("./functions");
 
 class AppService extends cds.ApplicationService {
   init() {
-      
+    
+    this.after('READ','Attachments.drafts', async(results,req) => {
+      console.log(results)
+    })
+    this.before('CREATE','Attachments',async(req) => {
+      console.log(req)
+    })
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
       
       

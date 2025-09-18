@@ -3,6 +3,7 @@ using kikuldetes as my from '../db/schema';
 @requires: 'authenticated-user'
 service AppService {
     
+   
     
     @cds.redirection.target
     @odata.draft.enabled
