@@ -2,10 +2,14 @@ namespace kikuldetes;
 
 using { Country,Currency} from '@sap/cds/common';
 
+using {Attachments } from '@cap-js/attachments';
+
 
 
 
 entity PostingsRegular : Postings {
+    
+    
     @mandatory
     borrowedEUR : Decimal ;
     @mandatory
@@ -22,8 +26,8 @@ entity PostingsRegular : Postings {
     accomodations : Composition of many Accomodations on accomodations.posting = $self;
     material_expenses : Composition of many MaterialExpenses 
     on material_expenses.posting = $self;
-    trip_expenses : Composition of many TripExpenses on trip_expenses.posting = $self
-
+    trip_expenses : Composition of many TripExpenses on trip_expenses.posting = $self;
+    
 }
 
 entity DeparturesAndArrivals {
@@ -107,7 +111,8 @@ aspect Postings {
 
     @UI.Hidden
     restriction : Integer default 0;
-    
+    @attachments.disable_facet
+    attachments : Composition of many Attachments; 
     
     
     virtual submittable : Boolean default true;
@@ -231,7 +236,10 @@ entity Employees {
     @readonly
     key ID : String;
     name : String;
+    //lastName : String;
     position : String;
+    //postal_code: Integer;
+    //city : String;
     address : String;
     birthDate : Date;
     birthPlace : String;

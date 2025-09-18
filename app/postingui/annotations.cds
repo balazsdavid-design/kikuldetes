@@ -1,4 +1,6 @@
 using AppService as service from '../../srv/services';
+using from '../../db/schema';
+
 
 
 
@@ -48,6 +50,12 @@ annotate service.PostingsWithCar with @(
             Label : '{i18n>HighwayStickers}',
             ID : 'HighwayStickers',
             Target : 'stickers/@UI.LineItem#HighwayStickers',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : '{i18n>Attachments}',
+            ID : 'i18nAttachments',
+            Target : 'attachments/@UI.LineItem#i18nAttachments',
         },
     ],
     UI.LineItem : [
@@ -403,6 +411,12 @@ annotate service.PostingsRegular with @(
             Label : '{i18n>TripExpenses}',
             ID : 'Tripexpenses',
             Target : 'trip_expenses/@UI.LineItem#Tripexpenses',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : '{i18n>Attachments}',
+            ID : 'i18nAttachments',
+            Target : 'attachments/@UI.LineItem#i18nAttachments1',
         },
     ],
     UI.FieldGroup #GeneralInformation : {
@@ -1027,4 +1041,38 @@ annotate service.TripExpenses with {
 annotate service.HighwayStickers with {
     price @Measures.ISOCurrency : currency_code
 };
+
+annotate service.PostingsRegular.attachments with @(
+    UI.LineItem #Attachment : [
+    ],
+    UI.LineItem #i18nAttachments : [
+    ],
+    UI.LineItem #i18nAttachments1 : [
+        {
+            $Type : 'UI.DataField',
+            Value : content,
+            Label : '{i18n>Attachment}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : mimeType,
+            Label : '{i18n>MediaType}',
+        },
+    ],
+);
+
+annotate service.PostingsWithCar.attachments with @(
+    UI.LineItem #i18nAttachments : [
+        {
+            $Type : 'UI.DataField',
+            Value : content,
+            Label : '{i18n>Attachment}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : mimeType,
+            Label : '{i18n>MediaType}',
+        },
+    ]
+);
 

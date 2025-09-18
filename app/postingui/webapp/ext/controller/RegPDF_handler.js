@@ -41,13 +41,18 @@ sap.ui.define([
                   console.log(data)
                   MessageBox.error(dateError)
                 }
-                else if(data.value == "EmployeeDataMissing"){ű
+                else if(data.value == "EmployeeDataMissing"){
                   console.log(data)
                   MessageBox.error(employeeError)
                 }
                 // Ellenőrizzük, hogy a válasz tartalmazza-e a szükséges adatokat
                 else if (data && data.value ) {
                   // Uint8Array létrehozása a bináris adatokból
+                  console.log(data.value)
+                  if(data.value.length < 200){
+                    MessageBox.error(data.value)
+                    return
+                  }
                   data = atob(data.value);
                    var byteArray = new Uint8Array(data.length)
             for(var i=0; i<data.length; i++){
