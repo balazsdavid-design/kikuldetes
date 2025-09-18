@@ -27,6 +27,7 @@ entity PostingsRegular : Postings {
     material_expenses : Composition of many MaterialExpenses 
     on material_expenses.posting = $self;
     trip_expenses : Composition of many TripExpenses on trip_expenses.posting = $self;
+    @attachments.disable_facet
     attachments : Composition of many Attachments; 
 }
 

@@ -425,6 +425,16 @@
                       "createAtEnd": true
                     }
                   }
+                },
+                "attachments/@com.sap.vocabularies.UI.v1.LineItem#i18nAttachments1": {
+                  "columns": {
+                    "DataField::content": {
+                      "width": "32%"
+                    },
+                    "DataField::mimeType": {
+                      "width": "32%"
+                    }
+                  }
                 }
               }
             }

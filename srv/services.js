@@ -5,19 +5,14 @@ const tx = cds.tx();
 const axios = require('axios');
 const { createRegularXML } = require("./regular");
 const { createCarXML } = require("./car");
-const { getPDF, getBearerToken,  } = require("./functions");
+const { getPDF, getBearerToken, attachFile  } = require("./functions");
 
 
 
 class AppService extends cds.ApplicationService {
   init() {
     
-    this.after('READ','Attachments.drafts', async(results,req) => {
-      console.log(results)
-    })
-    this.before('CREATE','Attachments',async(req) => {
-      console.log(req)
-    })
+    
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
       
       
@@ -234,8 +229,8 @@ class AppService extends cds.ApplicationService {
 
     
     for(let each of results){
-      
-      each.backOffice =  user.is('Backoffice')
+      //DELETE
+      each.backOffice =  !user.is('Backoffice')
       if(each.status_ID == 1 || each.status_ID == 3){
         each.submittable = true
       }
@@ -370,7 +365,7 @@ class AppService extends cds.ApplicationService {
     var borrowedHUF = req.data.borrowedHUF
     var borrowedEUR = req.data.borrowedEUR
     
-    
+    console.log(req.data)
     var travelTo = new Date(req.data.travel_to)
     var travelBack = new Date(req.data.travel_back)
     travelBack.setHours(23)
@@ -709,32 +704,61 @@ class AppService extends cds.ApplicationService {
     const entity = await SELECT.one('PostingsRegular', p => {
       p`.*`,p.employee (e => {e`.*`}), 
       p.departures_arrivals ( d => {d`.*`,d.meanOfTransport.name} ), p.daily_expenses ( daily => {daily`.*`,daily.paymentMethod.name}),
-      p.accomodations ( acc => {acc`.*`,acc.paymentMethod.name}), p.material_expenses ( mat=> {mat`.*`,mat.name,mat.paymentMethod.name}), p.trip_expenses ( trip=> {trip`.*`,trip.name,trip.paymentMethod.name})
+      p.accomodations ( acc => {acc`.*`,acc.paymentMethod.name}), p.material_expenses ( mat=> {mat`.*`,mat.name,mat.paymentMethod.name}),
+       p.trip_expenses ( trip=> {trip`.*`,trip.name,trip.paymentMethod.name}),
+       p.attachments( attachment => { attachment.filename,attachment.mimeType,attachment.content})
     }).where({ID:id})
+      
            var vcap_services
            var username
            var password
            var authURL
            var apiURL
+           
       try {
       vcap_services = JSON.parse(process.env.VCAP_SERVICES)
        
       }
   catch(exception){
-    console.log(exception)
+    //console.log(exception)
+    
   }
-  username = vcap_services.adsrestapi[0].credentials.uaa.clientid
+  if(vcap_services){
+    username = vcap_services.adsrestapi[0].credentials.uaa.clientid
      password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
     authURL = vcap_services.adsrestapi[0].credentials.uaa.url
      apiURL =  vcap_services.adsrestapi[0].credentials.uri
+  }
+  else {
+    username = "sb-628254ee-e7e1-4445-9211-1f24b63c724e!b530272|ads-xsappname!b102452"
+    password = "6bee82b9-4733-4917-84b7-954c5f9fcb79$LbJNBIBMcdW_m-fJmmIgiTNOYg0qXQd9Zm42fuhMlog="
+    authURL = "https://msg-btp-p836hvph.authentication.eu10.hana.ondemand.com"
+    apiURL = "https://adsrestapi-formsprocessing.cfapps.eu10.hana.ondemand.com"
+  }
+  
     
    
     
     
           var token = await getBearerToken(username,password,authURL)
-          const xml = await createRegularXML(entity)
-          const base64pdf = await getPDF(token,apiURL,"RegularPosting/regularposting",xml)
-    return base64pdf 
+          const xml = await createRegularXML(entity) 
+          try {
+            const base64pdf = await getPDF(token,apiURL,"RegularPosting/regularposting",xml)
+          
+          if(base64pdf.length > 30 && entity.attachments.length != 0){
+            var pdf = base64pdf
+            for(const attachment of entity.attachments){
+              pdf = attachFile(token,apiURL,pdf,attachment)
+            }
+            return pdf
+            
+          }
+            return base64pdf 
+          } catch(exception){
+            console.log(exception.response.data)
+            return exception.response.data.trace
+          }
+          
 
   
 

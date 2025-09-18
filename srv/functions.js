@@ -115,6 +115,7 @@ async function getFormsInfo(token,apiURL){
         const response = await axios(options)
         return response
 }
+
 async function getPDF(token,apiURL,templateStr,xmlData){
     if(xmlData.length<30){
         
@@ -150,7 +151,61 @@ async function getPDF(token,apiURL,templateStr,xmlData){
         }
         return response.data.fileContent
 }
+async function attachFile(token,apiURL,base64pdf,attachment){
+
+    const chunks = [];
+ 
+ 
+  for await (const chunk of attachment.content) {
+    
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+
+  const base64file = Buffer.concat(chunks).toString('base64');
+   if(base64file == ""){
+    return base64pdf
+   }
+  console.log(attachment)
+    
+    var body =  JSON.stringify({
+            "fileName": attachment.filename,
+            "fileContent":base64file,
+            "mimeType": attachment.mimeType,
+            "description":"",
+            "pdf": base64pdf
+        })
+    var options = {
+            'method': 'POST',
+            'url': apiURL + "/v1/pdf/adsSet/attachment",
+            'headers': {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+                
+            },
+            'data': body
+            
+        };
+        try {
+            const response = await axios(options)
+            if(response.data.fileContent == null){
+            //console.log(response.data)
+            return response.data
+
+        }
+        return response.data.fileContent 
+            
+        }
+        catch(exception){
+            
+            console.log(exception.response.data)
+            return exception.response.data.trace
+            
+        }
+        
+        
+        
+}
 
 
 
-module.exports = { getExchangeRates, getLocalCountryName, compareByDate, isEmployeeDataMissing, getBearerToken, getFormsInfo,getPDF}
+module.exports = { getExchangeRates, getLocalCountryName, compareByDate, isEmployeeDataMissing, getBearerToken, getFormsInfo,getPDF, attachFile}
