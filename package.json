@@ -53,6 +53,7 @@
           }
         }
       },
+      
       "db": {
         "[test]": {
           "kind": "sqlite",
@@ -64,6 +65,12 @@
           "kind": "postgres"
         }
       },
+      "attachments": {
+        "kind":"db",
+        "scan":false
+        
+      },
+
       "destinations": true,
       "html5-runtime": true,
       "workzone": true,
