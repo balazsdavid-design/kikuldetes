@@ -162,7 +162,7 @@ class AppService extends cds.ApplicationService {
         
         if(!user.is('Backoffice')){
           req.query.where({ ID: user.id });
-          console.log(req.query.SELECT.columns)
+          
           
           
         }  
@@ -189,7 +189,7 @@ class AppService extends cds.ApplicationService {
   this.before('UPDATE','Employees',async(req) => {
     const { user } = req;
     
-      if(req.data.ID != user.id){
+      if(req.data.ID != user.id && !user.is('Backoffice')){
         req.error(400, "Restricted")
       }
       
@@ -199,7 +199,7 @@ class AppService extends cds.ApplicationService {
   })
   this.before('DELETE','Employees',async(req) => {
     const { user } = req;
-    if(req.data.ID != user.id){
+    if(req.data.ID != user.id && !user.is('Backoffice')){
       req.error(400, "Restricted")
     }
   })
