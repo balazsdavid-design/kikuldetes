@@ -1,6 +1,6 @@
 namespace kikuldetes;
 
-using { Country,Currency} from '@sap/cds/common';
+using { Country,Currency, managed} from '@sap/cds/common';
 
 using {Attachments } from '@cap-js/attachments';
 
@@ -100,7 +100,7 @@ entity TripExpenses : OtherExpense {
 
 }
 
-aspect Postings {
+aspect Postings : managed {
     key ID : UUID;
     @mandatory
     goal : String;

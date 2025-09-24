@@ -253,6 +253,13 @@ annotate service.PostingsWithCar with @(
             Visualizations : [
                 '@UI.LineItem',
             ],
+            SortOrder : [
+                {
+                    $Type : 'Common.SortOrderType',
+                    Property : createdAt,
+                    Descending : true,
+                },
+            ],
         },
         SelectionVariant : {
             $Type : 'UI.SelectionVariantType',
@@ -481,6 +488,13 @@ annotate service.PostingsRegular with @(
             $Type : 'UI.PresentationVariantType',
             Visualizations : [
                 '@UI.LineItem#tableView',
+            ],
+            SortOrder : [
+                {
+                    $Type : 'Common.SortOrderType',
+                    Property : createdAt,
+                    Descending : true,
+                },
             ],
         },
         SelectionVariant : {
