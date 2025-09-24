@@ -140,7 +140,7 @@ resources:
     parameters:
       service: malware-scanner
       service-name: malwarescanner_msg
-      service-plan: clamav​
+      service-plan: clamav
         
   - name: kikuldetesek-destination
     type: org.cloudfoundry.managed-service
