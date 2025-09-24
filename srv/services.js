@@ -162,10 +162,23 @@ class AppService extends cds.ApplicationService {
         
         if(!user.is('Backoffice')){
           req.query.where({ ID: user.id });
+          console.log(req.query.SELECT.columns)
           
-          req.query.columns('name','lastName')
           
         }  
+        const existing = req.query.SELECT.columns
+        .filter(c => c.ref)
+        .map(c => c.ref[0])
+
+        const required = ["name", "lastName"]
+
+        for (const field of required) {
+          if (!existing.includes(field)) {
+            req.query.SELECT.columns.push({ ref: [field] })
+            }
+          }
+  
+        
           
           
           

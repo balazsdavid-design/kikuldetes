@@ -29,6 +29,7 @@ modules:
       - name: kikuldetesek-destination
       - name: postgre_msg
       - name: forms_restapi
+      - name: malwarescanner_msg
 
   - name: kikuldetesek-app-deployer
     type: com.sap.application.content
@@ -134,7 +135,12 @@ resources:
       config:
         xsappname: kikuldetesek-${org}-${space}
         tenant-mode: dedicated
-  
+  - name: malwarescanner_msg
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: malware-scanner
+      service-name: malwarescanner_msg
+      service-plan: clamav​
         
   - name: kikuldetesek-destination
     type: org.cloudfoundry.managed-service
