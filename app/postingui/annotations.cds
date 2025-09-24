@@ -31,10 +31,6 @@ annotate service.Employees with @(
         Text : '{i18n>Employees}',
     },
     UI.HeaderInfo : {
-        Title : {
-            $Type : 'UI.DataField',
-            Value : name,
-        },
         TypeName : '',
         TypeNamePlural : '',
     },
@@ -1196,12 +1192,6 @@ annotate service.PostingsWithCar.attachments with @(
 );
 
 annotate service.Employees with {
-    name @(
-        Common.FieldControl : #ReadOnly,
-        )
-};
-
-annotate service.Employees with {
     position @Common.FieldControl : #Mandatory
 };
 
@@ -1226,7 +1216,7 @@ annotate service.Employees with {
 };
 
 annotate service.Employees with {
-    lastName @Common.FieldControl : #ReadOnly
+    lastName @Common.FieldControl : #Mandatory
 };
 
 annotate service.Employees with {
@@ -1235,5 +1225,9 @@ annotate service.Employees with {
 
 annotate service.Employees with {
     city @Common.FieldControl : #Mandatory
+};
+
+annotate service.Employees with {
+    name @Common.FieldControl : #Mandatory
 };
 
