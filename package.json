@@ -67,7 +67,7 @@
       },
       "attachments": {
         "kind":"db",
-        "scan":false
+        "scan":true
         
       },
 

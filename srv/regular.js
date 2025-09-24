@@ -365,7 +365,7 @@ async function createRegularXML(PostingRegular){
             Year : year,
             SerialNumber : PostingRegular.serialNumber,
             PostingInfo : {
-                Employee_Name : employee.name,
+                Employee_Name : employee.lastName+" "+employee.name,
                 Employee_Position : employee.position,
                 Country : postingCountry,
                 Goal : PostingRegular.goal,

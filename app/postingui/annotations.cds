@@ -2,18 +2,131 @@ using AppService as service from '../../srv/services';
 using from '../../db/schema';
 
 
-
+annotate service.Employees with @(
+    UI.LineItem #tableView : [
+        {
+            $Type : 'UI.DataField',
+            Value : ID,
+            Label : '{i18n>ID}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : name,
+            Label : '{i18n>Name}',
+        },
+    ],
+    UI.SelectionPresentationVariant #tableView : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem#tableView',
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
+        Text : '{i18n>Employees}',
+    },
+    UI.HeaderInfo : {
+        Title : {
+            $Type : 'UI.DataField',
+            Value : name,
+        },
+        TypeName : '',
+        TypeNamePlural : '',
+    },
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : '{i18n>PersonalData}',
+            ID : 'i18nPersonalData',
+            Target : '@UI.FieldGroup#i18nPersonalData',
+        },
+    ],
+    UI.FieldGroup #i18nPersonalData : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : ID,
+                Label : '{i18n>ID}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : position,
+                Label : '{i18n>Position}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : name,
+                Label : '{i18n>FirstName}',
+            },
+             {
+                $Type : 'UI.DataField',
+                Value : lastName,
+                Label : '{i18n>LastName}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : postal_code,
+                Label : '{i18n>Postalcode}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : city,
+                Label : '{i18n>City}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : address,
+                Label : '{i18n>Address}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : birthDate,
+                Label : '{i18n>BirthDate}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : birthPlace,
+                Label : '{i18n>BirthPlace}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : mothersName,
+                Label : '{i18n>MothersName}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : taxNumber,
+                Label : '{i18n>TaxNum}',
+            },
+        ],
+    },
+    UI.ConnectedFields #connected : {
+        $Type : 'UI.ConnectedFieldsType',
+        Template : '{name} {lastName}',
+        Data : {
+            $Type : 'Core.Dictionary',
+            name : {
+                $Type : 'UI.DataField',
+                Value : name,
+            },
+            lastName : {
+                $Type : 'UI.DataField',
+                Value : lastName,
+            },
+        },
+    },
+);
 
 annotate service.PostingsWithCar with @(
     UI.FieldGroup #GeneratedGroup : {
         $Type : 'UI.FieldGroupType',
         Data : [
-            {
-                $Type : 'UI.DataField',
-                Label : '{i18n>Employee}',
-                Value : employee_ID,
-            },
-            
             {
                 $Type : 'UI.DataField',
                 Value : serialNumber,
@@ -23,6 +136,10 @@ annotate service.PostingsWithCar with @(
                 $Type : 'UI.DataField',
                 Value : goal,
                 Label : '{i18n>PostingGoal}',
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : employee_ID,
             },
         ],
     },
@@ -61,8 +178,8 @@ annotate service.PostingsWithCar with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
+            Value : employee.fullName,
             Label : '{i18n>PostedName}',
-            Value : employee_ID,
         },
         {
             $Type : 'UI.DataField',
@@ -225,6 +342,7 @@ annotate service.PostingsWithCar with @(
             },
         },
     },
+  
 );
 
 annotate service.PostingsWithCar with {
@@ -233,11 +351,11 @@ annotate service.PostingsWithCar with {
 
     employee @(
         Common.Text : {
-            $value : employee.name,
+            $value : employee.fullName,
             ![@UI.TextArrangement] : #TextOnly
         },
         Common.Label : '{i18n>Posted}',
-        Common.FieldControl : #Mandatory,
+        
         Common.ValueList : {
             $Type : 'Common.ValueListType',
             CollectionPath : 'Employees',
@@ -250,7 +368,8 @@ annotate service.PostingsWithCar with {
             ],
         },
         Common.ValueListWithFixedValues : true,
-    )
+        Common.FieldControl : restriction
+        )
 };
 
 
@@ -351,7 +470,7 @@ annotate service.PostingsRegular with @(
     UI.LineItem #tableView : [
         {
             $Type : 'UI.DataField',
-            Value : employee_ID,
+            Value : employee.fullName,
             Label : '{i18n>PostedName}',
         },
         {
@@ -513,10 +632,10 @@ annotate service.PostingsRegular with @(
 annotate service.PostingsRegular with {
     employee @(
         Common.Text : {
-            $value : employee.name,
+            $value : employee.fullName,
             ![@UI.TextArrangement] : #TextOnly
         },
-        Common.FieldControl : #Mandatory,
+        Common.FieldControl : restriction,
         Common.ValueList : {
             $Type : 'Common.ValueListType',
             CollectionPath : 'Employees',
@@ -1075,4 +1194,46 @@ annotate service.PostingsWithCar.attachments with @(
         },
     ]
 );
+
+annotate service.Employees with {
+    name @(
+        Common.FieldControl : #ReadOnly,
+        )
+};
+
+annotate service.Employees with {
+    position @Common.FieldControl : #Mandatory
+};
+
+annotate service.Employees with {
+    address @Common.FieldControl : #Mandatory
+};
+
+annotate service.Employees with {
+    birthDate @Common.FieldControl : #Mandatory
+};
+
+annotate service.Employees with {
+    birthPlace @Common.FieldControl : #Mandatory
+};
+
+annotate service.Employees with {
+    mothersName @Common.FieldControl : #Mandatory
+};
+
+annotate service.Employees with {
+    taxNumber @Common.FieldControl : #Mandatory
+};
+
+annotate service.Employees with {
+    lastName @Common.FieldControl : #ReadOnly
+};
+
+annotate service.Employees with {
+    postal_code @Common.FieldControl : #Mandatory
+};
+
+annotate service.Employees with {
+    city @Common.FieldControl : #Mandatory
+};
 

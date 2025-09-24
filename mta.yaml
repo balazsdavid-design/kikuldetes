@@ -134,6 +134,7 @@ resources:
       config:
         xsappname: kikuldetesek-${org}-${space}
         tenant-mode: dedicated
+  
         
   - name: kikuldetesek-destination
     type: org.cloudfoundry.managed-service

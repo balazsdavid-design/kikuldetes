@@ -168,6 +168,11 @@
                     "quickVariantSelection": {
                       "showCounts": true
                     }
+                  },
+                  "columns": {
+                    "DataField::goal": {
+                      "width": "15%"
+                    }
                   }
                 }
               },

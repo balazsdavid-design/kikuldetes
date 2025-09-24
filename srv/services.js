@@ -138,6 +138,13 @@ class AppService extends cds.ApplicationService {
         
 
   });
+  this.after('READ','Employees',async(results,req) => {
+    for(let each of results){
+      
+      each.fullName = each.name+" "+each.lastName
+      
+    }
+  })
 
   this.before('READ','Employees', async(req) => {
     const { user } = req;
@@ -146,16 +153,18 @@ class AppService extends cds.ApplicationService {
     const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
   
     if(!employee){
-      const fullName = user.attr.familyName+" "+user.attr.givenName
+      const firstName =user.attr.givenName
+      const lastName = user.attr.familyName
     
-    
-      await INSERT.into`Employees`.entries({ID:user.id,name:fullName})
+      await INSERT.into`Employees`.entries({ID:user.id,name:firstName,lastName:lastName})
     }
       
         
         if(!user.is('Backoffice')){
           req.query.where({ ID: user.id });
-
+          
+          req.query.columns('name','lastName')
+          
         }  
           
           
@@ -365,7 +374,7 @@ class AppService extends cds.ApplicationService {
     var borrowedHUF = req.data.borrowedHUF
     var borrowedEUR = req.data.borrowedEUR
     
-    console.log(req.data)
+    
     var travelTo = new Date(req.data.travel_to)
     var travelBack = new Date(req.data.travel_back)
     travelBack.setHours(23)

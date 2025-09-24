@@ -236,10 +236,11 @@ entity Employees {
     @readonly
     key ID : String;
     name : String;
-    //lastName : String;
+    virtual fullName : String;
+    lastName : String;
     position : String;
-    //postal_code: Integer;
-    //city : String;
+    postal_code: String(4);
+    city : String;
     address : String;
     birthDate : Date;
     birthPlace : String;
