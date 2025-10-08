@@ -66,7 +66,11 @@ sap.ui.define([
                 }
                 // Ellenőrzöm, hogy a válasz tartalmazza-e a szükséges adatokat
                 else if (data && data.value ) {
-                  
+                  if(data.value.length < 200){
+                    console.log(data)
+                    MessageBox.error(data.value)
+                    return
+                  }
                   data = atob(data.value);
                    var byteArray = new Uint8Array(data.length)
             for(var i=0; i<data.length; i++){

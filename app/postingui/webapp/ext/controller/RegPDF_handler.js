@@ -48,8 +48,9 @@ sap.ui.define([
                 // Ellenőrizzük, hogy a válasz tartalmazza-e a szükséges adatokat
                 else if (data && data.value ) {
                   // Uint8Array létrehozása a bináris adatokból
-                  console.log(data.value)
+                  
                   if(data.value.length < 200){
+                    console.log(data)
                     MessageBox.error(data.value)
                     return
                   }

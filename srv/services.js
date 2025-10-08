@@ -687,7 +687,7 @@ class AppService extends cds.ApplicationService {
       p`.*`,p.employee (e => {e`.*`}), 
       p.fuel_type.name, p.data ( d => { d`.*`}), p.stickers ( s => {s`.*`}),  p.attachments( attachment => { attachment.filename,attachment.mimeType,attachment.content})
     }).where({ID:id})
-    console.log(entity)
+    
     try {
       // A segédfüggvényemmel elkészítem buffer formátumba a PDF-et
         var vcap_services
@@ -704,10 +704,10 @@ class AppService extends cds.ApplicationService {
     console.log(exception)
   }
     
-     username =vcap_services.adsrestapi[0].credentials.uaa.clientid
+     username = vcap_services.adsrestapi[0].credentials.uaa.clientid
      password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
-    authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
-     apiURL =  vcap_services.adsrestapi[0].credentials.uri
+    authURL =   vcap_services.adsrestapi[0].credentials.uaa.url
+     apiURL = vcap_services.adsrestapi[0].credentials.uri
           var token = await getBearerToken(username,password,authURL)
           const xml = await createCarXML(entity)
           try {
