@@ -233,7 +233,7 @@ class AppService extends cds.ApplicationService {
         
       }
       else {
-        each.backOffice = false
+        each.backOffice =  false
       }
       if(each.status_ID == 1 || each.status_ID == 3){
         each.submittable = true
@@ -293,7 +293,7 @@ class AppService extends cds.ApplicationService {
         each.restriction = 2
       }
       else {
-        each.backOffice = false
+        each.backOffice = false 
         each.restriction = 1
       }
     }
@@ -702,7 +702,7 @@ class AppService extends cds.ApplicationService {
   catch(exception){
     console.log(exception)
   }
-     username = vcap_services.adsrestapi[0].credentials.uaa.clientid
+     username =vcap_services.adsrestapi[0].credentials.uaa.clientid
      password = vcap_services.adsrestapi[0].credentials.uaa.clientsecret
     authURL =  vcap_services.adsrestapi[0].credentials.uaa.url
      apiURL =  vcap_services.adsrestapi[0].credentials.uri
@@ -710,7 +710,8 @@ class AppService extends cds.ApplicationService {
           const xml = await createCarXML(entity)
           try {
           const base64pdf = await getPDF(token,apiURL,"CarPosting/carposting",xml)
-           if(base64pdf.length > 30 && entity.attachments.length != 0){
+          
+           if(base64pdf.length > 30 && entity.attachments && entity.attachments.length != 0){
             var pdf = base64pdf
             for(const attachment of entity.attachments){
               pdf = attachFile(token,apiURL,pdf,attachment)
@@ -721,7 +722,7 @@ class AppService extends cds.ApplicationService {
             return base64pdf 
           } catch(exception){
             console.log(exception)
-            //console.log(exception.response.data)
+            console.log(exception.response.data)
             return exception.response.data.trace
           }
     
@@ -775,7 +776,7 @@ class AppService extends cds.ApplicationService {
           try {
             const base64pdf = await getPDF(token,apiURL,"RegularPosting/regularposting",xml)
           
-          if(base64pdf.length > 30 && entity.attachments.length != 0){
+          if(base64pdf.length > 30 && entity.attachments && entity.attachments.length != 0){
             var pdf = base64pdf
             for(const attachment of entity.attachments){
               pdf = attachFile(token,apiURL,pdf,attachment)
@@ -785,6 +786,7 @@ class AppService extends cds.ApplicationService {
           }
             return base64pdf 
           } catch(exception){
+            console.log(exception)
             console.log(exception.response.data)
             return exception.response.data.trace
           }
