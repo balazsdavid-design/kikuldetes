@@ -720,7 +720,8 @@ class AppService extends cds.ApplicationService {
           }
             return base64pdf 
           } catch(exception){
-            console.log(exception.response.data)
+            console.log(exception)
+            //console.log(exception.response.data)
             return exception.response.data.trace
           }
     
