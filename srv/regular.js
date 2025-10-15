@@ -25,12 +25,18 @@ async function createRegularXML(PostingRegular){
     ));
     var deparrs = []
     for(const deparr of departures_arrivals){
+        
+        
+
         var departure = new Date(deparr.departure);
         var arrival = new Date(deparr.arrival);
         
-        departure_time = departure.toTimeString().split(":")
+        departure_time = departure.toLocaleTimeString('hu-HU',{ timeZone: 'Europe/Budapest' }).split(":") 
         
-        arrival_time = departure.toTimeString().split(":")
+        
+        
+        arrival_time = arrival.toLocaleTimeString('hu-HU',{ timeZone: 'Europe/Budapest' }).split(":")
+        
         deparrs.push({
             From_where : deparr.from_where,
             Departure_month : departure.getMonth()+1,
@@ -99,7 +105,8 @@ async function createRegularXML(PostingRegular){
             PricePer : daily_price,
             Price : priceText,
             ChangeRate : changeRate,
-            HUF : hufText
+            HUF : hufText,
+            PaymentMethod : current.paymentMethod_name
 
         })
         
@@ -176,7 +183,7 @@ async function createRegularXML(PostingRegular){
                 borrowed -= priceHUF
 
             }
-
+            
         accs.push({
             AccomodationName : accomodation_string,
             Days : accomodation.days,
@@ -184,7 +191,7 @@ async function createRegularXML(PostingRegular){
             Price : priceText,
             ChangeRate : changeRate,
             HUF : hufText,
-            PaymentMethod : accomodation.paymentmethod
+            PaymentMethod : accomodation.paymentMethod_name
 
         })
 
