@@ -74,7 +74,7 @@ async function createCarXML(PostingWithCar){
                 currency = sticker.currency_code
                 price = sticker.price
                 try { 
-                    changeRate = parseFloat(await getExchangeRates(sticker.date,currency))
+                    changeRate = await getExchangeRates(sticker.date,currency)
                     
                 }
                 catch(error){

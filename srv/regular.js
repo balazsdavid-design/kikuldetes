@@ -71,7 +71,7 @@ async function createRegularXML(PostingRegular){
                  currencyText = 'EUR'
                  hufText = priceHUF
                  try {
-                    changeRate = parseFloat(await getExchangeRates(current.date,'EUR'))
+                    changeRate = await getExchangeRates(current.date,'EUR')
                     }
                     catch(err){
                        return err
@@ -88,7 +88,7 @@ async function createRegularXML(PostingRegular){
                  }
                  priceText = price
                  try {
-                 changeRate = parseFloat(await getExchangeRates(current.date,currency))
+                 changeRate = await getExchangeRates(current.date,currency)
                  }
                  catch(err){
                     return err
@@ -136,7 +136,7 @@ async function createRegularXML(PostingRegular){
             currencyText = 'EUR'
             hufText = priceHUF
             try {
-                changeRate = parseFloat(await getExchangeRates(accomodation.date,'EUR'))
+                changeRate = await getExchangeRates(accomodation.date,'EUR')
                 }
                 catch(err){
                     return err
@@ -154,14 +154,16 @@ async function createRegularXML(PostingRegular){
              priceText = price
             
             try {
-            changeRate = parseFloat(await getExchangeRates(accomodation.date,currency))
+           
+            changeRate = await getExchangeRates(accomodation.date,currency)
+            
             }
             catch(err){
                 return err
             }
             
             priceHUF = changeRate*price
-            
+             
             hufText = priceHUF
             
 
@@ -215,7 +217,7 @@ async function createRegularXML(PostingRegular){
             currencyText = 'EUR'
             hufText = priceHUF
             try {
-                changeRate = parseFloat(await getExchangeRates(expense.date,'EUR'))
+                changeRate = await getExchangeRates(expense.date,'EUR')
                 }
                 catch(err){
                     return err
@@ -232,7 +234,7 @@ async function createRegularXML(PostingRegular){
              }
             priceText = price
             try {
-                changeRate = parseFloat(await getExchangeRates(expense.date,currency))
+                changeRate = await getExchangeRates(expense.date,currency)
             }
             catch(err){
                 return err
@@ -294,7 +296,7 @@ async function createRegularXML(PostingRegular){
             currencyText = 'EUR'
             hufText = priceHUF
             try {
-                changeRate = parseFloat(await getExchangeRates(tripexp.date,'EUR'))
+                changeRate = await getExchangeRates(tripexp.date,'EUR')
                 }
                 catch(err){
                     return err
@@ -311,7 +313,7 @@ async function createRegularXML(PostingRegular){
              }
             priceText = price
             try {
-                changeRate = parseFloat(await getExchangeRates(tripexp.date,currency))
+                changeRate = await getExchangeRates(tripexp.date,currency)
             }
             catch(err){
 

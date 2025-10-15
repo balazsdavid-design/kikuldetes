@@ -48,7 +48,8 @@ async function getExchangeRates(date,currency){
                 try {
                     // 5️⃣ Árfolyam kinyerése
                     
-                    const rate = parsedResult.MNBExchangeRates.Day.Rate["_"];
+                    const rate = parseFloat(parsedResult.MNBExchangeRates.Day.Rate["_"].replace(',','.'));
+                    
                     resolve(rate);
                 } catch (error) {
                    
