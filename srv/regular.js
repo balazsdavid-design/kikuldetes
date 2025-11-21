@@ -46,7 +46,7 @@ async function createRegularXML(PostingRegular){
             Arrival_month : arrival.getMonth()+1,
             Arrival_day : arrival.getDate(),
             Arrival_time : `${arrival_time[0]}:${arrival_time[1]}`,
-            Transporation_method : deparr.meanOfTransport_name,
+            Transporation_method : deparr.meanOfTransport.name,
 
         })
 
