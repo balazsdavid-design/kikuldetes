@@ -275,7 +275,7 @@ class AppService extends cds.ApplicationService {
       }
       else {
         each.backOffice = false
-        each.restriction = 1
+        each.restriction = 1 
       }
       
     }
@@ -747,7 +747,8 @@ class AppService extends cds.ApplicationService {
        p.trip_expenses ( trip=> {trip`.*`,trip.name,trip.paymentMethod.name}),
        p.attachments( attachment => { attachment.filename,attachment.mimeType,attachment.content})
     }).where({ID:id})
-      
+    //console.log(entity)
+      const xml = await createRegularXML(entity) 
            var vcap_services
            var username
            var password
@@ -774,7 +775,6 @@ class AppService extends cds.ApplicationService {
     
     
           var token = await getBearerToken(username,password,authURL)
-          const xml = await createRegularXML(entity) 
           try {
             const base64pdf = await getPDF(token,apiURL,"RegularPosting/regularposting",xml)
           
