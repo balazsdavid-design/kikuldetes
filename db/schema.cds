@@ -121,7 +121,20 @@ aspect Postings : managed {
     serialNumber : String;
     
     virtual editing : Boolean default false;
+    virtual accepted : Boolean default false;
 }
+
+annotate PostingsRegular.attachments with {
+    content @Validation.Maximum : '2MB';
+    content @Core.AcceptableMediaTypes : ['image/jpeg','image/png', 'application/pdf'];
+
+} 
+annotate PostingsWithCar.attachments with {
+    content @Validation.Maximum : '2MB';
+    content @Core.AcceptableMediaTypes : ['image/jpeg','image/png', 'application/pdf'];
+
+} 
+
 
 entity Statuses {
     key ID : Integer;

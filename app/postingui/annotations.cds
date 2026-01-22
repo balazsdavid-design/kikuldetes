@@ -316,7 +316,7 @@ annotate service.PostingsWithCar with @(
             Action : 'AppService.reject',
             Label : '{i18n>Reject}',
             Determining : true,
-            @UI.Hidden:( submittable or not backOffice or editing ) ,
+            @UI.Hidden:( submittable or not backOffice or accepted or editing) ,
             
             
             
@@ -327,7 +327,14 @@ annotate service.PostingsWithCar with @(
             Action : 'AppService.unsubmit',
             Label : '{i18n>Unsubmit}',
             Determining : true,
-            @UI.Hidden: ( submittable or backOffice or editing),
+            @UI.Hidden: (( (backOffice and not accepted) or ( editing ) ) or ( not backOffice and ( submittable or editing ) )),
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'AppService.accept',
+            Label : '{i18n>Accept}',
+            @UI.Hidden: (not backOffice or ( backOffice and (accepted or submittable or editing))),
+            Determining : true,
         },
     ],
     UI.ConnectedFields #connected : {
@@ -345,6 +352,7 @@ annotate service.PostingsWithCar with @(
             },
         },
     },
+    UI.UpdateHidden : ((not submittable and not backOffice) or ( backOffice and accepted)),
   
 );
 
@@ -609,14 +617,21 @@ annotate service.PostingsRegular with @(
             Action : 'AppService.unsubmitRegular',
             Label : '{i18n>Unsubmit}',
             Determining : true,
-            @UI.Hidden : ( submittable or backOffice or editing)
+            @UI.Hidden : (( (backOffice and not accepted) or ( editing ) ) or ( not backOffice and ( submittable or editing ) ))
         },
         {
             $Type : 'UI.DataFieldForAction',
             Action : 'AppService.rejectRegular',
             Label : '{i18n>Reject}',
             Determining : true,
-            @UI.Hidden : ( submittable or not backOffice or editing )
+            @UI.Hidden :( submittable or not backOffice or accepted or editing) 
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'AppService.acceptRegular',
+            Label : '{i18n>Accept}',
+            Determining : true,
+            @UI.Hidden : (not backOffice or ( backOffice and (accepted or submittable or editing))) ,
         },
     ],
     UI.HeaderFacets : [
@@ -637,6 +652,7 @@ annotate service.PostingsRegular with @(
             },
         ],
     },
+    UI.UpdateHidden : ((not submittable and not backOffice) or ( backOffice and accepted)),
     );
 
 annotate service.PostingsRegular with {
@@ -1063,7 +1079,7 @@ annotate service.PostingsWithCar with {
             $value : status.statusText,
             ![@UI.TextArrangement] : #TextOnly,
         },
-        Common.FieldControl : restriction,
+        Common.FieldControl : #ReadOnly,
         )
 };
 
@@ -1123,7 +1139,7 @@ annotate service.PostingsRegular with {
             $value : status.statusText,
             ![@UI.TextArrangement] : #TextOnly,
         },
-        Common.FieldControl : restriction,
+        Common.FieldControl : #ReadOnly,
 )};
 
 annotate service.PostingsWithCar with {

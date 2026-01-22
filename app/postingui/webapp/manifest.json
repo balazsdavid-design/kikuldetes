@@ -219,8 +219,8 @@
                         "placement": "Before",
                         "anchor": "EditAction"
                       },
-                      "enabled": "{= !${ui>/isEditable}}",
-                      "visible": "{= !${submittable} }"
+                      "enabled": "{= !${ui>/isEditable} && ${backOffice} && ${accepted}}",
+                      "visible": "{= !${submittable} && ${backOffice} }"
                     }
                   }
                 }
@@ -300,8 +300,8 @@
                     "saveRegularPDF": {
                       "id": "saveRegularPDF",
                       "press": "postingui.ext.controller.RegPDF_handler.downloadPDF",
-                      "visible": true,
-                      "enabled": "{= !${ui>/isEditable} && ${backOffice}}",
+                      "visible": "{= !${submittable} && ${backOffice} }",
+                      "enabled": "{= !${ui>/isEditable} && ${backOffice} && ${accepted}}",
                       "text": "{i18n>SavePDF}",
                       "position": {
                         "placement": "Before",

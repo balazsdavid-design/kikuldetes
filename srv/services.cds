@@ -3,7 +3,7 @@ using kikuldetes as my from '../db/schema';
 @requires: 'authenticated-user'
 service AppService {
     
-   
+  
     
     @cds.redirection.target
     @odata.draft.enabled
@@ -12,11 +12,11 @@ service AppService {
       action submitRegular() returns PostingsRegular;
       action unsubmitRegular() returns PostingsRegular;
       action rejectRegular() returns PostingsRegular;
+      action acceptRegular() returns PostingsRegular;
 
     }; 
 
     entity DeparturesAndArrivals as projection on my.DeparturesAndArrivals;
-
 
     entity DailyExpenses as projection on my.DailyExpenses;
     entity Accomodations as projection on my.Accomodations;
@@ -35,8 +35,9 @@ service AppService {
     action submit() returns PostingsWithCar;
     action unsubmit() returns PostingsWithCar;
     
-    @requires : 'Backoffice'
+    //@requires : 'Backoffice'
     action reject() returns PostingsWithCar;
+    action accept() returns PostingsWithCar;
     } ;
     @odata.draft.enabled
     @requires : 'Backoffice'

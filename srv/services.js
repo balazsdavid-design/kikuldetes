@@ -112,6 +112,7 @@ class AppService extends cds.ApplicationService {
       }
       
     })
+
     this.before('READ','PostingsWithCar', async (req ) => {
       const { user } = req;
       
@@ -127,15 +128,7 @@ class AppService extends cds.ApplicationService {
            
       }
       
-       
-          
-         
-          
-          
 
-        
-        
-        
 
   });
   this.after('READ','Employees',async(results,req) => {
@@ -226,22 +219,10 @@ class AppService extends cds.ApplicationService {
    
     for(let each of results){
        
-      if(user.is('Backoffice')){
-        
+      each.backOffice =  user.is('Backoffice')
+      each.submittable = (each.status_ID == 1 || each.status_ID == 3)
 
-        each.backOffice = true
-        
-      }
-      else {
-        each.backOffice =  false
-      }
-      if(each.status_ID == 1 || each.status_ID == 3){
-        each.submittable = true
-      }
-      else {
-        each.submittable = false
-      }
-      
+      each.accepted = each.status_ID == 4
     }
     
   })
@@ -253,13 +234,11 @@ class AppService extends cds.ApplicationService {
     for(let each of results){
       
       each.backOffice =  user.is('Backoffice')
-      if(each.status_ID == 1 || each.status_ID == 3){
-        each.submittable = true
-      }
-      else {
-        each.submittable = false
-      }
-      
+
+      each.submittable = (each.status_ID == 1 || each.status_ID == 3)
+
+      each.accepted = each.status_ID == 4
+
     }
     
   })
@@ -520,7 +499,8 @@ class AppService extends cds.ApplicationService {
       
       
       var id = req.params[0]['ID']
-     
+      const isHU = req.headers['accept-language'].includes('hu')
+      const lang = isHU ? 'hu' : 'en'
       
       await UPDATE ('PostingsWithCar',id).set({status_ID : 2})
       // Frissítem az entitásoldalon a státuszt
@@ -533,7 +513,7 @@ class AppService extends cds.ApplicationService {
      
       updated.IsActiveEntity =true
       // Lekérem a lokalizált szövegét 
-      var text = await SELECT.one('Statuses.texts').where({ID:2,locale:'hu'})
+      var text = await SELECT.one('Statuses.texts').where({ID:2,locale:lang})
       
       updated.status.statusText = text.statusText
       
@@ -545,18 +525,20 @@ class AppService extends cds.ApplicationService {
     this.on('unsubmit', async(req) => {
       
       var id = req.params[0]['ID']
-     
-      
-      await UPDATE ('PostingsWithCar',id).set({status_ID : 1})
+      const isHU = req.headers['accept-language'].includes('hu')
+      const lang = isHU ? 'hu' : 'en'
+      const oldstatus = (await SELECT.one.from('PostingsWithCar').columns('status_ID').where({ID:id}))['status_ID']
+      const newstatus = oldstatus == 4 ? 2 : 1
+      await UPDATE ('PostingsWithCar',id).set({status_ID : newstatus})
       const updated = await SELECT.one('PostingsWithCar', p=> {
         p`.*`,p.status ( s => {s`.*` })
       }).where({ID:id});
-      updated.submittable = true
+      updated.submittable = oldstatus !== 4 
       updated.backOffice = req.user.is('Backoffice')
-      
+      updated.accepted = false;
       updated.IsActiveEntity =true
       
-      var text = await SELECT.one('Statuses.texts').where({ID:1,locale:'hu'})
+      var text = await SELECT.one('Statuses.texts').where({ID:newstatus,locale:lang})
       
       updated.status.statusText = text.statusText
       
@@ -568,7 +550,8 @@ class AppService extends cds.ApplicationService {
     this.on('reject', async(req) => {
       
       var id = req.params[0]['ID']
-     
+      const isHU = req.headers['accept-language'].includes('hu')
+      const lang = isHU ? 'hu' : 'en'
       
       
       
@@ -583,10 +566,10 @@ class AppService extends cds.ApplicationService {
       
       updated.submittable = true
       updated.backOffice = req.user.is('Backoffice')
-    
+      updated.accepted = false;
       updated.IsActiveEntity = true
       
-      var text = await SELECT.one('Statuses.texts').where({ID:3,locale:'hu'})
+      var text = await SELECT.one('Statuses.texts').where({ID:3,locale:lang})
       
       updated.status.statusText = text.statusText
       
@@ -595,11 +578,43 @@ class AppService extends cds.ApplicationService {
      
       
     })
+     this.on('accept', async(req) => {
+      
+      var id = req.params[0]['ID']
+     
+      const isHU = req.headers['accept-language'].includes('hu')
+      const lang = isHU ? 'hu' : 'en'
+      
+      
+
+      
+      await UPDATE ('PostingsWithCar',id).set({status_ID : 4})
+      
+      const updated = await SELECT.one('PostingsWithCar', p=> {
+        p`.*`,p.status ( s => {s`.*` })
+      }).where({ID:id});
+      
+      updated.submittable = false
+      updated.backOffice = req.user.is('Backoffice')
+      updated.accepted = true
+      updated.IsActiveEntity = true
+      
+      var text = await SELECT.one('Statuses.texts').where({ID:4,locale:lang})
+      
+      updated.status.statusText = text.statusText
+      
+      
+      return updated;
+     
+      
+    })
+
     this.on('submitRegular', async(req) => {
       
       
       var id = req.params[0]['ID']
-     
+      const isHU = req.headers['accept-language'].includes('hu')
+      const lang = isHU ? 'hu' : 'en'
       
       await UPDATE ('PostingsRegular',id).set({status_ID : 2})
       const updated = await SELECT.one('PostingsRegular', p=> {
@@ -610,7 +625,7 @@ class AppService extends cds.ApplicationService {
      
       updated.IsActiveEntity =true
       
-      var text = await SELECT.one('Statuses.texts').where({ID:2,locale:'hu'})
+      var text = await SELECT.one('Statuses.texts').where({ID:2,locale:lang})
       
       updated.status.statusText = text.statusText
       
@@ -622,18 +637,20 @@ class AppService extends cds.ApplicationService {
     this.on('unsubmitRegular', async(req) => {
       
       var id = req.params[0]['ID']
-     
-      
-      await UPDATE ('PostingsRegular',id).set({status_ID : 1})
+      const isHU = req.headers['accept-language'].includes('hu')
+      const lang = isHU ? 'hu' : 'en'
+      const oldstatus = (await SELECT.one.from('PostingsRegular').columns('status_ID').where({ID:id}))['status_ID']
+      const newstatus = oldstatus == 4 ? 2 : 1
+      await UPDATE ('PostingsRegular',id).set({status_ID : newstatus})
       const updated = await SELECT.one('PostingsRegular', p=> {
         p`.*`,p.status ( s => {s`.*` })
       }).where({ID:id});
-      updated.submittable = true
+      updated.submittable = oldstatus !== 4 
       updated.backOffice = req.user.is('Backoffice')
-      
+      updated.accepted = false;
       updated.IsActiveEntity =true
       
-      var text = await SELECT.one('Statuses.texts').where({ID:1,locale:'hu'})
+      var text = await SELECT.one('Statuses.texts').where({ID:1,locale:lang})
       
       updated.status.statusText = text.statusText
       
@@ -645,7 +662,8 @@ class AppService extends cds.ApplicationService {
     this.on('rejectRegular', async(req) => {
       
       var id = req.params[0]['ID']
-     
+      const isHU = req.headers['accept-language'].includes('hu')
+      const lang = isHU ? 'hu' : 'en'
       
       
       
@@ -660,10 +678,42 @@ class AppService extends cds.ApplicationService {
       
       updated.submittable = true
       updated.backOffice = req.user.is('Backoffice')
+      updated.accepted = false;
+      updated.IsActiveEntity = true
     
+      
+      var text = await SELECT.one('Statuses.texts').where({ID:3,locale:lang})
+      
+      updated.status.statusText = text.statusText
+      
+      
+      return updated;
+     
+      
+    })
+    this.on('acceptRegular', async(req) => {
+      
+      var id = req.params[0]['ID']
+      const isHU = req.headers['accept-language'].includes('hu')
+      const lang = isHU ? 'hu' : 'en'
+      
+      
+      
+      
+
+      
+      await UPDATE ('PostingsRegular',id).set({status_ID : 4})
+      
+      const updated = await SELECT.one('PostingsRegular', p=> {
+        p`.*`,p.status ( s => {s`.*` })
+      }).where({ID:id});
+      
+      updated.submittable = false
+      updated.backOffice = req.user.is('Backoffice')
+      updated.accepted = true
       updated.IsActiveEntity = true
       
-      var text = await SELECT.one('Statuses.texts').where({ID:3,locale:'hu'})
+      var text = await SELECT.one('Statuses.texts').where({ID:4,locale:lang})
       
       updated.status.statusText = text.statusText
       
