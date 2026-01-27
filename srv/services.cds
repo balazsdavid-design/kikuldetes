@@ -36,7 +36,7 @@ service AppService {
     action unsubmit() returns PostingsWithCar;
     
     //@requires : 'Backoffice'
-    action reject() returns PostingsWithCar;
+    action reject_() returns PostingsWithCar;
     action accept() returns PostingsWithCar;
     } ;
     @odata.draft.enabled

@@ -313,7 +313,7 @@ annotate service.PostingsWithCar with @(
         },
         {
             $Type : 'UI.DataFieldForAction',
-            Action : 'AppService.reject',
+            Action : 'AppService.reject_',
             Label : '{i18n>Reject}',
             Determining : true,
             @UI.Hidden:( submittable or not backOffice or accepted or editing) ,

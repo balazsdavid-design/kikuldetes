@@ -6,427 +6,84 @@ const axios = require('axios');
 const { createRegularXML } = require("./regular");
 const { createCarXML } = require("./car");
 const { getPDF, getBearerToken, attachFile  } = require("./functions");
-
-
+const statusActions = require("./handlers/actions")
+const employees = require("./handlers/employees")
+const postingswithcar = require("./handlers/postingswithcar")
+const postingsregular = require("./handlers/postingsregular")
 
 class AppService extends cds.ApplicationService {
   init() {
     
-    
+    // PostingsWithCar
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
-      
-      
-      if(!req.user.is('Backoffice')){
-        req.data.employee_ID = req.user.id
-        
-      }
-      req.data.status_ID = 1
+      postingswithcar.beforeCreatePostingWithCarDraft(req)
     })
-    this.before('CREATE','PostingsRegular.drafts', async(req) => {
-      
-      if(!req.user.is('Backoffice')){
-        req.data.employee_ID = req.user.id
-      }
-      req.data.status_ID = 1
-    })
-
-
     this.before('CREATE', 'PostingsWithCar', async(req) => {
-     
-      /*
-      if(req.data.stickers){
-        var date = new Date();
-        for(var sticker of req.data.stickers){
-          // Validálom az autópálya matricák dátumát
-          var reqDate = new Date(sticker.date)
-          if(reqDate > date){
-            req.error(400,'StickerError')
-          }
-        } 
-      }*/
-       outerloop: for(var data of req.data.data){
-          for(var nextdata of req.data.data){
-            if(data != nextdata){
-              if(data.daily_expense > 0 && nextdata.daily_expense > 0 && data.date == nextdata.date){
-                req.error(400,'DailyExpenseError')
-                break outerloop;
-              }
-            }
-          }
-        
-      }
-      if(req.data.data.length < 2){ // Ha kevesebb mint két sor akkor hiba
-        req.error(400,'TripDataAtleastTwo')
-      }
-      
-      
-      const db = cds.transaction(req);
-      const now = new Date();
-      const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      // Sorszám létrehozása
-      
-      const result = await db.run(
-        SELECT`lastNumber`.from`SerialNumbers`.where`yearMonth = ${yearMonth}`
-        ) ?? [];
-        const  {lastNumber = 0} = result[0] || {};
-        
-        const newNumber = lastNumber + 1;
-        const formattedNumber = String(newNumber).padStart(2, '0'); 
-
-        
-        await db.run(
-            UPSERT.into`SerialNumbers`.entries({ yearMonth, lastNumber: newNumber })
-        );
-
-        req.data.serialNumber = `${yearMonth}-${formattedNumber}`;
+     postingswithcar.beforeCreatePostingWithCar(req)
     })
     this.before('UPDATE', 'PostingsWithCar', async(req) => {
-      
-      /*
-      if(req.data.stickers){
-        var date = new Date();
-        for(var sticker of req.data.stickers){
-          
-          var reqDate = new Date(sticker.date)
-          if(reqDate > date){
-            req.error(400,'StickerError')
-          }
-        }
-      }*/
-      outerloop : for(var data of req.data.data){
-        for(var nextdata of req.data.data){
-          if(data != nextdata){
-            if(data.daily_expense > 0 && nextdata.daily_expense > 0 && data.date == nextdata.date){
-              
-              
-              req.error(400,'DailyExpenseError')
-              break outerloop;
-              
-            }
-          }
-        }
-      }
-
-      if(req.data.data.length < 2){//var vcap_services = JSON.parse(process.env.VCAP_SERVICES)
-        req.error(400,'TripDataAtleastTwo')
-      }
-      
+      postingswithcar.beforeUpdatePostingWithCar(req)
     })
 
     this.before('READ','PostingsWithCar', async (req ) => {
-      const { user } = req;
-      
-        
-      
-      
-      if (!user.is('Backoffice')) {
-        
-          
-          req.query.where({ employee_ID: user.id });
-          
-          
-           
-      }
-      
-
+      postingswithcar.beforeReadPostingWithCar(req)
 
   });
-  this.after('READ','Employees',async(results,req) => {
-    for(let each of results){
-      
-      each.fullName = each.name+" "+each.lastName
-      
-    }
-  })
-
-  this.before('READ','Employees', async(req) => {
-    const { user } = req;
-      
-    
-    const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
-  
-    if(!employee){
-      const firstName =user.attr.givenName
-      const lastName = user.attr.familyName
-    
-      await INSERT.into`Employees`.entries({ID:user.id,name:firstName,lastName:lastName})
-    }
-      
-        
-        if(!user.is('Backoffice')){
-          req.query.where({ ID: user.id });
-          
-          
-          
-        }  
-        const existing = req.query.SELECT.columns
-        .filter(c => c.ref)
-        .map(c => c.ref[0])
-
-        const required = ["name", "lastName"]
-
-        for (const field of required) {
-          if (!existing.includes(field)) {
-            req.query.SELECT.columns.push({ ref: [field] })
-            }
-          }
-  
-        
-          
-          
-          
-           
-      
-
-  })
-  this.before('UPDATE','Employees',async(req) => {
-    const { user } = req;
-    
-      if(req.data.ID != user.id && !user.is('Backoffice')){
-        req.error(400, "Restricted")
-      }
-      
-
-    
-
-  })
-  this.before('DELETE','Employees',async(req) => {
-    const { user } = req;
-    if(req.data.ID != user.id && !user.is('Backoffice')){
-      req.error(400, "Restricted")
-    }
-  })
- 
-  this.before('CREATE','Employees.drafts', async(req) => {
-    
-    const { user } = req
-    
-    
-    const employee = await SELECT.one.from('Employees').where({ID:user.id})
-    if(employee){
-      req.error(400,"Restricted")
-    }
-    else {
-      req.data.ID = req.user.id
-    }
-    
-    
-  })
 
   this.after('READ', 'PostingsWithCar', async(results,req ) => {
-    
-    const { user} = req
-   
-    for(let each of results){
-       
-      each.backOffice =  user.is('Backoffice')
-      each.submittable = (each.status_ID == 1 || each.status_ID == 3)
-
-      each.accepted = each.status_ID == 4
-    }
-    
-  })
-  this.after('READ', 'PostingsRegular', async(results,req ) => {
-    
-    const { user} = req
-
-    
-    for(let each of results){
-      
-      each.backOffice =  user.is('Backoffice')
-
-      each.submittable = (each.status_ID == 1 || each.status_ID == 3)
-
-      each.accepted = each.status_ID == 4
-
-    }
-    
-  })
-  this.after('READ', 'PostingsRegular.drafts', async(results,req ) => {
-    
-    const { user} = req
-    
-    for(let each of results){
-      each.editing = true
-      if(user.is('Backoffice')){
-        each.backOffice = true
-        each.restriction = 2
-      }
-      else {
-        each.backOffice = false
-        each.restriction = 1 
-      }
-      
-    }
+    postingswithcar.afterReadPostingWithCar(results,req)
     
   })
   this.after('READ','PostingsWithCar.drafts', async(results,req)=>{
-      const { user} = req
-      
-      
-      for(let each of results){
-        
-        each.editing = true
-      if(user.is('Backoffice')){
-        each.backOffice = true
-        each.restriction = 2
-      }
-      else {
-        each.backOffice = false 
-        each.restriction = 1
-      }
-    }
-      
-    
-  
+      postingswithcar.afterReadPostingWithCarDraft(results,req)
   })
   
-  
-  
-  
+    // PostingsWithCar
+
+    // PostingsRegular
+    this.before('CREATE','PostingsRegular.drafts', async(req) => {
+      postingsregular.beforeCreatePostingRegularDraft(req)
+    })
+    this.after('READ', 'PostingsRegular', async(results,req ) => {
+    postingsregular.afterReadPostingRegular(results,req)
+  })
+  this.after('READ', 'PostingsRegular.drafts', async(results,req ) => {
+    postingsregular.afterReadPostingRegularDraft(results,req)
+  })
   this.before('CREATE', 'PostingsRegular', async(req) => {
-   
-    
-    
-    var travelTo = new Date(req.data.travel_to)
-    var travelBack = new Date(req.data.travel_back)
-    travelBack.setHours(23)
-    travelBack.setMinutes(59)
-    travelBack.setSeconds(59)
-    if(travelTo > travelBack){
-      req.error(400,'DepartureLaterThanArrival')
-    }
-      
-    for(var departure_arrival of req.data.departures_arrivals){
-      var arrival = new Date(departure_arrival.arrival)
-      var departure = new Date(departure_arrival.departure)
-      if(departure > arrival){
-        req.error(400,'DepArrArrivalLater')
-      }
-      if(departure < travelTo || departure > travelBack || arrival < travelTo || arrival > travelBack){
-        req.error(400,'DepArrOutsideDate')
-      }
-    }   
-    for (var daily of req.data.daily_expenses) {
-        var dailyDate = new Date(daily.date)
-        if(dailyDate < travelTo || dailyDate > travelBack){
-          req.error(400,'DailyDateOutside')
-        }
-       
-    }
-    /*
-    for(var accomodation of req.data.accomodations){
-      var accDate = new Date(accomodation.date)
-      if(accDate < travelTo || accDate > travelBack){
-        req.error(400,'AccomodationDateOutside')
-      }
-     
-    } 
-    for( var material of req.data.material_expenses){
-      var matDate = new Date(material.date)
-      if(matDate< travelTo || matDate > travelBack){
-        req.error(400,'MaterialDateOutside')
-      }
-      
-    }
-    for( var tripexp of req.data.trip_expenses){
-      var tripDate = new Date(tripexp.date)
-      if(tripDate< travelTo || tripDate > travelBack){
-        req.error(400,'TripExpenseDateOutSide')
-      }
-    }
-      
-    */
-    if(req.data.departures_arrivals.length < 2){
-      req.error(400,'DepArrAtLeastTwo')
-    }
-    
-  
-    const db = cds.transaction(req);
-      const now = new Date();
-      const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-
-        
-        const result = await db.run(
-        SELECT`lastNumber`.from`SerialNumbers`.where`yearMonth = ${yearMonth}`
-        ) ?? [];
-        const  {lastNumber = 0} = result[0] || {};
-        
-        const newNumber = lastNumber + 1;
-        const formattedNumber = String(newNumber).padStart(2, '0'); 
-        
-        
-        await db.run(
-            UPSERT.into`SerialNumbers`.entries({ yearMonth, lastNumber: newNumber })
-        );
-
-        req.data.serialNumber = `${yearMonth}-${formattedNumber}`;
+   postingsregular.beforeCreatePostingRegular(req)
   })
   this.before("UPDATE",'PostingsRegular', async(req) => {
-    var borrowedHUF = req.data.borrowedHUF
-    var borrowedEUR = req.data.borrowedEUR
-    
-    
-    var travelTo = new Date(req.data.travel_to)
-    var travelBack = new Date(req.data.travel_back)
-    travelBack.setHours(23)
-    travelBack.setMinutes(59)
-    travelBack.setSeconds(59)
-    if(travelTo > travelBack){
-      req.error(400,'DepartureLaterThanArrival')
-    }
-      
-    for(var departure_arrival of req.data.departures_arrivals){
-      var arrival = new Date(departure_arrival.arrival)
-      var departure = new Date(departure_arrival.departure)
-      if(departure > arrival){
-        req.error(400,'DepArrArrivalLater')
-      }
-      if(departure < travelTo || departure > travelBack || arrival < travelTo || arrival > travelBack){
-        req.error(400,'DepArrOutsideDate')
-      }
-    }   
-    for (var daily of req.data.daily_expenses) {
-      var dailyDate = new Date(daily.date)
-      if(dailyDate < travelTo || dailyDate > travelBack){
-        req.error(400,'DailyDateOutside')
-      }
-      
-  }
-  /*
-  for(var accomodation of req.data.accomodations){
-    var accDate = new Date(accomodation.date)
-    if(accDate < travelTo || accDate > travelBack){
-      req.error(400,'AccomodationDateOutside')
-    }
-    
-  } 
-  for( var material of req.data.material_expenses){
-    var matDate = new Date(material.date)
-    if(matDate< travelTo || matDate > travelBack){
-      req.error(400,'MaterialDateOutside')
-    }
-    
-  }
-  for( var tripexp of req.data.trip_expenses){
-    var tripDate = new Date(tripexp.date)
-    if(tripDate< travelTo || tripDate > travelBack){
-      req.error(400,'TripExpenseDateOutSide ')
-    }
-    } */
-    
-    
-      
-
-    if(req.data.departures_arrivals.length < 2){
-      req.error(400,'DepArrAtLeastTwo')
-    }
-    
-    
+    postingsregular.beforeUpdatePostingRegular(req)
   }
 )
+this.before('READ','PostingsRegular', async (req) => {
+    postingsregular.beforeReadPostingRegular(req)
+});
+    // PostingsRegular
+    
 
-  
+  // EMPLOYEES
+  this.after('READ','Employees',async(results,req) => {
+    employees.afterReadEmployees(results)
+  })
+
+  this.before('READ','Employees', async(req) => {
+    employees.beforeReadEmployees(req)
+  })
+  this.before('UPDATE','Employees',async(req) => {
+    employees.beforeUpdateEmployees(req)
+  })
+  this.before('DELETE','Employees',async(req) => {
+    employees.beforeDeleteEmployees(req)
+  })
+ 
+  this.before('CREATE','Employees.drafts', async(req) => {
+    employees.beforeCreateEmployeesDraft(req)
+  })
+  // EMPLOYEES
+
+  // UTIL
   this.before("CREATE", 'FuelPrices.drafts', async(req) => {
     var date = new Date();
     
@@ -479,17 +136,9 @@ class AppService extends cds.ApplicationService {
     
     req.data.ID = lastID+1;
   })
-
-  this.before('READ','PostingsRegular', async (req) => {
-    const { user } = req;
-
-    if (!user.is('Backoffice')) {
-      // Ha a user nem Backoffice, a query-ben szűrök a saját kiküldetéseire
-        req.query.where({ employee_ID: user.id }); 
-    }
-    
-});
-
+  // UTIL
+  
+    //ACTIONS
     this.on('getPDFCar',this.getPDFCar)
     
 
@@ -497,114 +146,25 @@ class AppService extends cds.ApplicationService {
 
     this.on('submit', async(req) => {
       
-      
-      var id = req.params[0]['ID']
-      const isHU = req.headers['accept-language'].includes('hu')
-      const lang = isHU ? 'hu' : 'en'
-      
-      await UPDATE ('PostingsWithCar',id).set({status_ID : 2})
-      // Frissítem az entitásoldalon a státuszt
-      const updated = await SELECT.one('PostingsWithCar', p=> {
-        p`.*`,p.status ( s => {s`.*` })
-      }).where({ID:id});
-      // Beállítom a virtuális mezőket
-      updated.submittable = false
-      updated.backOffice = req.user.is('Backoffice')
-     
-      updated.IsActiveEntity =true
-      // Lekérem a lokalizált szövegét 
-      var text = await SELECT.one('Statuses.texts').where({ID:2,locale:lang})
-      
-      updated.status.statusText = text.statusText
-      
-      
-      return updated;
+  
+      return statusActions.submit(req)
     
       
     })
     this.on('unsubmit', async(req) => {
       
-      var id = req.params[0]['ID']
-      const isHU = req.headers['accept-language'].includes('hu')
-      const lang = isHU ? 'hu' : 'en'
-      const oldstatus = (await SELECT.one.from('PostingsWithCar').columns('status_ID').where({ID:id}))['status_ID']
-      const newstatus = oldstatus == 4 ? 2 : 1
-      await UPDATE ('PostingsWithCar',id).set({status_ID : newstatus})
-      const updated = await SELECT.one('PostingsWithCar', p=> {
-        p`.*`,p.status ( s => {s`.*` })
-      }).where({ID:id});
-      updated.submittable = oldstatus !== 4 
-      updated.backOffice = req.user.is('Backoffice')
-      updated.accepted = false;
-      updated.IsActiveEntity =true
-      
-      var text = await SELECT.one('Statuses.texts').where({ID:newstatus,locale:lang})
-      
-      updated.status.statusText = text.statusText
-      
-      
-      return updated;
+      return statusActions.unsubmit(req)
     
       
     })
-    this.on('reject', async(req) => {
+    this.on('reject_', async(req) => {
       
-      var id = req.params[0]['ID']
-      const isHU = req.headers['accept-language'].includes('hu')
-      const lang = isHU ? 'hu' : 'en'
-      
-      
-      
-      
-
-      
-      await UPDATE ('PostingsWithCar',id).set({status_ID : 3})
-      
-      const updated = await SELECT.one('PostingsWithCar', p=> {
-        p`.*`,p.status ( s => {s`.*` })
-      }).where({ID:id});
-      
-      updated.submittable = true
-      updated.backOffice = req.user.is('Backoffice')
-      updated.accepted = false;
-      updated.IsActiveEntity = true
-      
-      var text = await SELECT.one('Statuses.texts').where({ID:3,locale:lang})
-      
-      updated.status.statusText = text.statusText
-      
-      
-      return updated;
-     
+      return statusActions.rejectPosting(req)
       
     })
      this.on('accept', async(req) => {
       
-      var id = req.params[0]['ID']
-     
-      const isHU = req.headers['accept-language'].includes('hu')
-      const lang = isHU ? 'hu' : 'en'
-      
-      
-
-      
-      await UPDATE ('PostingsWithCar',id).set({status_ID : 4})
-      
-      const updated = await SELECT.one('PostingsWithCar', p=> {
-        p`.*`,p.status ( s => {s`.*` })
-      }).where({ID:id});
-      
-      updated.submittable = false
-      updated.backOffice = req.user.is('Backoffice')
-      updated.accepted = true
-      updated.IsActiveEntity = true
-      
-      var text = await SELECT.one('Statuses.texts').where({ID:4,locale:lang})
-      
-      updated.status.statusText = text.statusText
-      
-      
-      return updated;
+      return statusActions.accept(req)
      
       
     })
@@ -612,124 +172,34 @@ class AppService extends cds.ApplicationService {
     this.on('submitRegular', async(req) => {
       
       
-      var id = req.params[0]['ID']
-      const isHU = req.headers['accept-language'].includes('hu')
-      const lang = isHU ? 'hu' : 'en'
-      
-      await UPDATE ('PostingsRegular',id).set({status_ID : 2})
-      const updated = await SELECT.one('PostingsRegular', p=> {
-        p`.*`,p.status ( s => {s`.*` })
-      }).where({ID:id});
-      updated.submittable = false
-      updated.backOffice = req.user.is('Backoffice')
-     
-      updated.IsActiveEntity =true
-      
-      var text = await SELECT.one('Statuses.texts').where({ID:2,locale:lang})
-      
-      updated.status.statusText = text.statusText
-      
-      
-      return updated;
-    
+      return statusActions.submit(req,'PostingsRegular')
       
     })
     this.on('unsubmitRegular', async(req) => {
       
-      var id = req.params[0]['ID']
-      const isHU = req.headers['accept-language'].includes('hu')
-      const lang = isHU ? 'hu' : 'en'
-      const oldstatus = (await SELECT.one.from('PostingsRegular').columns('status_ID').where({ID:id}))['status_ID']
-      const newstatus = oldstatus == 4 ? 2 : 1
-      await UPDATE ('PostingsRegular',id).set({status_ID : newstatus})
-      const updated = await SELECT.one('PostingsRegular', p=> {
-        p`.*`,p.status ( s => {s`.*` })
-      }).where({ID:id});
-      updated.submittable = oldstatus !== 4 
-      updated.backOffice = req.user.is('Backoffice')
-      updated.accepted = false;
-      updated.IsActiveEntity =true
       
-      var text = await SELECT.one('Statuses.texts').where({ID:1,locale:lang})
-      
-      updated.status.statusText = text.statusText
-      
-      
-      return updated;
+      return statusActions.unsubmit(req,'PostingsRegular')
     
       
     })
     this.on('rejectRegular', async(req) => {
       
-      var id = req.params[0]['ID']
-      const isHU = req.headers['accept-language'].includes('hu')
-      const lang = isHU ? 'hu' : 'en'
-      
-      
-      
-      
-
-      
-      await UPDATE ('PostingsRegular',id).set({status_ID : 3})
-      
-      const updated = await SELECT.one('PostingsRegular', p=> {
-        p`.*`,p.status ( s => {s`.*` })
-      }).where({ID:id});
-      
-      updated.submittable = true
-      updated.backOffice = req.user.is('Backoffice')
-      updated.accepted = false;
-      updated.IsActiveEntity = true
-    
-      
-      var text = await SELECT.one('Statuses.texts').where({ID:3,locale:lang})
-      
-      updated.status.statusText = text.statusText
-      
-      
-      return updated;
+      return statusActions.rejectPosting(req,'PostingsRegular')
      
       
     })
     this.on('acceptRegular', async(req) => {
       
-      var id = req.params[0]['ID']
-      const isHU = req.headers['accept-language'].includes('hu')
-      const lang = isHU ? 'hu' : 'en'
-      
-      
-      
-      
-
-      
-      await UPDATE ('PostingsRegular',id).set({status_ID : 4})
-      
-      const updated = await SELECT.one('PostingsRegular', p=> {
-        p`.*`,p.status ( s => {s`.*` })
-      }).where({ID:id});
-      
-      updated.submittable = false
-      updated.backOffice = req.user.is('Backoffice')
-      updated.accepted = true
-      updated.IsActiveEntity = true
-      
-      var text = await SELECT.one('Statuses.texts').where({ID:4,locale:lang})
-      
-      updated.status.statusText = text.statusText
-      
-      
-      return updated;
+      return statusActions.accept(req,'PostingsRegular')
      
       
     })
-
+    // ACTIONS
 
     return super.init()
   }
  
   
-
-
   async getPDFCar(id)  {
     
       // Lekérdezem az entity-t
@@ -747,7 +217,6 @@ class AppService extends cds.ApplicationService {
            var apiURL
       try {
       vcap_services = JSON.parse(process.env.VCAP_SERVICES)
-      
     
       }
   catch(exception){
@@ -782,10 +251,6 @@ class AppService extends cds.ApplicationService {
     catch(err) {
       console.log(err)
     }
-    
-   
-    
-    
 
   }
   
@@ -819,11 +284,7 @@ class AppService extends cds.ApplicationService {
     authURL = vcap_services.adsrestapi[0].credentials.uaa.url
      apiURL =  vcap_services.adsrestapi[0].credentials.uri
   
-  
-    
-   
-    
-    
+
           var token = await getBearerToken(username,password,authURL)
           try {
             const base64pdf = await getPDF(token,apiURL,"RegularPosting/regularposting",xml)
@@ -842,9 +303,6 @@ class AppService extends cds.ApplicationService {
             console.log(exception.response.data)
             return exception.response.data.trace
           }
-          
-
-  
 
   }
 }
