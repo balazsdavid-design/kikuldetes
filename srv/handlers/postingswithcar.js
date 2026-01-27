@@ -91,15 +91,16 @@ async function beforeReadPostingWithCar(req) {
     const { user } = req;
     
       if (!user.is('Backoffice')) {
-          req.query.where({ employee_ID: user.id });    
+          //req.query.where({ employee_ID: user.id });    
       }
 }
 async function afterReadPostingWithCar(results,req) {
     const { user} = req
     
-    for(let each of results){ 
+    for(const each of results){ 
       if(each.employee){
-      var employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
+        
+      var employee = await SELECT.one('Employees').where({ID:each.employee.ID})//.columns('lastName','name')
     each.employee.fullName = employee.name+" "+employee.lastName
     }
       each.backOffice =  user.is('Backoffice')
@@ -112,13 +113,13 @@ async function afterReadPostingWithCarDraft(results,req) {
     const { user} = req
       
       
-      for(let each of results){
+      for(const each of results){
         if(each.employee){
           var employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
     each.employee.fullName = employee.name+" "+employee.lastName
         }
         each.editing = true
-      if(user.is('Backoffice')){
+      if(!user.is('Backoffice')){
         each.backOffice = true
         each.restriction = 2
       }
