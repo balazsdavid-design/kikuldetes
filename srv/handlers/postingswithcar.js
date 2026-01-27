@@ -91,7 +91,7 @@ async function beforeReadPostingWithCar(req) {
     const { user } = req;
     
       if (!user.is('Backoffice')) {
-          //req.query.where({ employee_ID: user.id });    
+          req.query.where({ employee_ID: user.id });    
       }
 }
 async function afterReadPostingWithCar(results,req) {
@@ -119,7 +119,7 @@ async function afterReadPostingWithCarDraft(results,req) {
     each.employee.fullName = employee.name+" "+employee.lastName
         }
         each.editing = true
-      if(!user.is('Backoffice')){
+      if(user.is('Backoffice')){
         each.backOffice = true
         each.restriction = 2
       }
