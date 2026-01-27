@@ -11,7 +11,7 @@ async function afterReadPostingRegular(results,req) {
     
     for(let each of results){
       if(each.employee){
-          const employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
+          var employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
     each.employee.fullName = employee.name+" "+employee.lastName
         }
       each.backOffice =  user.is('Backoffice')
@@ -28,7 +28,7 @@ async function afterReadPostingRegularDraft(results,req) {
     
     for(let each of results){
       if(each.employee){
-      const employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
+      var employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
       each.employee.fullName = employee.name+" "+employee.lastName
     }
       each.editing = true
