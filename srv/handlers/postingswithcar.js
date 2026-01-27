@@ -1,8 +1,8 @@
 async function beforeCreatePostingWithCarDraft(req){
-    if(!req.user.is('Backoffice')){
-        req.data.employee_ID = req.user.id
+
         
-      }
+        req.data.employee_ID = req.user.id
+      
       req.data.status_ID = 1
 }
 
@@ -89,16 +89,19 @@ async function beforeUpdatePostingWithCar(req) {
 }
 async function beforeReadPostingWithCar(req) {
     const { user } = req;
-
+    
       if (!user.is('Backoffice')) {
           req.query.where({ employee_ID: user.id });    
       }
 }
 async function afterReadPostingWithCar(results,req) {
     const { user} = req
-   
-    for(let each of results){
-       
+    
+    for(let each of results){ 
+      if(each.employee){
+      const employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
+    each.employee.fullName = employee.name+" "+employee.lastName
+    }
       each.backOffice =  user.is('Backoffice')
       each.submittable = (each.status_ID == 1 || each.status_ID == 3)
 
@@ -110,7 +113,10 @@ async function afterReadPostingWithCarDraft(results,req) {
       
       
       for(let each of results){
-        
+        if(each.employee){
+          const employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
+    each.employee.fullName = employee.name+" "+employee.lastName
+        }
         each.editing = true
       if(user.is('Backoffice')){
         each.backOffice = true

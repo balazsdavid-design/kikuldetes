@@ -1,7 +1,7 @@
 async function beforeCreatePostingRegularDraft(req) {
-     if(!req.user.is('Backoffice')){
+     
         req.data.employee_ID = req.user.id
-      }
+      
       req.data.status_ID = 1
 }
 
@@ -10,7 +10,10 @@ async function afterReadPostingRegular(results,req) {
 
     
     for(let each of results){
-      
+      if(each.employee){
+          const employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
+    each.employee.fullName = employee.name+" "+employee.lastName
+        }
       each.backOffice =  user.is('Backoffice')
 
       each.submittable = (each.status_ID == 1 || each.status_ID == 3)
@@ -24,6 +27,10 @@ async function afterReadPostingRegularDraft(results,req) {
     const { user} = req
     
     for(let each of results){
+      if(each.employee){
+      const employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
+      each.employee.fullName = employee.name+" "+employee.lastName
+    }
       each.editing = true
       if(user.is('Backoffice')){
         each.backOffice = true

@@ -1,6 +1,5 @@
 async function afterReadEmployees(results){
     for(let each of results){
-      
       each.fullName = each.name+" "+each.lastName
       
     }
