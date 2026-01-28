@@ -89,10 +89,64 @@ async function beforeUpdatePostingWithCar(req) {
 }
 async function beforeReadPostingWithCar(req) {
     const { user } = req;
+    if(req.query.SELECT.columns){
+      let i = 0
+      while( i<req.query.SELECT.columns.length){
+        if(req.query.SELECT.columns[i].ref){
+        if(req.query.SELECT.columns[i].ref[0] == 'employee'){
+          const existing = req.query.SELECT.columns[i].expand
+          .filter(c => c.ref)
+          .map(c => c.ref[0])
+
+          const required = ["name", "lastName"]
+
+          for (const field of required) {
+            if (!existing.includes(field)) {
+              req.query.SELECT.columns[i].expand.push({ ref: [field] })
+              }
+            }
+            
+            break
+        }
+      }
+        i++
+
+      }
+      
+    }
     
       if (!user.is('Backoffice')) {
           req.query.where({ employee_ID: user.id });    
       }
+}
+async function beforeReadPostingWithCarDraft(req){
+  
+    if(req.query.SELECT.columns){
+      let i = 0
+      while( i<req.query.SELECT.columns.length){
+        if(req.query.SELECT.columns[i].ref){
+        if(req.query.SELECT.columns[i].ref[0] == 'employee'){
+          const existing = req.query.SELECT.columns[i].expand
+          .filter(c => c.ref)
+          .map(c => c.ref[0])
+
+          const required = ["name", "lastName"]
+
+          for (const field of required) {
+            if (!existing.includes(field)) {
+              req.query.SELECT.columns[i].expand.push({ ref: [field] })
+              }
+            }
+            
+            break
+        }
+      }
+        i++
+
+      }
+      
+    }
+
 }
 async function afterReadPostingWithCar(results,req) {
     const { user} = req
@@ -100,10 +154,8 @@ async function afterReadPostingWithCar(results,req) {
     for(const each of results){ 
       if(each.employee){
         
-      var employee = await SELECT.one('Employees').where({ID:each.employee.ID})//.columns('lastName','name')
+      var employee = each.employee
     each.employee.fullName = employee.name+" "+employee.lastName
-    console.log(each.employee)
-    console.log(employee)
     }
       each.backOffice =  user.is('Backoffice')
       each.submittable = (each.status_ID == 1 || each.status_ID == 3)
@@ -117,7 +169,7 @@ async function afterReadPostingWithCarDraft(results,req) {
       
       for(const each of results){
         if(each.employee){
-          var employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
+          var employee = each.employee
     each.employee.fullName = employee.name+" "+employee.lastName
         }
         each.editing = true
@@ -138,5 +190,6 @@ module.exports = {
     beforeCreatePostingWithCar,
     beforeCreatePostingWithCarDraft,
     beforeReadPostingWithCar,
-    beforeUpdatePostingWithCar
+    beforeUpdatePostingWithCar,
+    beforeReadPostingWithCarDraft
 }

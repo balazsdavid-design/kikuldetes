@@ -37,6 +37,9 @@ class AppService extends cds.ApplicationService {
   this.after('READ','PostingsWithCar.drafts', async(results,req)=>{
       postingswithcar.afterReadPostingWithCarDraft(results,req)
   })
+  this.before('READ','PostingsWithCar.drafts',async(req) => {
+    postingswithcar.beforeReadPostingWithCarDraft(req)
+  })
   
     // PostingsWithCar
 
@@ -49,6 +52,9 @@ class AppService extends cds.ApplicationService {
   })
   this.after('READ', 'PostingsRegular.drafts', async(results,req ) => {
     postingsregular.afterReadPostingRegularDraft(results,req)
+  })
+  this.before('READ','PostingsRegular.drafts',async(req) => {
+    postingsregular.beforeReadPostingRegularDraft(req)
   })
   this.before('CREATE', 'PostingsRegular', async(req) => {
    postingsregular.beforeCreatePostingRegular(req)

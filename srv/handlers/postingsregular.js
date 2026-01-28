@@ -11,8 +11,8 @@ async function afterReadPostingRegular(results,req) {
     
     for(const each of results){
       if(each.employee){
-          var employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
-    each.employee.fullName = employee.name+" "+employee.lastName
+          var employee = each.employee
+          each.employee.fullName = employee.name+" "+employee.lastName
         }
       each.backOffice =  user.is('Backoffice')
 
@@ -28,7 +28,7 @@ async function afterReadPostingRegularDraft(results,req) {
     
     for(const each of results){
       if(each.employee){
-      var employee = await SELECT.one('Employees').where({ID:each.employee.ID}).columns('lastName','name')
+      var employee = each.employee
       each.employee.fullName = employee.name+" "+employee.lastName
     }
       each.editing = true
@@ -183,12 +183,62 @@ async function beforeUpdatePostingRegular(req) {
 }
 async function beforeReadPostingRegular(req) {
     const { user } = req;
+    if(req.query.SELECT.columns){
+      let i = 0
+      while( i<req.query.SELECT.columns.length){
+        if(req.query.SELECT.columns[i].ref){
+        if(req.query.SELECT.columns[i].ref[0] == 'employee'){
+          const existing = req.query.SELECT.columns[i].expand
+          .filter(c => c.ref)
+          .map(c => c.ref[0])
 
+          const required = ["name", "lastName"]
+
+          for (const field of required) {
+            if (!existing.includes(field)) {
+              req.query.SELECT.columns[i].expand.push({ ref: [field] })
+              }
+            }
+            
+            break
+        }
+      }
+        i++
+
+      }
+    }
     if (!user.is('Backoffice')) {
       // Ha a user nem Backoffice, a query-ben szűrök a saját kiküldetéseire
         req.query.where({ employee_ID: user.id }); 
     }
     
+}
+async function beforeReadPostingRegularDraft(req){
+  if(req.query.SELECT.columns){
+      let i = 0
+      while( i<req.query.SELECT.columns.length){
+        if(req.query.SELECT.columns[i].ref){
+        if(req.query.SELECT.columns[i].ref[0] == 'employee'){
+          const existing = req.query.SELECT.columns[i].expand
+          .filter(c => c.ref)
+          .map(c => c.ref[0])
+
+          const required = ["name", "lastName"]
+
+          for (const field of required) {
+            if (!existing.includes(field)) {
+              req.query.SELECT.columns[i].expand.push({ ref: [field] })
+              }
+            }
+            
+            break
+        }
+      }
+        i++
+
+      }
+      
+    }
 }
 
 module.exports = {
@@ -197,5 +247,6 @@ module.exports = {
     beforeCreatePostingRegular,
     beforeCreatePostingRegularDraft,
     beforeReadPostingRegular,
-    beforeUpdatePostingRegular
+    beforeUpdatePostingRegular,
+    beforeReadPostingRegularDraft
 }
