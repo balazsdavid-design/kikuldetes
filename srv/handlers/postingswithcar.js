@@ -102,6 +102,8 @@ async function afterReadPostingWithCar(results,req) {
         
       var employee = await SELECT.one('Employees').where({ID:each.employee.ID})//.columns('lastName','name')
     each.employee.fullName = employee.name+" "+employee.lastName
+    console.log(each.employee)
+    console.log(employee)
     }
       each.backOffice =  user.is('Backoffice')
       each.submittable = (each.status_ID == 1 || each.status_ID == 3)
