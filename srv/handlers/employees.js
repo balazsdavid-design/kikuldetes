@@ -14,12 +14,12 @@ async function beforeReadEmployees(req){
       const firstName =user.attr.givenName
       const lastName = user.attr.familyName
       const tx = cds.tx(req);
-      
+      const employee = [{ID:user.id,name:firstName,lastName:lastName}]
       await tx.run(INSERT.
       into`Employees`
-      .columns('ID','name','lastName')
-      .values(user.id,firstName,lastName))
-      //entries({ID:user.id,name:firstName,lastName:lastName})
+      //.columns('ID','name','lastName')
+      //.values(user.id,firstName,lastName))
+      .entries(employee))
     }
       
         
@@ -55,14 +55,12 @@ async function beforeDeleteEmployees(req){
 async function beforeCreateEmployeesDraft(req){
     const { user } = req
     
-    
+   if (!req.data.ID) req.data.ID = user.id;
     const employee = await SELECT.one.from('Employees').where({ID:user.id})
     if(employee){
       req.error(400,"Restricted")
     }
-    else {
-      req.data.ID = req.user.id
-    }
+   
 }
 
 module.exports = { 
