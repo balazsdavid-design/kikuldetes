@@ -59,7 +59,7 @@ async function beforeCreateEmployeesDraft(req){
    if (!req.data.ID) req.data.ID = user.id;
     const employee = await SELECT.one.from('Employees').where({ID:user.id})
     if(employee){
-      req.error(400,"Restricted")
+      req.error(400,"PersonalDataExistsAlready")
     }
    
 }
