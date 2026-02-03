@@ -207,10 +207,7 @@ async function beforeReadPostingRegular(req) {
 
       }
     }
-    if (!user.is('Backoffice')) {
-      // Ha a user nem Backoffice, a query-ben szűrök a saját kiküldetéseire
-        req.query.where({ employee_ID: user.id }); 
-    }
+
     
 }
 async function beforeReadPostingRegularDraft(req){

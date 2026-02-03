@@ -114,10 +114,7 @@ async function beforeReadPostingWithCar(req) {
       }
       
     }
-    
-      if (!user.is('Backoffice')) {
-          req.query.where({ employee_ID: user.id });    
-      }
+     
 }
 async function beforeReadPostingWithCarDraft(req){
   

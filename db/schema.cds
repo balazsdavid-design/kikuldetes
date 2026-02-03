@@ -99,7 +99,10 @@ entity MaterialExpenses : OtherExpense {
 entity TripExpenses : OtherExpense {
 
 }
-
+@restrict: [
+    {grant:'*', to:'Backoffice'},
+    { grant: '*', where: 'employee_ID = $user.id' },
+]
 aspect Postings : managed {
     key ID : UUID;
     @mandatory
@@ -245,6 +248,10 @@ aspect Car {
 }
 
 
+@restrict: [
+    {grant:'*', to:'Backoffice'},
+    { grant: '*', where: 'ID = $user.id' },
+]
 entity Employees {
     @readonly
     key ID : String;

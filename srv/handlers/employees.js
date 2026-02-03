@@ -8,23 +8,21 @@ async function afterReadEmployees(results){
 async function beforeReadEmployees(req){
     const { user } = req;
       
-    console.log(user)
     const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
   
     if(!employee){
       const firstName =user.attr.givenName
       const lastName = user.attr.familyName
     
-      await INSERT.into`Employees`.entries({ID:user.id,name:firstName,lastName:lastName})
+      await INSERT.
+      into`Employees`
+      .columns('ID','name','lastName')
+      .values(user.id,firstName,lastName)
+      //entries({ID:user.id,name:firstName,lastName:lastName})
     }
       
         
-        if(!user.is('Backoffice')){
-          req.query.where({ ID: user.id });
-          
-          
-          
-        }  
+    
         const existing = req.query.SELECT.columns
         .filter(c => c.ref)
         .map(c => c.ref[0])
@@ -71,5 +69,6 @@ module.exports = {
     beforeCreateEmployeesDraft,
     beforeDeleteEmployees,
     beforeReadEmployees,
-    beforeUpdateEmployees
+    beforeUpdateEmployees,
+
                 }
