@@ -6,21 +6,22 @@ async function afterReadEmployees(results){
 }
 
 async function beforeReadEmployees(req){
-    const { user } = req;
-      
-    const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
+    /*const { user } = req;
+    const tx = cds.tx(req);  
+    const employee = await tx.run(
+      SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id}))
   
     if(!employee){
       const firstName =user.attr.givenName
       const lastName = user.attr.familyName
-      const tx = cds.tx(req);
+      
       const employee = [{ID:user.id,name:firstName,lastName:lastName}]
       await tx.run(INSERT.
-      into`Employees`
+      into('Employees')
       //.columns('ID','name','lastName')
       //.values(user.id,firstName,lastName))
       .entries(employee))
-    }
+    }*/
       
         
     
