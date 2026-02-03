@@ -13,11 +13,12 @@ async function beforeReadEmployees(req){
     if(!employee){
       const firstName =user.attr.givenName
       const lastName = user.attr.familyName
-    
-      await INSERT.
+      const tx = cds.tx(req);
+      
+      await tx.run(INSERT.
       into`Employees`
       .columns('ID','name','lastName')
-      .values(user.id,firstName,lastName)
+      .values(user.id,firstName,lastName))
       //entries({ID:user.id,name:firstName,lastName:lastName})
     }
       
