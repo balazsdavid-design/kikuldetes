@@ -8,7 +8,7 @@ async function afterReadEmployees(results){
 async function beforeReadEmployees(req){
     const { user } = req;
       
-    
+    console.log(user)
     const employee = await SELECT.one.from('Employees', e => { e`.*`}).where({ID:user.id})
   
     if(!employee){
