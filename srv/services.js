@@ -13,7 +13,7 @@ const postingsregular = require("./handlers/postingsregular")
 
 class AppService extends cds.ApplicationService {
   init() {
-    
+   
     // PostingsWithCar
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
       postingswithcar.beforeCreatePostingWithCarDraft(req)
@@ -70,6 +70,10 @@ this.before('READ','PostingsRegular', async (req) => {
     
 
   // EMPLOYEES
+  this.before('CREATE','Employees.drafts', async(req) => {
+    employees.beforeCreateEmployeesDraft(req)
+  })
+
   this.after('READ','Employees',async(results,req) => {
     employees.afterReadEmployees(results)
   })
@@ -83,10 +87,8 @@ this.before('READ','PostingsRegular', async (req) => {
   this.before('DELETE','Employees',async(req) => {
     employees.beforeDeleteEmployees(req)
   })
- 
-  this.before('CREATE','Employees.drafts', async(req) => {
-    employees.beforeCreateEmployeesDraft(req)
-  })
+
+  
   // EMPLOYEES
 
   // UTIL

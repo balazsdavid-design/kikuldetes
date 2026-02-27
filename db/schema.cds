@@ -10,9 +10,7 @@ using {Attachments } from '@cap-js/attachments';
 entity PostingsRegular : Postings {
     
     
-    @mandatory
     borrowedEUR : Decimal ;
-    @mandatory
     borrowedHUF : Decimal ;
     country : Country;
     @mandatory

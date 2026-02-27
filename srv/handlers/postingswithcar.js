@@ -7,7 +7,6 @@ async function beforeCreatePostingWithCarDraft(req){
 }
 
 async function beforeCreatePostingWithCar(req){
-
           /*
           if(req.data.stickers){
             var date = new Date();

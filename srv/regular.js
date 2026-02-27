@@ -11,8 +11,8 @@ async function createRegularXML(PostingRegular){
     const day = date.getDate().toString().padStart(2,"0")
     const employee = PostingRegular.employee;
     const postingCountry = await getLocalCountryName(PostingRegular.country_code)
-    var borrowed = PostingRegular.borrowedHUF
-    var borrowedEUR = PostingRegular.borrowedEUR
+    var borrowed = PostingRegular.borrowedHUF ? PostingRegular.borrowedHUF : 0
+    var borrowedEUR = PostingRegular.borrowedEUR ? PostingRegular.borrowedEUR : 0
     var paidByCompany = 0;
     var paidByCompanyEUR = 0;
     var paidByEmployee = 0;
