@@ -26,8 +26,7 @@ sap.ui.define([
             let id = obj["ID"];
             
             const serviceUrl = this.getModel().getServiceUrl()
-
-            var url = `${serviceUrl}/getPDFCar?ID=${id}`
+            var url = `${serviceUrl}getPDFCar?ID=${id}`
             fetch(url).then(response => {
                
                 if (!response.ok) {
