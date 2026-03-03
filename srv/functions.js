@@ -8,9 +8,18 @@ const { serialize } = require('@sap/cds/lib/utils/csv-reader');
 const { Builder } = require('xml2js');
 const builder = new Builder()
 async function getExchangeRates(date,currency){
-   
+
     var d = new Date(date)
-    
+ 
+    if(d.getDay() == 0){
+        d.setDate(d.getDate() - 2)
+        date = d.toJSON().split("T")[0]
+    }
+    else if(d.getDay() == 6){
+        d.setDate(d.getDate() - 1)
+        date = d.toJSON().split("T")[0]
+    }
+
     var today = new Date()
     
     if(d > today){
@@ -33,7 +42,7 @@ async function getExchangeRates(date,currency){
 
         // 3️⃣ SOAP kérés elküldése
         const [result] = await client.GetExchangeRatesAsync(params);
-        
+        console.log(result)
         const xmlData = result.GetExchangeRatesResult;
 
         // 4️⃣ XML -> JSON konvertálás
@@ -47,12 +56,13 @@ async function getExchangeRates(date,currency){
  
                 try {
                     // 5️⃣ Árfolyam kinyerése
-                    
+                    console.log(parsedResult)
                     const rate = parseFloat(parsedResult.MNBExchangeRates.Day.Rate["_"].replace(',','.'));
                     
                     resolve(rate);
                 } catch (error) {
-                   
+                   console.log(error)
+                   console.log(date,currency)
                    reject(['CurrencyNotFound',currency])
                 }
             });
