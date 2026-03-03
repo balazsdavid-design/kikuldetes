@@ -2,7 +2,6 @@ async function beforeCreatePostingWithCarDraft(req){
 
         
         req.data.employee_ID = req.user.id
-      
       req.data.status_ID = 1
 }
 
@@ -34,25 +33,25 @@ async function beforeCreatePostingWithCar(req){
           }
           
           
-          const db = cds.transaction(req);
           const now = new Date();
           const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
           // Sorszám létrehozása
           
-          const result = await db.run(
+          const result = await (
             SELECT`lastNumber`.from`SerialNumbers`.where`yearMonth = ${yearMonth}`
             ) ?? [];
             const  {lastNumber = 0} = result[0] || {};
-            
             const newNumber = lastNumber + 1;
             const formattedNumber = String(newNumber).padStart(2, '0'); 
-    
+            console.log(yearMonth)
+            console.log(formattedNumber)
             
-            await db.run(
+            await (
                 UPSERT.into`SerialNumbers`.entries({ yearMonth, lastNumber: newNumber })
             );
-    
             req.data.serialNumber = `${yearMonth}-${formattedNumber}`;
+
+            return req
 }
 async function beforeUpdatePostingWithCar(req) {
     
@@ -67,6 +66,7 @@ async function beforeUpdatePostingWithCar(req) {
           }
         }
       }*/
+
       outerloop : for(var data of req.data.data){
         for(var nextdata of req.data.data){
           if(data != nextdata){

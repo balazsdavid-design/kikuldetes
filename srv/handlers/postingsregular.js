@@ -100,25 +100,24 @@ async function beforeCreatePostingRegular(req) {
     }
     
   
-    const db = cds.transaction(req);
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
         
-        const result = await db.run(
+        const result = await (
         SELECT`lastNumber`.from`SerialNumbers`.where`yearMonth = ${yearMonth}`
         ) ?? [];
         const  {lastNumber = 0} = result[0] || {};
-        
         const newNumber = lastNumber + 1;
         const formattedNumber = String(newNumber).padStart(2, '0'); 
         
         
-        await db.run(
+        await (
             UPSERT.into`SerialNumbers`.entries({ yearMonth, lastNumber: newNumber })
         );
 
         req.data.serialNumber = `${yearMonth}-${formattedNumber}`;
+        return req
 }
 async function beforeUpdatePostingRegular(req) {
     var borrowedHUF = req.data.borrowedHUF
