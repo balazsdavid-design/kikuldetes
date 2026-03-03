@@ -368,7 +368,6 @@ async function createRegularXML(PostingRegular){
     else {
         HUFback = borrowed
     }
-    
     const xml = {
         PostingRegular : {
             Year : year,
@@ -431,7 +430,8 @@ async function createRegularXML(PostingRegular){
                     HUF : HUFmore
                 }
 
-            }
+            },
+            AcceptedDate: date.toLocaleDateString('hu-HU')
 
 
         }
