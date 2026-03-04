@@ -762,6 +762,11 @@ annotate service.Accomodations with @(
             Value : paymentMethod_ID,
             Label : '{i18n>PaymentMethod}',
         },
+        {
+            $Type : 'UI.DataField',
+            Value : posting.accomodations.invoiceDate,
+            Label : '{i18n>InvoiceDate}',
+        },
     ]
 );
 
@@ -1259,5 +1264,9 @@ annotate service.Employees with {
 
 annotate service.Employees with {
     name @Common.FieldControl : #Mandatory
+};
+
+annotate service.Accomodations with {
+    invoiceDate @Common.FieldControl : #Mandatory
 };
 

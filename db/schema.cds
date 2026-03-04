@@ -70,6 +70,8 @@ entity DailyExpenses : Expense {
 entity Accomodations : Expense {
     @mandatory
     accomodation_name : String;
+    @mandatory
+    invoiceDate : Date;
     
 }
 

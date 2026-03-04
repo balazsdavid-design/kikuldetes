@@ -315,19 +315,19 @@
                 "departures_arrivals/@com.sap.vocabularies.UI.v1.LineItem#DeparturesandArrivals": {
                   "columns": {
                     "DataField::from_where": {
-                      "width": "16%"
+                      "width": "18%"
                     },
                     "DataField::departure": {
-                      "width": "12%"
+                      "width": "14%"
                     },
                     "DataField::to_where": {
-                      "width": "16%"
+                      "width": "18%"
                     },
                     "DataField::arrival": {
-                      "width": "12%"
+                      "width": "14%"
                     },
                     "DataField::meanOfTransport_ID": {
-                      "width": "8%"
+                      "width": "10%"
                     }
                   },
                   "tableSettings": {
@@ -339,19 +339,19 @@
                 "daily_expenses/@com.sap.vocabularies.UI.v1.LineItem#Dailyexpenses": {
                   "columns": {
                     "DataField::date": {
-                      "width": "16%"
+                      "width": "18.5%"
                     },
                     "DataField::days": {
-                      "width": "12%"
+                      "width": "14.5%"
                     },
                     "DataField::daily_price": {
-                      "width": "24%"
+                      "width": "26.5%"
                     },
                     "DataField::currency_code": {
                       "width": "12%"
                     },
                     "DataField::paymentMethod_ID": {
-                      "width": "12%"
+                      "width": "14.5%"
                     }
                   },
                   "tableSettings": {
@@ -379,6 +379,9 @@
                     },
                     "DataField::paymentMethod_ID": {
                       "width": "10%"
+                    },
+                    "DataField::posting::accomodations::invoiceDate": {
+                      "width": "10%"
                     }
                   },
                   "tableSettings": {
@@ -390,22 +393,22 @@
                 "material_expenses/@com.sap.vocabularies.UI.v1.LineItem#Materialexpenses": {
                   "columns": {
                     "DataField::reference": {
-                      "width": "16%"
+                      "width": "18%"
                     },
                     "DataField::date": {
-                      "width": "10%"
+                      "width": "12%"
                     },
                     "DataField::name": {
-                      "width": "16%"
+                      "width": "18%"
                     },
                     "DataField::price": {
-                      "width": "12%"
+                      "width": "14%"
                     },
                     "DataField::currency_code": {
                       "width": "6%"
                     },
                     "DataField::paymentMethod_ID": {
-                      "width": "10%"
+                      "width": "12%"
                     }
                   },
                   "tableSettings": {
@@ -417,22 +420,22 @@
                 "trip_expenses/@com.sap.vocabularies.UI.v1.LineItem#Tripexpenses": {
                   "columns": {
                     "DataField::posting::trip_expenses::reference": {
-                      "width": "16%"
+                      "width": "18%"
                     },
                     "DataField::posting::trip_expenses::date": {
-                      "width": "10%"
+                      "width": "12%"
                     },
                     "DataField::posting::trip_expenses::name": {
-                      "width": "16%"
+                      "width": "18%"
                     },
                     "DataField::posting::trip_expenses::price": {
-                      "width": "12%"
+                      "width": "14%"
                     },
                     "DataField::currency_code": {
                       "width": "6%"
                     },
                     "DataField::paymentMethod_ID": {
-                      "width": "10%"
+                      "width": "12%"
                     }
                   },
                   "tableSettings": {
@@ -444,10 +447,10 @@
                 "attachments/@com.sap.vocabularies.UI.v1.LineItem#i18nAttachments1": {
                   "columns": {
                     "DataField::content": {
-                      "width": "32%"
+                      "width": "37%"
                     },
                     "DataField::mimeType": {
-                      "width": "32%"
+                      "width": "37%"
                     }
                   }
                 }

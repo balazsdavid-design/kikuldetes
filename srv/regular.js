@@ -127,6 +127,7 @@ async function createRegularXML(PostingRegular){
         var changeRate = ""
         var acc_date = new Date(accomodation.date)
         var endDate = new Date(accomodation.date)
+        const accInvoiceDate = accomodation.invoiceDate ? accomodation.invoiceDate : accomodation.date
         endDate.setDate(acc_date.getDate()+accomodation.days)
         daily_price = accomodation.daily_price
         const endDateString = (endDate.getMonth()+1).toString().padStart(2,"0")+"-"+endDate.getDate().toString().padStart(2,"0")
@@ -136,7 +137,7 @@ async function createRegularXML(PostingRegular){
             currencyText = 'EUR'
             hufText = priceHUF
             try {
-                changeRate = await getExchangeRates(accomodation.date,'EUR')
+                changeRate = await getExchangeRates(accInvoiceDate,'EUR')
                 }
                 catch(err){
                     return err
@@ -155,7 +156,7 @@ async function createRegularXML(PostingRegular){
             
             try {
            
-            changeRate = await getExchangeRates(accomodation.date,currency)
+            changeRate = await getExchangeRates(accInvoiceDate,currency)
             
             }
             catch(err){
