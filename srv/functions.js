@@ -42,7 +42,6 @@ async function getExchangeRates(date,currency){
 
         // 3️⃣ SOAP kérés elküldése
         const [result] = await client.GetExchangeRatesAsync(params);
-        console.log(result)
         const xmlData = result.GetExchangeRatesResult;
 
         // 4️⃣ XML -> JSON konvertálás

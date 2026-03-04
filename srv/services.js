@@ -302,7 +302,7 @@ this.before('READ','PostingsRegular', async (req) => {
           if(base64pdf.length > 30 && entity.attachments && entity.attachments.length != 0){
             var pdf = base64pdf
             for(const attachment of entity.attachments){
-              pdf = attachFile(token,apiURL,pdf,attachment)
+              pdf = await attachFile(token,apiURL,pdf,attachment)
             }
             return pdf
             
