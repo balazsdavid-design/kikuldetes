@@ -123,8 +123,11 @@ aspect Postings : managed {
     @UI.Hidden
     virtual backOffice : Boolean default false;
     serialNumber : String;
+    @UI.Hidden
     serialNumberEntity : Association to one SerialNumbers;
+    @UI.Hidden
     virtual editing : Boolean default false;
+    @UI.Hidden
     virtual accepted : Boolean default false;
 }
 

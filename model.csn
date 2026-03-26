@@ -1,0 +1,3645 @@
+{
+  "namespace": "kikuldetes",
+  "definitions": {
+    "kikuldetes.PostingsRegular": {
+      "kind": "entity",
+      "@restrict": [
+        {
+          "grant": "*",
+          "to": "Backoffice"
+        },
+        {
+          "grant": "*",
+          "where": "employee_ID = $user.id"
+        }
+      ],
+      "includes": [
+        "kikuldetes.Postings"
+      ],
+      "elements": {
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "goal": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "employee": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.Employees",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "status": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.Statuses",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "restriction": {
+          "@UI.Hidden": true,
+          "type": "cds.Integer",
+          "default": {
+            "val": 0
+          }
+        },
+        "attachments": {
+          "@attachments.disable_facet": true,
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "targetAspect": "Attachments",
+          "target": "kikuldetes.PostingsRegular.attachments",
+          "on": [
+            {
+              "ref": [
+                "attachments",
+                "up_"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "submittable": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": true
+          }
+        },
+        "backOffice": {
+          "@UI.Hidden": true,
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        },
+        "serialNumber": {
+          "type": "cds.String"
+        },
+        "serialNumberEntity": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.SerialNumbers",
+          "keys": [
+            {
+              "ref": [
+                "yearMonth"
+              ]
+            },
+            {
+              "ref": [
+                "number"
+              ]
+            }
+          ]
+        },
+        "editing": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        },
+        "accepted": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        },
+        "borrowedEUR": {
+          "type": "cds.Decimal"
+        },
+        "borrowedHUF": {
+          "type": "cds.Decimal"
+        },
+        "country": {
+          "@title": "{i18n>Country}",
+          "@description": "{i18n>CountryCode.Description}",
+          "type": "Country",
+          "target": "sap.common.Countries",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "travel_to": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "travel_back": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "departures_arrivals": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.DeparturesAndArrivals",
+          "on": [
+            {
+              "ref": [
+                "departures_arrivals",
+                "posting"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "daily_expenses": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.DailyExpenses",
+          "on": [
+            {
+              "ref": [
+                "daily_expenses",
+                "posting"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "accomodations": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.Accomodations",
+          "on": [
+            {
+              "ref": [
+                "accomodations",
+                "posting"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "material_expenses": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.MaterialExpenses",
+          "on": [
+            {
+              "ref": [
+                "material_expenses",
+                "posting"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "trip_expenses": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.TripExpenses",
+          "on": [
+            {
+              "ref": [
+                "trip_expenses",
+                "posting"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "messages": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.RegularStatusMessages",
+          "on": [
+            {
+              "ref": [
+                "messages",
+                "posting"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.DeparturesAndArrivals": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "from_where": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "departure": {
+          "@mandatory": true,
+          "type": "cds.DateTime"
+        },
+        "to_where": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "arrival": {
+          "@mandatory": true,
+          "type": "cds.DateTime"
+        },
+        "posting": {
+          "type": "cds.Association",
+          "target": "kikuldetes.PostingsRegular",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "meanOfTransport": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.MeansOfTransport",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.Expense": {
+      "kind": "aspect",
+      "elements": {
+        "days": {
+          "@mandatory": true,
+          "type": "cds.Integer"
+        },
+        "currency": {
+          "@mandatory": true,
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "daily_price": {
+          "@mandatory": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "paymentMethod": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.PaymentMethods",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "date": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "posting": {
+          "type": "cds.Association",
+          "target": "kikuldetes.PostingsRegular",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.DailyExpenses": {
+      "kind": "entity",
+      "includes": [
+        "kikuldetes.Expense"
+      ],
+      "elements": {
+        "days": {
+          "@mandatory": true,
+          "type": "cds.Integer"
+        },
+        "currency": {
+          "@mandatory": true,
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "daily_price": {
+          "@mandatory": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "paymentMethod": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.PaymentMethods",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "date": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "posting": {
+          "type": "cds.Association",
+          "target": "kikuldetes.PostingsRegular",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.Accomodations": {
+      "kind": "entity",
+      "includes": [
+        "kikuldetes.Expense"
+      ],
+      "elements": {
+        "days": {
+          "@mandatory": true,
+          "type": "cds.Integer"
+        },
+        "currency": {
+          "@mandatory": true,
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "daily_price": {
+          "@mandatory": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "paymentMethod": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.PaymentMethods",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "date": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "posting": {
+          "type": "cds.Association",
+          "target": "kikuldetes.PostingsRegular",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "accomodation_name": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "invoiceDate": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        }
+      }
+    },
+    "kikuldetes.OtherExpense": {
+      "kind": "aspect",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "reference": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "date": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "name": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "price": {
+          "@mandatory": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "posting": {
+          "type": "cds.Association",
+          "target": "kikuldetes.PostingsRegular",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "paymentMethod": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.PaymentMethods",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.MaterialExpenses": {
+      "kind": "entity",
+      "includes": [
+        "kikuldetes.OtherExpense"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "reference": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "date": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "name": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "price": {
+          "@mandatory": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "posting": {
+          "type": "cds.Association",
+          "target": "kikuldetes.PostingsRegular",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "paymentMethod": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.PaymentMethods",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.TripExpenses": {
+      "kind": "entity",
+      "includes": [
+        "kikuldetes.OtherExpense"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "reference": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "date": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "name": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "price": {
+          "@mandatory": true,
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "posting": {
+          "type": "cds.Association",
+          "target": "kikuldetes.PostingsRegular",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "paymentMethod": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.PaymentMethods",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.Postings": {
+      "kind": "aspect",
+      "@restrict": [
+        {
+          "grant": "*",
+          "to": "Backoffice"
+        },
+        {
+          "grant": "*",
+          "where": "employee_ID = $user.id"
+        }
+      ],
+      "includes": [
+        "managed"
+      ],
+      "elements": {
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "goal": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "employee": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.Employees",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "status": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.Statuses",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "restriction": {
+          "@UI.Hidden": true,
+          "type": "cds.Integer",
+          "default": {
+            "val": 0
+          }
+        },
+        "attachments": {
+          "@attachments.disable_facet": true,
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "targetAspect": "Attachments"
+        },
+        "submittable": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": true
+          }
+        },
+        "backOffice": {
+          "@UI.Hidden": true,
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        },
+        "serialNumber": {
+          "type": "cds.String"
+        },
+        "serialNumberEntity": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.SerialNumbers",
+          "keys": [
+            {
+              "ref": [
+                "yearMonth"
+              ]
+            },
+            {
+              "ref": [
+                "number"
+              ]
+            }
+          ]
+        },
+        "editing": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        },
+        "accepted": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        }
+      }
+    },
+    "kikuldetes.Statuses": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "statusText": {
+          "@mandatory": true,
+          "localized": true,
+          "type": "cds.String"
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.Statuses.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "kikuldetes.Statuses.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.RegularStatusMessages": {
+      "kind": "entity",
+      "@UI.DeleteHidden": {
+        "=": "not posting.backOffice",
+        "xpr": [
+          "not",
+          {
+            "ref": [
+              "posting",
+              "backOffice"
+            ]
+          }
+        ]
+      },
+      "@UI.CreateHidden": true,
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "restriction": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Integer",
+          "default": {
+            "val": 0
+          }
+        },
+        "backOffice": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        },
+        "message": {
+          "type": "cds.String"
+        },
+        "date": {
+          "type": "cds.DateTime"
+        },
+        "posting": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.PostingsRegular",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.CarStatusMessages": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "message": {
+          "type": "cds.String"
+        },
+        "date": {
+          "type": "cds.DateTime"
+        },
+        "posting": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.PostingsWithCar",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.PostingsWithCar": {
+      "kind": "entity",
+      "@restrict": [
+        {
+          "grant": "*",
+          "to": "Backoffice"
+        },
+        {
+          "grant": "*",
+          "where": "employee_ID = $user.id"
+        }
+      ],
+      "includes": [
+        "kikuldetes.Postings",
+        "kikuldetes.Car"
+      ],
+      "elements": {
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "goal": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "employee": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.Employees",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "status": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.Statuses",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "restriction": {
+          "@UI.Hidden": true,
+          "type": "cds.Integer",
+          "default": {
+            "val": 0
+          }
+        },
+        "attachments": {
+          "@attachments.disable_facet": true,
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "targetAspect": "Attachments",
+          "target": "kikuldetes.PostingsWithCar.attachments",
+          "on": [
+            {
+              "ref": [
+                "attachments",
+                "up_"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "submittable": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": true
+          }
+        },
+        "backOffice": {
+          "@UI.Hidden": true,
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        },
+        "serialNumber": {
+          "type": "cds.String"
+        },
+        "serialNumberEntity": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.SerialNumbers",
+          "keys": [
+            {
+              "ref": [
+                "yearMonth"
+              ]
+            },
+            {
+              "ref": [
+                "number"
+              ]
+            }
+          ]
+        },
+        "editing": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        },
+        "accepted": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        },
+        "fuel_type": {
+          "@mandatory": true,
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.FuelTypes",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "plateNum": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "cylinder_volume": {
+          "type": "cds.Integer"
+        },
+        "data": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.PostingDataWithCar",
+          "on": [
+            {
+              "ref": [
+                "data",
+                "posting"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "stickers": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.HighwayStickers",
+          "on": [
+            {
+              "ref": [
+                "stickers",
+                "posting"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "messages": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.CarStatusMessages",
+          "on": [
+            {
+              "ref": [
+                "messages",
+                "posting"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.SerialNumbers": {
+      "kind": "entity",
+      "elements": {
+        "yearMonth": {
+          "key": true,
+          "type": "cds.String"
+        },
+        "number": {
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "inUse": {
+          "type": "cds.Boolean",
+          "default": {
+            "val": false
+          }
+        }
+      }
+    },
+    "kikuldetes.FuelTypes": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "name": {
+          "localized": true,
+          "type": "cds.String"
+        },
+        "ICE": {
+          "type": "cds.Boolean"
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "kikuldetes.FuelTypes.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "kikuldetes.FuelTypes.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "ID"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "ID"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.PaymentMethods": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "@readonly": true,
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "name": {
+          "@mandatory": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "kikuldetes.HighwayStickers": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "country": {
+          "@mandatory": true,
+          "@title": "{i18n>Country}",
+          "@description": "{i18n>CountryCode.Description}",
+          "type": "Country",
+          "target": "sap.common.Countries",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "price": {
+          "type": "cds.Decimal",
+          "precision": 10,
+          "scale": 2
+        },
+        "currency": {
+          "@title": "{i18n>Currency}",
+          "@description": "{i18n>CurrencyCode.Description}",
+          "type": "Currency",
+          "target": "sap.common.Currencies",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "date": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "posting": {
+          "type": "cds.Association",
+          "target": "kikuldetes.PostingsWithCar",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "kikuldetes.MeansOfTransport": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "@readonly": true,
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "name": {
+          "@mandatory": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "kikuldetes.FuelPrices": {
+      "kind": "entity",
+      "elements": {
+        "yearMonth": {
+          "@readonly": true,
+          "key": true,
+          "type": "cds.String"
+        },
+        "petrolPrice": {
+          "@mandatory": true,
+          "type": "cds.Decimal"
+        },
+        "dieselPrice": {
+          "@mandatory": true,
+          "type": "cds.Decimal"
+        }
+      }
+    },
+    "kikuldetes.FuelConsumptions": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "@readonly": true,
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "fuelType": {
+          "@mandatory": true,
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.FuelTypes",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "volumeStart": {
+          "type": "cds.Integer"
+        },
+        "volumeEnd": {
+          "type": "cds.Integer"
+        },
+        "consumption": {
+          "@mandatory": true,
+          "type": "cds.Decimal"
+        }
+      }
+    },
+    "kikuldetes.PostingDataWithCar": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "posting": {
+          "type": "cds.Association",
+          "target": "kikuldetes.PostingsWithCar",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "date": {
+          "@mandatory": true,
+          "type": "cds.Date"
+        },
+        "from_where": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "to_where": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "mileage": {
+          "@mandatory": true,
+          "type": "cds.Integer"
+        },
+        "daily_expense": {
+          "type": "cds.Integer"
+        }
+      }
+    },
+    "kikuldetes.Car": {
+      "kind": "aspect",
+      "elements": {
+        "fuel_type": {
+          "@mandatory": true,
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "kikuldetes.FuelTypes",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ]
+        },
+        "plateNum": {
+          "@mandatory": true,
+          "type": "cds.String"
+        },
+        "cylinder_volume": {
+          "type": "cds.Integer"
+        }
+      }
+    },
+    "kikuldetes.Employees": {
+      "kind": "entity",
+      "@restrict": [
+        {
+          "grant": "*",
+          "to": "Backoffice"
+        },
+        {
+          "grant": "*",
+          "where": "ID = $user.id"
+        }
+      ],
+      "elements": {
+        "ID": {
+          "@readonly": true,
+          "key": true,
+          "type": "cds.String"
+        },
+        "name": {
+          "type": "cds.String"
+        },
+        "fullName": {
+          "@Core.Computed": true,
+          "virtual": true,
+          "type": "cds.String"
+        },
+        "lastName": {
+          "type": "cds.String"
+        },
+        "position": {
+          "type": "cds.String"
+        },
+        "postal_code": {
+          "type": "cds.String",
+          "length": 4
+        },
+        "city": {
+          "type": "cds.String"
+        },
+        "address": {
+          "type": "cds.String"
+        },
+        "birthDate": {
+          "type": "cds.Date"
+        },
+        "birthPlace": {
+          "type": "cds.String"
+        },
+        "mothersName": {
+          "type": "cds.String"
+        },
+        "taxNumber": {
+          "type": "cds.String",
+          "length": 10
+        }
+      }
+    },
+    "Language": {
+      "kind": "type",
+      "@title": "{i18n>Language}",
+      "@description": "{i18n>LanguageCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Languages",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "Currency": {
+      "kind": "type",
+      "@title": "{i18n>Currency}",
+      "@description": "{i18n>CurrencyCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Currencies",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "Country": {
+      "kind": "type",
+      "@title": "{i18n>Country}",
+      "@description": "{i18n>CountryCode.Description}",
+      "type": "cds.Association",
+      "target": "sap.common.Countries",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "Timezone": {
+      "kind": "type",
+      "type": "cds.Association",
+      "target": "sap.common.Timezones",
+      "keys": [
+        {
+          "ref": [
+            "code"
+          ]
+        }
+      ]
+    },
+    "sap.common": {
+      "kind": "context"
+    },
+    "sap.common.Locale": {
+      "kind": "type",
+      "@title": "{i18n>LanguageCode}",
+      "type": "cds.String",
+      "length": 14
+    },
+    "sap.common.Languages": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Text": {
+            "=": "name"
+          },
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Languages.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Languages.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Countries": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>CountryCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Countries.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Countries.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Currencies": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "symbol": {
+          "@title": "{i18n>CurrencySymbol}",
+          "type": "cds.String",
+          "length": 5
+        },
+        "minorUnit": {
+          "@title": "{i18n>CurrencyMinorUnit}",
+          "type": "cds.Int16"
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Currencies.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Timezones": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@title": "{i18n>TimeZoneCode}",
+          "key": true,
+          "type": "cds.String",
+          "length": 100
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Timezones.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.common.Timezones.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.CodeList": {
+      "kind": "aspect",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "elements": {
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        }
+      }
+    },
+    "sap.common.TextsAspect": {
+      "kind": "aspect",
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        }
+      }
+    },
+    "sap.common.FlowHistory": {
+      "kind": "aspect",
+      "@cds.persistence.skip": "if-unused",
+      "elements": {
+        "transitions_": {
+          "@odata.draft.enabled": false,
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "targetAspect": {
+            "elements": {
+              "timestamp": {
+                "@cds.on.insert": {
+                  "=": "$now"
+                },
+                "@UI.HiddenFilter": true,
+                "@UI.ExcludeFromNavigationContext": true,
+                "@Core.Immutable": true,
+                "@title": "{i18n>CreatedAt}",
+                "@readonly": true,
+                "key": true,
+                "type": {
+                  "ref": [
+                    "managed",
+                    "createdAt"
+                  ]
+                }
+              },
+              "user": {
+                "@cds.on.insert": {
+                  "=": "$user"
+                },
+                "@UI.HiddenFilter": true,
+                "@UI.ExcludeFromNavigationContext": true,
+                "@Core.Immutable": true,
+                "@title": "{i18n>CreatedBy}",
+                "@readonly": true,
+                "@description": "{i18n>UserID.Description}",
+                "type": {
+                  "ref": [
+                    "managed",
+                    "createdBy"
+                  ]
+                },
+                "length": 255
+              },
+              "status": {
+                "type": "cds.String"
+              },
+              "comment": {
+                "type": "cds.String"
+              }
+            }
+          }
+        }
+      }
+    },
+    "cuid": {
+      "kind": "aspect",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "managed": {
+      "kind": "aspect",
+      "elements": {
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        }
+      }
+    },
+    "temporal": {
+      "kind": "aspect",
+      "elements": {
+        "validFrom": {
+          "@cds.valid.from": true,
+          "type": "cds.Timestamp"
+        },
+        "validTo": {
+          "@cds.valid.to": true,
+          "type": "cds.Timestamp"
+        }
+      }
+    },
+    "User": {
+      "kind": "type",
+      "@title": "{i18n>UserID}",
+      "@description": "{i18n>UserID.Description}",
+      "type": "cds.String",
+      "length": 255
+    },
+    "Attachments": {
+      "kind": "aspect",
+      "@UI.HeaderInfo.TypeName": "{i18n>Attachment}",
+      "@UI.HeaderInfo.TypeNamePlural": "{i18n>Attachments}",
+      "@UI.LineItem": [
+        {
+          "Value": {
+            "=": "content"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "30%"
+          }
+        },
+        {
+          "Value": {
+            "=": "status"
+          },
+          "Criticality": {
+            "=": "statusNav.criticality"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "10%"
+          }
+        },
+        {
+          "Value": {
+            "=": "createdAt"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "20%"
+          }
+        },
+        {
+          "Value": {
+            "=": "createdBy"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "15%"
+          }
+        },
+        {
+          "Value": {
+            "=": "note"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "25%"
+          }
+        }
+      ],
+      "@Capabilities.SortRestrictions.NonSortableProperties": [
+        {
+          "=": "content"
+        }
+      ],
+      "@_is_media_data": true,
+      "@UI.MediaResource.Stream": {
+        "=": "content"
+      },
+      "includes": [
+        "sap.attachments.Attachments"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "url": {
+          "@UI.Hidden": true,
+          "type": "cds.String"
+        },
+        "content": {
+          "@Core.ContentDisposition.Filename": {
+            "=": "filename"
+          },
+          "@Core.ContentDisposition.Type": "inline",
+          "@title": "{i18n>Attachment}",
+          "@Core.MediaType": {
+            "=": "mimeType"
+          },
+          "@odata.draft.skip": true,
+          "type": "cds.LargeBinary"
+        },
+        "mimeType": {
+          "@title": "{i18n>MediaType}",
+          "@Core.IsMediaType": true,
+          "type": "cds.String",
+          "default": {
+            "val": "application/octet-stream"
+          }
+        },
+        "filename": {
+          "@title": "{i18n>FileName}",
+          "type": "cds.String"
+        },
+        "hash": {
+          "@UI.Hidden": true,
+          "@Core.Computed": true,
+          "type": "cds.String"
+        },
+        "status": {
+          "@title": "{i18n>ScanStatus}",
+          "@Common.Text": {
+            "=": "statusNav.name"
+          },
+          "@Common.TextArrangement": {
+            "#": "TextOnly"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "default": {
+            "val": "Unscanned"
+          }
+        },
+        "statusNav": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "sap.attachments.ScanStates",
+          "on": [
+            {
+              "ref": [
+                "statusNav",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "status"
+              ]
+            }
+          ]
+        },
+        "lastScan": {
+          "@title": "{i18n>LastScan}",
+          "@Core.Computed": true,
+          "type": "cds.Timestamp"
+        },
+        "note": {
+          "@title": "{i18n>Note}",
+          "@UI.MultiLineText": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "sap.attachments": {
+      "kind": "context"
+    },
+    "sap.attachments.MediaData": {
+      "kind": "aspect",
+      "@_is_media_data": true,
+      "@UI.MediaResource.Stream": {
+        "=": "content"
+      },
+      "elements": {
+        "url": {
+          "@UI.Hidden": true,
+          "type": "cds.String"
+        },
+        "content": {
+          "@title": "{i18n>Attachment}",
+          "@Core.MediaType": {
+            "=": "mimeType"
+          },
+          "@odata.draft.skip": true,
+          "type": "cds.LargeBinary"
+        },
+        "mimeType": {
+          "@title": "{i18n>MediaType}",
+          "@Core.IsMediaType": true,
+          "type": "cds.String",
+          "default": {
+            "val": "application/octet-stream"
+          }
+        },
+        "filename": {
+          "@title": "{i18n>FileName}",
+          "type": "cds.String"
+        },
+        "hash": {
+          "@UI.Hidden": true,
+          "@Core.Computed": true,
+          "type": "cds.String"
+        },
+        "status": {
+          "@title": "{i18n>ScanStatus}",
+          "@Common.Text": {
+            "=": "statusNav.name"
+          },
+          "@Common.TextArrangement": {
+            "#": "TextOnly"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "default": {
+            "val": "Unscanned"
+          }
+        },
+        "statusNav": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "sap.attachments.ScanStates",
+          "on": [
+            {
+              "ref": [
+                "statusNav",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "status"
+              ]
+            }
+          ]
+        },
+        "lastScan": {
+          "@title": "{i18n>LastScan}",
+          "@Core.Computed": true,
+          "type": "cds.Timestamp"
+        }
+      }
+    },
+    "sap.attachments.ScanStates": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.skip": "if-unused",
+      "@UI.Identification": [
+        {
+          "Value": {
+            "=": "name"
+          }
+        }
+      ],
+      "@cds.odata.valuelist": true,
+      "includes": [
+        "sap.common.CodeList"
+      ],
+      "elements": {
+        "name": {
+          "@title": "{i18n>ScanStatus}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 64
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Text": {
+            "=": "name"
+          },
+          "@Common.TextArrangement": {
+            "#": "TextOnly"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 32,
+          "enum": {
+            "Unscanned": {},
+            "Scanning": {},
+            "Infected": {},
+            "Clean": {},
+            "Failed": {}
+          }
+        },
+        "criticality": {
+          "@UI.Hidden": true,
+          "type": "cds.Integer"
+        },
+        "texts": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.attachments.ScanStates.texts",
+          "on": [
+            {
+              "ref": [
+                "texts",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "localized": {
+          "type": "cds.Association",
+          "target": "sap.attachments.ScanStates.texts",
+          "on": [
+            {
+              "ref": [
+                "localized",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "code"
+              ]
+            },
+            "and",
+            {
+              "ref": [
+                "localized",
+                "locale"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$user",
+                "locale"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sap.attachments.Attachments": {
+      "kind": "aspect",
+      "@UI.HeaderInfo.TypeName": "{i18n>Attachment}",
+      "@UI.HeaderInfo.TypeNamePlural": "{i18n>Attachments}",
+      "@UI.LineItem": [
+        {
+          "Value": {
+            "=": "content"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "30%"
+          }
+        },
+        {
+          "Value": {
+            "=": "status"
+          },
+          "Criticality": {
+            "=": "statusNav.criticality"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "10%"
+          }
+        },
+        {
+          "Value": {
+            "=": "createdAt"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "20%"
+          }
+        },
+        {
+          "Value": {
+            "=": "createdBy"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "15%"
+          }
+        },
+        {
+          "Value": {
+            "=": "note"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "25%"
+          }
+        }
+      ],
+      "@Capabilities.SortRestrictions.NonSortableProperties": [
+        {
+          "=": "content"
+        }
+      ],
+      "@_is_media_data": true,
+      "@UI.MediaResource.Stream": {
+        "=": "content"
+      },
+      "includes": [
+        "cuid",
+        "managed",
+        "sap.attachments.MediaData"
+      ],
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "url": {
+          "@UI.Hidden": true,
+          "type": "cds.String"
+        },
+        "content": {
+          "@Core.ContentDisposition.Filename": {
+            "=": "filename"
+          },
+          "@Core.ContentDisposition.Type": "inline",
+          "@title": "{i18n>Attachment}",
+          "@Core.MediaType": {
+            "=": "mimeType"
+          },
+          "@odata.draft.skip": true,
+          "type": "cds.LargeBinary"
+        },
+        "mimeType": {
+          "@title": "{i18n>MediaType}",
+          "@Core.IsMediaType": true,
+          "type": "cds.String",
+          "default": {
+            "val": "application/octet-stream"
+          }
+        },
+        "filename": {
+          "@title": "{i18n>FileName}",
+          "type": "cds.String"
+        },
+        "hash": {
+          "@UI.Hidden": true,
+          "@Core.Computed": true,
+          "type": "cds.String"
+        },
+        "status": {
+          "@title": "{i18n>ScanStatus}",
+          "@Common.Text": {
+            "=": "statusNav.name"
+          },
+          "@Common.TextArrangement": {
+            "#": "TextOnly"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "default": {
+            "val": "Unscanned"
+          }
+        },
+        "statusNav": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "sap.attachments.ScanStates",
+          "on": [
+            {
+              "ref": [
+                "statusNav",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "status"
+              ]
+            }
+          ]
+        },
+        "lastScan": {
+          "@title": "{i18n>LastScan}",
+          "@Core.Computed": true,
+          "type": "cds.Timestamp"
+        },
+        "note": {
+          "@title": "{i18n>Note}",
+          "@UI.MultiLineText": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "kikuldetes.PostingsRegular.attachments": {
+      "kind": "entity",
+      "@UI.HeaderInfo.TypeName": "{i18n>Attachment}",
+      "@UI.HeaderInfo.TypeNamePlural": "{i18n>Attachments}",
+      "@UI.LineItem": [
+        {
+          "Value": {
+            "=": "content"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "30%"
+          }
+        },
+        {
+          "Value": {
+            "=": "status"
+          },
+          "Criticality": {
+            "=": "statusNav.criticality"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "10%"
+          }
+        },
+        {
+          "Value": {
+            "=": "createdAt"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "20%"
+          }
+        },
+        {
+          "Value": {
+            "=": "createdBy"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "15%"
+          }
+        },
+        {
+          "Value": {
+            "=": "note"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "25%"
+          }
+        }
+      ],
+      "@Capabilities.SortRestrictions.NonSortableProperties": [
+        {
+          "=": "content"
+        }
+      ],
+      "@_is_media_data": true,
+      "@UI.MediaResource.Stream": {
+        "=": "content"
+      },
+      "includes": [
+        "Attachments"
+      ],
+      "elements": {
+        "up_": {
+          "key": true,
+          "type": "cds.Association",
+          "cardinality": {
+            "min": 1,
+            "max": 1
+          },
+          "target": "kikuldetes.PostingsRegular",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ],
+          "notNull": true
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "url": {
+          "@UI.Hidden": true,
+          "type": "cds.String"
+        },
+        "content": {
+          "@Validation.Maximum": "2MB",
+          "@Core.AcceptableMediaTypes": [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+          ],
+          "@Core.ContentDisposition.Filename": {
+            "=": "filename"
+          },
+          "@Core.ContentDisposition.Type": "inline",
+          "@title": "{i18n>Attachment}",
+          "@Core.MediaType": {
+            "=": "mimeType"
+          },
+          "@odata.draft.skip": true,
+          "type": "cds.LargeBinary"
+        },
+        "mimeType": {
+          "@title": "{i18n>MediaType}",
+          "@Core.IsMediaType": true,
+          "type": "cds.String",
+          "default": {
+            "val": "application/octet-stream"
+          }
+        },
+        "filename": {
+          "@title": "{i18n>FileName}",
+          "type": "cds.String"
+        },
+        "hash": {
+          "@UI.Hidden": true,
+          "@Core.Computed": true,
+          "type": "cds.String"
+        },
+        "status": {
+          "@title": "{i18n>ScanStatus}",
+          "@Common.Text": {
+            "=": "statusNav.name"
+          },
+          "@Common.TextArrangement": {
+            "#": "TextOnly"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "default": {
+            "val": "Unscanned"
+          }
+        },
+        "statusNav": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "sap.attachments.ScanStates",
+          "on": [
+            {
+              "ref": [
+                "statusNav",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "status"
+              ]
+            }
+          ]
+        },
+        "lastScan": {
+          "@title": "{i18n>LastScan}",
+          "@Core.Computed": true,
+          "type": "cds.Timestamp"
+        },
+        "note": {
+          "@title": "{i18n>Note}",
+          "@UI.MultiLineText": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "kikuldetes.Statuses.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "statusText": {
+          "@mandatory": true,
+          "localized": null,
+          "type": "cds.String"
+        }
+      }
+    },
+    "kikuldetes.PostingsWithCar.attachments": {
+      "kind": "entity",
+      "@UI.HeaderInfo.TypeName": "{i18n>Attachment}",
+      "@UI.HeaderInfo.TypeNamePlural": "{i18n>Attachments}",
+      "@UI.LineItem": [
+        {
+          "Value": {
+            "=": "content"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "30%"
+          }
+        },
+        {
+          "Value": {
+            "=": "status"
+          },
+          "Criticality": {
+            "=": "statusNav.criticality"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "10%"
+          }
+        },
+        {
+          "Value": {
+            "=": "createdAt"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "20%"
+          }
+        },
+        {
+          "Value": {
+            "=": "createdBy"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "15%"
+          }
+        },
+        {
+          "Value": {
+            "=": "note"
+          },
+          "@HTML5.CssDefaults": {
+            "width": "25%"
+          }
+        }
+      ],
+      "@Capabilities.SortRestrictions.NonSortableProperties": [
+        {
+          "=": "content"
+        }
+      ],
+      "@_is_media_data": true,
+      "@UI.MediaResource.Stream": {
+        "=": "content"
+      },
+      "includes": [
+        "Attachments"
+      ],
+      "elements": {
+        "up_": {
+          "key": true,
+          "type": "cds.Association",
+          "cardinality": {
+            "min": 1,
+            "max": 1
+          },
+          "target": "kikuldetes.PostingsWithCar",
+          "keys": [
+            {
+              "ref": [
+                "ID"
+              ]
+            }
+          ],
+          "notNull": true
+        },
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "createdAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@Core.Immutable": true,
+          "@title": "{i18n>CreatedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedAt}",
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@UI.HiddenFilter": true,
+          "@UI.ExcludeFromNavigationContext": true,
+          "@title": "{i18n>ChangedBy}",
+          "@readonly": true,
+          "@description": "{i18n>UserID.Description}",
+          "type": "User",
+          "length": 255
+        },
+        "url": {
+          "@UI.Hidden": true,
+          "type": "cds.String"
+        },
+        "content": {
+          "@Validation.Maximum": "2MB",
+          "@Core.AcceptableMediaTypes": [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+          ],
+          "@Core.ContentDisposition.Filename": {
+            "=": "filename"
+          },
+          "@Core.ContentDisposition.Type": "inline",
+          "@title": "{i18n>Attachment}",
+          "@Core.MediaType": {
+            "=": "mimeType"
+          },
+          "@odata.draft.skip": true,
+          "type": "cds.LargeBinary"
+        },
+        "mimeType": {
+          "@title": "{i18n>MediaType}",
+          "@Core.IsMediaType": true,
+          "type": "cds.String",
+          "default": {
+            "val": "application/octet-stream"
+          }
+        },
+        "filename": {
+          "@title": "{i18n>FileName}",
+          "type": "cds.String"
+        },
+        "hash": {
+          "@UI.Hidden": true,
+          "@Core.Computed": true,
+          "type": "cds.String"
+        },
+        "status": {
+          "@title": "{i18n>ScanStatus}",
+          "@Common.Text": {
+            "=": "statusNav.name"
+          },
+          "@Common.TextArrangement": {
+            "#": "TextOnly"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "default": {
+            "val": "Unscanned"
+          }
+        },
+        "statusNav": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": 1
+          },
+          "target": "sap.attachments.ScanStates",
+          "on": [
+            {
+              "ref": [
+                "statusNav",
+                "code"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "status"
+              ]
+            }
+          ]
+        },
+        "lastScan": {
+          "@title": "{i18n>LastScan}",
+          "@Core.Computed": true,
+          "type": "cds.Timestamp"
+        },
+        "note": {
+          "@title": "{i18n>Note}",
+          "@UI.MultiLineText": true,
+          "type": "cds.String"
+        }
+      }
+    },
+    "kikuldetes.FuelTypes.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "ID": {
+          "@odata.containment.ignore": true,
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "name": {
+          "localized": null,
+          "type": "cds.String"
+        }
+      }
+    },
+    "sap.common.Languages.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@Common.Text": {
+            "=": "name"
+          },
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        }
+      }
+    },
+    "sap.common.Countries.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>CountryCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "sap.common.Currencies.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>CurrencyCode}",
+          "@Common.Text": {
+            "=": "name"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "sap.common.Timezones.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>Name}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@title": "{i18n>TimeZoneCode}",
+          "key": true,
+          "type": "cds.String",
+          "length": 100
+        }
+      }
+    },
+    "sap.attachments.ScanStates.texts": {
+      "kind": "entity",
+      "@odata.draft.enabled": false,
+      "includes": [
+        "sap.common.TextsAspect"
+      ],
+      "elements": {
+        "locale": {
+          "@title": "{i18n>LanguageCode}",
+          "key": true,
+          "type": "sap.common.Locale",
+          "length": 14
+        },
+        "name": {
+          "@title": "{i18n>ScanStatus}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 64
+        },
+        "descr": {
+          "@title": "{i18n>Description}",
+          "localized": null,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@odata.containment.ignore": true,
+          "@Common.Text": {
+            "=": "name"
+          },
+          "@Common.TextArrangement": {
+            "#": "TextOnly"
+          },
+          "key": true,
+          "type": "cds.String",
+          "length": 32,
+          "enum": {
+            "Unscanned": {},
+            "Scanning": {},
+            "Infected": {},
+            "Clean": {},
+            "Failed": {}
+          }
+        }
+      }
+    }
+  },
+  "meta": {
+    "creator": "CDS Compiler v6.7.1",
+    "flavor": "inferred"
+  },
+  "$version": "2.0"
+}
