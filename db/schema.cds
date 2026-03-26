@@ -291,10 +291,5 @@ entity Employees {
 
 }
 
-entity Employers {
-    key ID : Integer;
-    name : String;
-    address : String;
-    taxNumber : String;
-}
+
 
