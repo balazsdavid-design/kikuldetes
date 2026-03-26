@@ -57,7 +57,7 @@ service AppService {
     entity SerialNumbers as projection on my.SerialNumbers;
   @odata.draft.enabled
   entity Employees as projection on my.Employees;
-  entity Employers as projection on my.Employers;
+
 
   
 
