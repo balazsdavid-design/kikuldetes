@@ -177,7 +177,7 @@ entity PostingsWithCar : Postings, Car {
 
 entity SerialNumbers {
     key yearMonth : String;
-    //key number: Integer;
+    key number: Integer;
     inUse: Boolean default false;
     
  
