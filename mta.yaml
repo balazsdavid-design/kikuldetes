@@ -124,7 +124,7 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: adsrestapi
-      service-plan: free
+      service-plan: standard
 
   - name: kikuldetesek-auth
     type: org.cloudfoundry.managed-service
