@@ -453,6 +453,16 @@
                       "width": "37%"
                     }
                   }
+                },
+                "messages/@com.sap.vocabularies.UI.v1.LineItem#messages": {
+                  "columns": {
+                    "DataField::date": {
+                      "width": "37%"
+                    },
+                    "DataField::message": {
+                      "width": "37%"
+                    }
+                  }
                 }
               }
             }

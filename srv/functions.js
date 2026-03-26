@@ -55,7 +55,6 @@ async function getExchangeRates(date,currency){
  
                 try {
                     // 5️⃣ Árfolyam kinyerése
-                    console.log(parsedResult)
                     const rate = parseFloat(parsedResult.MNBExchangeRates.Day.Rate["_"].replace(',','.'));
                     
                     resolve(rate);
@@ -175,7 +174,6 @@ async function attachFile(token,apiURL,base64pdf,attachment){
    if(base64file == ""){
     return base64pdf
    }
-  console.log(attachment)
     
     var body =  JSON.stringify({
             "fileName": attachment.filename,
@@ -206,7 +204,6 @@ async function attachFile(token,apiURL,base64pdf,attachment){
             
         }
         catch(exception){
-            
             console.log(exception.response.data)
             return exception.response.data.trace
             

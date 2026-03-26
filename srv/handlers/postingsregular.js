@@ -1,14 +1,23 @@
+const { year } = require("@cap-js/postgres/lib/cql-functions");
+
+async function beforeDeletePostingRegular(req) {
+  const ID = req.data.ID
+  const serialNumberKey = await SELECT.one`serialNumberEntity_yearMonth, serialNumberEntity_number`.from`PostingsRegular`.where`ID = ${ID}`
+  const yearMonth = serialNumberKey.serialNumberEntity_yearMonth;
+  const number = serialNumberKey.serialNumberEntity_number;
+  await UPDATE`SerialNumbers`.where`yearMonth = ${yearMonth} and number = ${number}`.set`inUse = false`
+}
 async function beforeCreatePostingRegularDraft(req) {
      
         req.data.employee_ID = req.user.id
       
       req.data.status_ID = 1
+      
 }
 
 async function afterReadPostingRegular(results,req) {
     const { user} = req
 
-    
     for(const each of results){
       if(each.employee){
           var employee = each.employee
@@ -100,23 +109,44 @@ async function beforeCreatePostingRegular(req) {
     }
     
   
-      const now = new Date();
-      const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-
-        
-        const result = await (
-        SELECT`lastNumber`.from`SerialNumbers`.where`yearMonth = ${yearMonth}`
-        ) ?? [];
-        const  {lastNumber = 0} = result[0] || {};
-        const newNumber = lastNumber + 1;
-        const formattedNumber = String(newNumber).padStart(2, '0'); 
-        
-        
-        await (
-            UPSERT.into`SerialNumbers`.entries({ yearMonth, lastNumber: newNumber })
-        );
-
+      
+        const yearMonth = `${travelBack.getFullYear()}-${String(travelBack.getMonth() + 1).padStart(2, '0')}`;
+        let formattedNumber;
+        let number;
+        const freeSerialNumber = await (
+        SELECT.one`number`.from`SerialNumbers`.where`yearMonth = ${yearMonth} and inUse = false`.orderBy`number asc`
+        ) ?? {};
+        if(freeSerialNumber.number){
+       
+          await UPDATE`SerialNumbers`.where`yearMonth = ${yearMonth} and number = ${freeSerialNumber.number}`.set`inUse = true`
+          number = freeSerialNumber.number
+        }
+        else {
+          const lastSerialNumber = await (
+        SELECT.one`number`.from`SerialNumbers`.where`yearMonth = ${yearMonth} and inUse = true`.orderBy`number asc`
+        ) ?? {};
+          const lastNumber  = lastSerialNumber.number || 0;
+          const newNumber = lastNumber + 1;
+          number = newNumber
+          await (
+              INSERT.into`SerialNumbers`.entries({ yearMonth, number: newNumber, inUse: true })
+          );
+          
+        }
+        formattedNumber = String(number).padStart(2, '0');
         req.data.serialNumber = `${yearMonth}-${formattedNumber}`;
+        req.data.serialNumberEntity_yearMonth = yearMonth;
+        req.data.serialNumberEntity_number = number
+       
+        
+        
+        
+          
+        
+        if(!req.user.is('Backoffice')){
+          req.warn('SubmitReminder');
+        }
+        
         return req
 }
 async function beforeUpdatePostingRegular(req) {
@@ -178,7 +208,12 @@ async function beforeUpdatePostingRegular(req) {
     if(req.data.departures_arrivals.length < 2){
       req.error(400,'DepArrAtLeastTwo')
     }
-    
+    if(req.data.daily_expenses.length > 1){
+      req.error(400,'MaxOneDaily')
+    }
+    if(!req.user.is('Backoffice')){
+          req.warn('SubmitReminder');
+        }
 }
 async function beforeReadPostingRegular(req) {
     const { user } = req;
@@ -244,5 +279,6 @@ module.exports = {
     beforeCreatePostingRegularDraft,
     beforeReadPostingRegular,
     beforeUpdatePostingRegular,
-    beforeReadPostingRegularDraft
+    beforeReadPostingRegularDraft,
+    beforeDeletePostingRegular
 }

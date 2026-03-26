@@ -238,6 +238,7 @@ annotate service.PostingsWithCar with @(
                 $Type : 'UI.DataField',
                 Value : cylinder_volume,
                 Label : '{i18n>CylinderVolume}',
+                
             },
         ],
     },
@@ -337,21 +338,7 @@ annotate service.PostingsWithCar with @(
             Determining : true,
         },
     ],
-    UI.ConnectedFields #connected : {
-        $Type : 'UI.ConnectedFieldsType',
-        Template : '{fuel_type_ID}-{cylinder_volume}',
-        Data : {
-            $Type : 'Core.Dictionary',
-            fuel_type_ID : {
-                $Type : 'UI.DataField',
-                Value : fuel_type_ID,
-            },
-            cylinder_volume : {
-                $Type : 'UI.DataField',
-                Value : cylinder_volume,
-            },
-        },
-    },
+    
     UI.UpdateHidden : ((not submittable and not backOffice) or ( backOffice and accepted)),
   
 );
@@ -412,7 +399,7 @@ annotate service.PostingDataWithCar with @(
         {
             $Type : 'UI.DataField',
             Value : posting.data.daily_expense,
-            Label : '{i18n>DailyExpense}',
+            Label : '{i18n>CarPerDiem}',
         },
     ]
 );
@@ -555,6 +542,13 @@ annotate service.PostingsRegular with @(
             ID : 'i18nAttachments',
             Target : 'attachments/@UI.LineItem#i18nAttachments1',
         },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : '{i18n>StatusMessages}',
+            ID : 'messages',
+            Target : 'messages/@UI.LineItem#messages',
+            
+        },
     ],
     UI.FieldGroup #GeneralInformation : {
         $Type : 'UI.FieldGroupType',
@@ -653,6 +647,11 @@ annotate service.PostingsRegular with @(
         ],
     },
     UI.UpdateHidden : ((not submittable and not backOffice) or ( backOffice and accepted)),
+    UI.FieldGroup #T : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+        ],
+    },
     );
 
 annotate service.PostingsRegular with {
@@ -734,6 +733,7 @@ annotate service.DailyExpenses with @(
         },
     ]
 );
+
 
 annotate service.Accomodations with @(
     UI.LineItem #Accomodations : [
@@ -874,7 +874,9 @@ annotate service.PostingDataWithCar with {
 };
 
 annotate service.PostingDataWithCar with {
-    mileage @Common.FieldControl : #Mandatory
+    mileage @(
+        Common.FieldControl : #Mandatory,
+        )
 };
 
 annotate service.PostingDataWithCar with {
@@ -1017,7 +1019,9 @@ annotate service.TripExpenses with @(
             Value : paymentMethod_ID,
             Label : '{i18n>PaymentMethod}',
         },
-    ]
+    ],
+    UI.LineItem #T : [
+    ],
 );
 
 annotate service.TripExpenses with {
@@ -1148,7 +1152,10 @@ annotate service.PostingsRegular with {
 )};
 
 annotate service.PostingsWithCar with {
-    cylinder_volume @Common.FieldControl : #Optional
+    cylinder_volume @(
+        Common.FieldControl : #Optional,
+        Common.UnitSpecificScale: 1,
+        )
 };
 
 annotate service.Employees with @(
@@ -1268,5 +1275,28 @@ annotate service.Employees with {
 
 annotate service.Accomodations with {
     invoiceDate @Common.FieldControl : #Mandatory
+};
+
+annotate service.RegularStatusMessages with @(
+    UI.LineItem #messages : [
+        {
+            $Type : 'UI.DataField',
+            Value : message,
+            Label : '{i18n>RejectReason}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : date,
+            Label : '{i18n>Date}',
+        },
+    ]
+);
+
+annotate service.RegularStatusMessages with {
+    date @Common.FieldControl : #ReadOnly
+};
+
+annotate service.RegularStatusMessages with {
+    message @Common.FieldControl : posting.restriction
 };
 

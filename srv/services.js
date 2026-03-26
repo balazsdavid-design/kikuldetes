@@ -42,6 +42,9 @@ class AppService extends cds.ApplicationService {
   this.before('READ','PostingsWithCar.drafts',async(req) => {
     postingswithcar.beforeReadPostingWithCarDraft(req)
   })
+  this.before('DELETE','PostingsWithCar',async(req) => {
+    postingswithcar.beforeDeletePostingWithCar(req)
+  })
   
     // PostingsWithCar
 
@@ -63,11 +66,17 @@ class AppService extends cds.ApplicationService {
   })
   this.before("UPDATE",'PostingsRegular', async(req) => {
     postingsregular.beforeUpdatePostingRegular(req)
-  }
-)
+    
+  })
+  this.before("UPDATE",'PostingsRegular.drafts', async(req) => {
+    
+  })
 this.before('READ','PostingsRegular', async (req) => {
     postingsregular.beforeReadPostingRegular(req)
 });
+this.before('DELETE','PostingsRegular',async(req) => {
+  postingsregular.beforeDeletePostingRegular(req)
+})
     // PostingsRegular
     
 

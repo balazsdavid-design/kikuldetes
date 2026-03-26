@@ -1,16 +1,18 @@
 async function submit(req,entity) {
       entity = entity ? entity : 'PostingsWithCar'
-      
       var id = req.params[0]['ID']
+     
+
       const isHU = req.headers['accept-language'].includes('hu')
       const lang = isHU ? 'hu' : 'en'
       
       await UPDATE (entity,id).set({status_ID : 2})
       // Frissítem az entitásoldalon a státuszt
       const updated = await SELECT.one(entity, p=> {
-        p`.*`,p.status ( s => {s`.*` })
+        p`.*`,p.status ( s => {s`.*` }), p.messages ( m => { m`.*`})
       }).where({ID:id});
       // Beállítom a virtuális mezőket
+     
       updated.submittable = false
       updated.backOffice = req.user.is('Backoffice')
      
@@ -20,7 +22,7 @@ async function submit(req,entity) {
       
       updated.status.statusText = text.statusText
       
-      
+   
       return updated;
     
       
@@ -54,10 +56,15 @@ async function submit(req,entity) {
 
     async function rejectPosting(req,entity) {
       entity = entity ? entity : 'PostingsWithCar'
-      var id = req.params[0]['ID']
+      const messageEntity = entity.includes('Car') ? 'CarStatusMessages' : 'RegularStatusMessages'
+      const id = req.params[0]['ID']
       const isHU = req.headers['accept-language'].includes('hu')
       const lang = isHU ? 'hu' : 'en'
-      
+      const msg = req.data.message
+      if(msg){
+        const msgdate = new Date()
+        const statusMessage = await INSERT.into(messageEntity, [{posting_ID:id, message:msg,date:msgdate}])
+      }
       
       
       

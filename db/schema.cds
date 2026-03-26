@@ -25,6 +25,7 @@ entity PostingsRegular : Postings {
     material_expenses : Composition of many MaterialExpenses 
     on material_expenses.posting = $self;
     trip_expenses : Composition of many TripExpenses on trip_expenses.posting = $self;
+    messages : Composition of many RegularStatusMessages on messages.posting = $self;
     
 }
 
@@ -116,13 +117,13 @@ aspect Postings : managed {
     restriction : Integer default 0;
     @attachments.disable_facet
     attachments : Composition of many Attachments; 
-    
+   
     
     virtual submittable : Boolean default true;
     @UI.Hidden
     virtual backOffice : Boolean default false;
     serialNumber : String;
-    
+    serialNumberEntity : Association to one SerialNumbers;
     virtual editing : Boolean default false;
     virtual accepted : Boolean default false;
 }
@@ -143,21 +144,44 @@ entity Statuses {
     key ID : Integer;
     @mandatory
     statusText : localized String;
+    //message: String;
     
 }
 
+@UI.DeleteHidden : ( not posting.backOffice )
+@UI.CreateHidden
+entity RegularStatusMessages {
+    key ID: UUID;
+    virtual restriction : Integer default 0;
+    virtual backOffice : Boolean default false;
+    message : String;
+    date : DateTime;
+    posting: Association to one PostingsRegular;
+}
 
+entity CarStatusMessages {
+    key ID: UUID;
+    message : String;
+    date : DateTime;
+    posting: Association to one PostingsWithCar;
+}
 entity PostingsWithCar : Postings, Car {
     
     
     data : Composition of many PostingDataWithCar on data.posting = $self;
     stickers : Composition of many HighwayStickers on stickers.posting = $self;
-    
+    messages : Composition of many CarStatusMessages on messages.posting = $self;
     
 }
 
+
 entity SerialNumbers {
-    key yearMonth : String; 
+    key yearMonth : String;
+    key number: Integer;
+    inUse: Boolean default false;
+    
+    // deprecated field
+    @UI.Hidden
     lastNumber: Integer 
 }
 

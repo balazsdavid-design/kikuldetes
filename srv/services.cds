@@ -11,13 +11,14 @@ service AppService {
     entity PostingsRegular  as projection on my.PostingsRegular actions {
       action submitRegular() returns PostingsRegular;
       action unsubmitRegular() returns PostingsRegular;
-      action rejectRegular() returns PostingsRegular;
+      action rejectRegular(message : String) returns PostingsRegular;
       action acceptRegular() returns PostingsRegular;
 
     }; 
 
     entity DeparturesAndArrivals as projection on my.DeparturesAndArrivals;
-
+    entity RegularStatusMessages as projection on my.RegularStatusMessages;
+    entity CarStatusMessages as projection on my.CarStatusMessages;
     entity DailyExpenses as projection on my.DailyExpenses;
     entity Accomodations as projection on my.Accomodations;
     entity MaterialExpenses as projection on my.MaterialExpenses;
@@ -36,7 +37,7 @@ service AppService {
     action unsubmit() returns PostingsWithCar;
     
     //@requires : 'Backoffice'
-    action reject_() returns PostingsWithCar;
+    action reject_(message : String) returns PostingsWithCar;
     action accept() returns PostingsWithCar;
     } ;
     @odata.draft.enabled
