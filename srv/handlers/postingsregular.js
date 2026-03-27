@@ -123,7 +123,7 @@ async function beforeCreatePostingRegular(req) {
         }
         else {
           const lastSerialNumber = await (
-        SELECT.one`number`.from`SerialNumbers`.where`yearMonth = ${yearMonth} and inUse = true`.orderBy`number asc`
+        SELECT.one`number`.from`SerialNumbers`.where`yearMonth = ${yearMonth} and inUse = true`.orderBy`number desc`
         ) ?? {};
           const lastNumber  = lastSerialNumber.number || 0;
           const newNumber = lastNumber + 1;
