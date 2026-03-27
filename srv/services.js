@@ -13,7 +13,28 @@ const postingsregular = require("./handlers/postingsregular")
 
 class AppService extends cds.ApplicationService {
   init() {
-   
+    this.after('READ',`*`,async(results,req) => {
+      const { user} = req;
+      
+     const employee = await SELECT.one`ID`.from('Employees').where({ID:user.id})
+     if(!employee){
+      const tx = cds.tx(req)
+      const firstName =user.attr.givenName
+      const lastName = user.attr.familyName
+      
+      const employee = [{ID:user.id,name:firstName,lastName:lastName}]
+      try {
+      await tx.run(INSERT.
+      into('Employees')
+      //.columns('ID','name','lastName')
+      //.values(user.id,firstName,lastName))
+      .entries(employee))
+      }
+      catch(exception){
+        console.log(exception)
+      }
+     }
+    })
     // PostingsWithCar
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
       postingswithcar.beforeCreatePostingWithCarDraft(req)
