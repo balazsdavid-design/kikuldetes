@@ -1088,7 +1088,7 @@ annotate service.PostingsWithCar with {
             $value : status.statusText,
             ![@UI.TextArrangement] : #TextOnly,
         },
-        Common.FieldControl : #ReadOnly,
+        Common.FieldControl : restriction,
         )
 };
 
@@ -1148,7 +1148,7 @@ annotate service.PostingsRegular with {
             $value : status.statusText,
             ![@UI.TextArrangement] : #TextOnly,
         },
-        Common.FieldControl : #ReadOnly,
+        Common.FieldControl : restriction,
 )};
 
 annotate service.PostingsWithCar with {
