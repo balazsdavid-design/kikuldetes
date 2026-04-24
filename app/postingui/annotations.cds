@@ -182,6 +182,11 @@ annotate service.PostingsWithCar with @(
             Value : goal,
             Label : '{i18n>PostingGoal}',
         },
+        {
+            $Type : 'UI.DataField',
+            Value : serialNumber,
+            Label : '{i18n>SerialNumber}',
+        },
     ],
     
     UI.FieldGroup #Data : {
@@ -475,6 +480,11 @@ annotate service.PostingsRegular with @(
             $Type : 'UI.DataField',
             Value : goal,
             Label : '{i18n>PostingGoal}',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : serialNumber,
+            Label : '{i18n>SerialNumber}',
         },
     ],
     UI.SelectionPresentationVariant #tableView : {
