@@ -8,6 +8,8 @@
   "dependencies": {
     "@cap-js/attachments": "^3.7.0",
     "@cap-js/postgres": "^2.1.2",
+    "@sap-cloud-sdk/http-client": "^4.6.0",
+    "@sap-cloud-sdk/resilience": "^4.6.0",
     "@sap/cds": "^9.7.0",
     "@sap/cds-common-content": "^2.1.0",
     "@sap/xssec": "^4.6.0",
@@ -55,6 +57,12 @@
       },
       "db": {
         "[test]": {
+          "kind": "sqlite",
+          "credentials": {
+            "url": "./db/kikuldetesek.sqlite"
+          }
+        },
+        "[hybrid": {
           "kind": "sqlite",
           "credentials": {
             "url": "./db/kikuldetesek.sqlite"
