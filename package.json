@@ -68,6 +68,12 @@
         "kind": "db",
         "scan": true
       },
+      "MS_GRAPH": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "MS_GRAPH"
+        }
+      },
       "destinations": true,
       "html5-runtime": true,
       "workzone": true,

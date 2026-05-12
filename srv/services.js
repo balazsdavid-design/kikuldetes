@@ -13,6 +13,10 @@ const postingsregular = require("./handlers/postingsregular")
 
 class AppService extends cds.ApplicationService {
   init() {
+    this.after('CREATE','PaymentMethods.drafts', async(req) => {
+      const  { api } = await cds.connect('MS_GRAPH')
+      console.log(api)
+    })
     this.after('READ',`*`,async(results,req) => {
       const { user} = req;
       
