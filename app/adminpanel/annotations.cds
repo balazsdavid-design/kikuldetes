@@ -173,6 +173,13 @@ annotate service.PaymentMethods with @(
         TypeName : '',
         TypeNamePlural : '',
     },
+    UI.Identification : [
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'AppService.EntityContainer/Test',
+            Label : 'Test',
+        },
+    ],
 );
 
 annotate service.MeansOfTransport with @(

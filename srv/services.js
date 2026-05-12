@@ -15,7 +15,39 @@ class AppService extends cds.ApplicationService {
   init() {
     this.after('CREATE','PaymentMethods.drafts', async(req) => {
       const  { api } = await cds.connect('MS_GRAPH')
-      console.log(api)
+      if(api){
+      const res = api.send({
+        method: "POST",
+        path: "/users/noreply@mb3r.onmicrosoft.com/sendMail",
+        data: {
+                    method: 'POST',
+                    url: "/users/noreply@mb3r.onmicrosoft.com/sendMail",
+                    data: {
+                            "message": {
+                                "subject": "Meet for lunch?",
+                                
+                                "body": {
+                                    "contentType": "Text",
+                                    "content": "The new cafeteria is open."
+                                },
+                                "toRecipients": [
+                                    {
+                                        "emailAddress": {
+                                            "address": "david.balazs@msg-plaut.hu"
+                                                        }
+                                    }
+                                ],
+                                "from": {
+                            "emailAddress": {
+                              "address": "noreply@mb3r.onmicrosoft.com"
+                                            }
+                                        }
+                                        }
+                            }
+                } 
+      })
+      console.log(res)
+    }
     })
     this.after('READ',`*`,async(results,req) => {
       const { user} = req;

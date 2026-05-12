@@ -7,7 +7,8 @@ service AppService {
     
     @cds.redirection.target
     @odata.draft.enabled
-    
+    action Test();
+
     entity PostingsRegular  as projection on my.PostingsRegular actions {
       action submitRegular() returns PostingsRegular;
       action unsubmitRegular() returns PostingsRegular;
