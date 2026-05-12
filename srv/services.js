@@ -59,7 +59,7 @@ class AppService extends cds.ApplicationService {
                     destinationName: 'MS_GRAPH'
                 }, {
                     method: 'POST',
-                    url: "/users/noreply@mb3r.onmicrosoft.com/sendMail",
+                    url: "https://graph.microsoft.com/v1.0/users/noreply@mb3r.onmicrosoft.com/sendMail",
                     data: message
                 } 
             );
