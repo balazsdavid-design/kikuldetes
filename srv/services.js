@@ -16,15 +16,8 @@ class AppService extends cds.ApplicationService {
     this.on('Test', async(req) => {
    
       const  { api } = await cds.connect('MS_GRAPH')
-      console.log(api)
-      if(api){
-      const res = api.send({
-        method: "POST",
-        path: "/users/noreply@mb3r.onmicrosoft.com/sendMail",
-        data: {
-                    method: 'POST',
-                    url: "/users/noreply@mb3r.onmicrosoft.com/sendMail",
-                    data: {
+      const message = {
+
                             "message": {
                                 "subject": "Meet for lunch?",
                                 
@@ -46,10 +39,36 @@ class AppService extends cds.ApplicationService {
                                         }
                                         }
                             }
-                } 
+      console.log(api)
+      try {
+        const res = await api.send({
+        method: "POST",
+        path: "/users/noreply@mb3r.onmicrosoft.com/sendMail",
+        data: message
+                
       })
       console.log(res)
-    }
+      }
+      catch(err){
+        console.log(err)
+      }
+      const { executeHttpRequest } = require('@sap-cloud-sdk/http-client');
+      try {
+        return await executeHttpRequest(
+                {
+                    destinationName: 'MS_GRAPH'
+                }, {
+                    method: 'POST',
+                    url: "/users/noreply@mb3r.onmicrosoft.com/sendMail",
+                    data: message
+                } 
+            );
+      }
+      catch(e){
+        console.log(e)
+      }
+      
+    
     })
     this.after('READ',`*`,async(results,req) => {
       const { user} = req;
