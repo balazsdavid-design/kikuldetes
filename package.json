@@ -80,7 +80,8 @@
         "kind": "rest",
         "credentials": {
           "destination": "MS_GRAPH"
-        }
+        },
+        "csrf":true
       },
       "destinations": true,
       "html5-runtime": true,
