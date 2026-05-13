@@ -15,7 +15,7 @@ class AppService extends cds.ApplicationService {
   init() {
     this.on('Test', async(req) => {
    
-      const  { api } = await cds.connect.to('MS_GRAPH')
+      const  api  = await cds.connect.to('MS_GRAPH')
       const message = {
 
                             "message": {
@@ -59,7 +59,10 @@ class AppService extends cds.ApplicationService {
                     method: 'POST',
                     url: "https://graph.microsoft.com/v1.0/users/noreply@mb3r.onmicrosoft.com/sendMail",
                     data: message
-                } 
+                },
+                {
+                   fetchCsrfToken: false
+                }
             );
       }
       catch(e){
