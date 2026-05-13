@@ -39,7 +39,7 @@ class AppService extends cds.ApplicationService {
                                         }
                                         }
                             }
-      console.log(api)
+
       try {
         const res = await api.send(
         'POST',
@@ -52,7 +52,7 @@ class AppService extends cds.ApplicationService {
       }
       const { executeHttpRequest } = require('@sap-cloud-sdk/http-client');
       try {
-        return await executeHttpRequest(
+        const reqs = await executeHttpRequest(
                 {
                     destinationName: 'MS_GRAPH'
                 }, {
@@ -64,6 +64,7 @@ class AppService extends cds.ApplicationService {
                    fetchCsrfToken: false
                 }
             );
+            console.log(reqs)
       }
       catch(e){
         console.log(e)
