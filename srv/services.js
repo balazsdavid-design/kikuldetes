@@ -15,7 +15,7 @@ class AppService extends cds.ApplicationService {
   init() {
     this.on('Test', async(req) => {
    
-      const  { api } = await cds.connect('MS_GRAPH')
+      const  { api } = await cds.connect.to('MS_GRAPH')
       const message = {
 
                             "message": {
@@ -41,12 +41,10 @@ class AppService extends cds.ApplicationService {
                             }
       console.log(api)
       try {
-        const res = await api.send({
-        method: "POST",
-        path: "/users/noreply@mb3r.onmicrosoft.com/sendMail",
-        data: message
-                
-      })
+        const res = await api.send(
+        'POST',
+        '/users/noreply@mb3r.onmicrosoft.com/sendMail',
+          message )
       console.log(res)
       }
       catch(err){
