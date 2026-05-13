@@ -28,7 +28,7 @@ class AppService extends cds.ApplicationService {
                                 "toRecipients": [
                                     {
                                         "emailAddress": {
-                                            "address": "balazsdavide@gmail.com"
+                                            "address": "david.balazs@msg-plaut.hu"
                                                         }
                                     }
                                 ],
@@ -50,7 +50,7 @@ class AppService extends cds.ApplicationService {
       catch(err){
         console.log(err)
       }
-      const { executeHttpRequest } = require('@sap-cloud-sdk/http-client');
+      /*const { executeHttpRequest } = require('@sap-cloud-sdk/http-client');
       try {
         const reqs = await executeHttpRequest(
                 {
@@ -68,7 +68,7 @@ class AppService extends cds.ApplicationService {
       }
       catch(e){
         console.log(e)
-      }
+      }*/
       
     
     })
