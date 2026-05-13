@@ -28,7 +28,7 @@ class AppService extends cds.ApplicationService {
                                 "toRecipients": [
                                     {
                                         "emailAddress": {
-                                            "address": "david.balazs@msg-plaut.hu"
+                                            "address": "balazsdavide@gmail.com"
                                                         }
                                     }
                                 ],
