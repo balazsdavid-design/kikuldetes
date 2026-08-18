@@ -1,3 +1,5 @@
+const cds = require("@sap/cds");
+
 async function afterReadEmployees(results){
     for(let each of results){
       each.fullName = each.name+" "+each.lastName
@@ -64,11 +66,40 @@ async function beforeCreateEmployeesDraft(req){
    
 }
 
+async function updatePersonalData(req) {
+    const employeeId = String(req.data.ID || req.user.id);
+
+    if (employeeId !== req.user.id && !req.user.is("Backoffice")) {
+        return req.reject(403, "Restricted");
+    }
+
+    const editableFields = [
+        "name", "lastName", "position", "postal_code", "city", "address",
+        "birthDate", "birthPlace", "mothersName", "taxNumber"
+    ];
+    const changes = Object.fromEntries(
+        editableFields.map((field) => [field, req.data[field] ?? null])
+    );
+
+    const affectedRows = await cds.tx(req).run(
+        UPDATE.entity("kikuldetes.Employees")
+            .set(changes)
+            .where({ ID: employeeId })
+    );
+
+    if (!affectedRows) {
+        return req.reject(404, "EmployeeNotFound");
+    }
+
+    return true;
+}
+
 module.exports = { 
     afterReadEmployees,
     beforeCreateEmployeesDraft,
     beforeDeleteEmployees,
     beforeReadEmployees,
     beforeUpdateEmployees,
+    updatePersonalData,
 
                 }

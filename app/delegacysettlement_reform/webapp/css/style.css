@@ -1,0 +1,379 @@
+html,
+body {
+  scrollbar-gutter: stable;
+}
+
+.sapMPageEnableScrolling,
+.sapFDynamicPageContentWrapper {
+  scrollbar-gutter: stable;
+}
+
+/* This workspace always uses the compact Dynamic Page header. */
+.sapFDynamicPageToggleHeaderIndicator,
+.sapFDynamicPageHeaderPinButton,
+.sapFDynamicPageTitle [id*="Share"] {
+  display: none !important;
+}
+
+.workspaceContent {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.workspaceTabs .sapMITBContent {
+  border-bottom: 0;
+  padding: 1.25rem 0 0 0;
+}
+
+.workspaceTabs .sapMITBContainerContent {
+  border-bottom: 0;
+}
+
+/* Blend the IconTabBar header into the page background instead of showing a white strip. */
+.workspaceTabs,
+.workspaceTabs .sapMITH,
+.workspaceTabs .sapMITHWrapper,
+.workspaceTabs .sapMITHScrollContainer,
+.workspaceTabs .sapMITBHeadContainer {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.workspaceTabs .sapMITH {
+  border-bottom-color: transparent !important;
+}
+
+/* The selection marker belongs to the caption itself, so it is correctly
+   positioned on the first paint without JavaScript measurements. */
+.workspaceTabs .sapMITBSelected .sapMITBContentArrow {
+  visibility: hidden;
+}
+
+/* Keep the three main navigation items centered and give each label enough room. */
+.workspaceTabs .sapMITH,
+.workspaceTabs .sapMITHWrapper,
+.workspaceTabs .sapMITHScrollContainer {
+  width: 100%;
+}
+
+.workspaceTabs .sapMITHScrollContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.workspaceTabs .sapMITBHead {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.workspaceTabs .sapMITBFilter {
+  flex: 0 0 15rem;
+  min-width: 15rem;
+  max-width: none;
+  margin: 0 0.75rem;
+  text-align: center;
+}
+
+.workspaceTabs .sapMITBFilter.sapMITBVertical,
+.workspaceTabs .sapMITBFilter .sapMITBVertical {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.workspaceTabs .sapMITBFilterWrapper,
+.workspaceTabs .sapMITBTab {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.workspaceTabs .sapMITBFilterIcon {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.workspaceTabs .sapMITBText {
+  position: relative;
+  display: block !important;
+  width: max-content !important;
+  max-width: none;
+  box-sizing: border-box;
+  white-space: nowrap;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: none !important;
+}
+
+.workspaceTabs .sapMITBSelected .sapMITBText::after {
+  content: "";
+  position: absolute;
+  left: -0.1875rem;
+  right: -0.1875rem;
+  bottom: -0.625rem;
+  height: 0.1875rem;
+  border-radius: 0.125rem 0.125rem 0 0;
+  background: var(--sapSelectedColor);
+  pointer-events: none;
+}
+
+/* On first paint the marker above is immediately correct. After the first user
+   selection, this shared marker takes over and slides between captions. */
+.workspaceTabs .sapMITBHead {
+  position: relative;
+  --workspace-tab-indicator-x: 0px;
+  --workspace-tab-indicator-width: 0px;
+}
+
+.workspaceTabs .sapMITBHead::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: 0;
+  width: var(--workspace-tab-indicator-width);
+  height: 0.1875rem;
+  border-radius: 0.125rem 0.125rem 0 0;
+  background: var(--sapSelectedColor);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(var(--workspace-tab-indicator-x), 0, 0);
+  transition:
+    transform 280ms cubic-bezier(0.2, 0, 0, 1),
+    width 240ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.workspaceTabs.workspaceAnimatedIndicator .sapMITBHead::after {
+  opacity: 1;
+}
+
+.workspaceTabs.workspaceAnimatedIndicator .sapMITBSelected .sapMITBText::after {
+  visibility: hidden;
+}
+
+.workspaceTabs .sapMITBHead.workspaceIndicatorNoAnimation::after {
+  transition: none;
+}
+
+.workspaceTabContent {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.workspaceSectionHeading {
+  max-width: 62rem;
+}
+
+.profileArea {
+  width: 100%;
+  max-width: 90rem;
+  margin: 0 auto;
+}
+
+.profileHeader {
+  padding: 1rem 0;
+  gap: 1rem;
+}
+
+.profileIdentity,
+.profileActions {
+  gap: 0.5rem;
+}
+
+.profileContent {
+  width: 100%;
+  min-width: 100%;
+}
+
+.profileCards {
+  display: grid !important;
+  grid-template-columns: minmax(0, 2fr) minmax(15rem, 1fr) minmax(15rem, 1fr);
+  width: 100%;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.profileCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100% !important;
+  height: 100%;
+  min-width: 0;
+  min-height: 22rem;
+  max-width: none;
+  margin: 0 !important;
+  overflow: hidden;
+  border: 1px solid var(--sapList_BorderColor, rgba(0, 0, 0, 0.08));
+  border-radius: 1rem;
+  background: var(--sapGroup_ContentBackground, #fff);
+  box-shadow: var(--sapContent_Shadow0, 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08));
+}
+
+.profileCard::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 auto 0;
+  height: 0.1875rem;
+  background: linear-gradient(90deg, var(--sapSelectedColor), var(--sapInformativeColor));
+}
+
+.profileCard .sapMPanelWrappingDivTb {
+  flex: 0 0 auto;
+}
+
+.profileCard .sapMPanelContent {
+  flex: 1 1 auto;
+  padding: 1rem 1.125rem 1.125rem;
+  border-bottom: 0;
+  background: transparent;
+}
+
+.profileCardHeader.sapMTB {
+  height: 3.75rem;
+  padding: 0 1.125rem;
+  border-bottom: 1px solid var(--sapList_BorderColor, rgba(0, 0, 0, 0.08));
+  background: transparent;
+}
+
+.profileCardIcon {
+  width: 2.125rem;
+  height: 2.125rem;
+  flex: 0 0 2.125rem;
+  margin-right: 0.625rem;
+  border-radius: 0.6875rem;
+  color: var(--sapInformativeColor);
+  background: var(--sapInformativeBackground, rgba(0, 112, 242, 0.1));
+}
+
+.profileCardAddress .profileCardIcon {
+  color: var(--sapPositiveColor);
+  background: var(--sapSuccessBackground, rgba(16, 126, 62, 0.1));
+}
+
+.profileCardOfficial .profileCardIcon {
+  color: var(--sapCriticalColor);
+  background: var(--sapWarningBackground, rgba(233, 115, 12, 0.1));
+}
+
+.profileCardTitle {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+}
+
+.profileFieldGrid {
+  display: grid !important;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.profileFieldGridBasic,
+.profileFieldGridAddress {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profileFieldGridOfficial {
+  grid-template-columns: 1fr;
+}
+
+.profileFieldWide {
+  grid-column: 1 / -1;
+}
+
+.profileField {
+  min-width: 0;
+  min-height: 4.625rem;
+  padding: 0.625rem 0.75rem;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  background: var(--sapBackgroundColor, #f5f6f7);
+}
+
+.profileField .sapMLabel {
+  margin-bottom: 0.1875rem;
+  color: var(--sapContent_LabelColor);
+  font-size: 0.8125rem;
+}
+
+.profileFieldValue {
+  display: flex !important;
+  align-items: center;
+  min-height: 2rem;
+  color: var(--sapTextColor);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.profileField .sapMInputBase {
+  width: 100% !important;
+}
+
+.profileField .sapMInputBaseContentWrapper {
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 75rem) {
+  .profileCards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profileCardBasic {
+    grid-column: 1 / -1;
+  }
+
+  .profileCardAddress,
+  .profileCardOfficial {
+    min-height: 16rem;
+  }
+}
+
+@media (max-width: 64rem) {
+  .workspaceTabs .sapMITBFilter {
+    flex-basis: 12.5rem;
+    min-width: 12.5rem;
+    margin: 0 0.35rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  /* The IconTabBar remains horizontally scrollable on narrow devices. */
+  .workspaceTabs .sapMITHScrollContainer,
+  .workspaceTabs .sapMITBHead {
+    justify-content: flex-start;
+  }
+
+  .workspaceTabs .sapMITBFilter {
+    flex-basis: 12rem;
+    min-width: 12rem;
+    margin: 0 0.25rem;
+  }
+
+  .profileCards {
+    grid-template-columns: 1fr;
+  }
+
+  .profileCardBasic {
+    grid-column: auto;
+  }
+
+  .profileCard {
+    min-width: 100%;
+    min-height: 0;
+    max-width: 100%;
+  }
+
+  .profileFieldGridBasic,
+  .profileFieldGridAddress {
+    grid-template-columns: 1fr;
+  }
+
+  .profileActions {
+    width: 100%;
+  }
+}

@@ -1,0 +1,20 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <SelectDialog
+        id="employeeSelectDialog"
+        title="{i18n>SearchOtherEmployee}"
+        noDataText="{i18n>NoEmployeesFound}"
+        search=".onEmployeeSearchLiveChange"
+        liveChange=".onEmployeeSearchLiveChange"
+        confirm=".onEmployeeSelected"
+        cancel=".onEmployeeSearchCancel"
+        items="{/Employees}">
+        <StandardListItem
+            title="{fullName}"
+            description="{ID}"
+            info="{position}"
+            icon="sap-icon://employee"
+            type="Active" />
+    </SelectDialog>
+</core:FragmentDefinition>

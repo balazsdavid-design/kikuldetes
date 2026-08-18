@@ -1,0 +1,453 @@
+{
+  "_version": "1.86.0",
+  "sap.app": {
+    "id": "kikuldetesek.delegacysettlementreform",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:fpm",
+      "version": "1.30.0",
+      "toolsId": "9e5687a9-53e8-465d-b3f5-dd3b59db7ef9"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/app/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "TravelPosting-manage": {
+          "semanticObject": "TravelPosting",
+          "action": "manage",
+          "title": "{{TravelPosting-manage.flpTitle}}",
+          "subTitle": "{{TravelPosting-manage.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.151.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ui.layout": {},
+        "sap.f": {},
+        "sap.fe.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "kikuldetesek.delegacysettlementreform.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "name": "Main",
+          "pattern": ":?query:",
+          "target": "Main"
+        },
+        {
+          "name": "PostingsWithCarObjectPage",
+          "pattern": "PostingsWithCar({PostingsWithCarKey}):?query:",
+          "target": "PostingsWithCarObjectPage"
+        },
+        {
+          "name": "PostingsRegularObjectPage",
+          "pattern": "PostingsRegular({PostingsRegularKey}):?query:",
+          "target": "PostingsRegularObjectPage"
+        },
+        {
+          "name": "EmployeesObjectPage",
+          "pattern": "Employees({EmployeesKey}):?query:",
+          "target": "EmployeesObjectPage"
+        }
+      ],
+      "targets": {
+        "Main": {
+          "type": "Component",
+          "id": "Main",
+          "name": "sap.fe.core.fpm",
+          "options": {
+            "settings": {
+              "viewName": "kikuldetesek.delegacysettlementreform.ext.view.Main",
+              "contextPath": "/PostingsWithCar",
+              "navigation": {
+                "PostingsWithCar": {
+                  "detail": {
+                    "route": "PostingsWithCarObjectPage"
+                  }
+                },
+                "PostingsRegular": {
+                  "detail": {
+                    "route": "PostingsRegularObjectPage"
+                  }
+                },
+                "Employees": {
+                  "detail": {
+                    "route": "EmployeesObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PostingsWithCarObjectPage": {
+          "type": "Component",
+          "id": "PostingsWithCarObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/PostingsWithCar",
+              "sectionLayout": "Tabs",
+              "content": {
+                "header": {
+                  "actions": {
+                    "savepdf": {
+                      "press": "kikuldetesek.delegacysettlementreform.ext.controller.PDF_handler.handle",
+                      "text": "{i18n>SavePDF}",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "EditAction"
+                      },
+                      "enabled": "{= !${ui>/isEditable} && ${backOffice} && ${accepted}}",
+                      "visible": "{= !${submittable} && ${backOffice} }"
+                    }
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "stickers/@com.sap.vocabularies.UI.v1.LineItem#HighwayStickers": {
+                  "columns": {
+                    "DataField::country_code": {
+                      "width": "18.5%"
+                    },
+                    "DataField::price": {
+                      "width": "33%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "16.5%"
+                    },
+                    "DataField::date": {
+                      "width": "16.5%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
+                    }
+                  }
+                },
+                "data/@com.sap.vocabularies.UI.v1.LineItem#Data": {
+                  "columns": {
+                    "DataField::posting::data::date": {
+                      "width": "10%"
+                    },
+                    "DataField::posting::data::from_where": {
+                      "width": "20%"
+                    },
+                    "DataField::posting::data::to_where": {
+                      "width": "20%"
+                    },
+                    "DataField::posting::data::mileage": {
+                      "width": "12%"
+                    },
+                    "DataField::posting::data::daily_expense": {
+                      "width": "6%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
+                    }
+                  }
+                },
+                "attachments/@com.sap.vocabularies.UI.v1.LineItem#i18nAttachments": {
+                  "columns": {
+                    "DataField::content": {
+                      "width": "34%"
+                    },
+                    "DataField::mimeType": {
+                      "width": "34%"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PostingsRegularObjectPage": {
+          "type": "Component",
+          "id": "PostingsRegularObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/PostingsRegular",
+              "sectionLayout": "Tabs",
+              "content": {
+                "header": {
+                  "actions": {
+                    "saveRegularPDF": {
+                      "id": "saveRegularPDF",
+                      "press": "kikuldetesek.delegacysettlementreform.ext.controller.RegPDF_handler.downloadPDF",
+                      "visible": "{= !${submittable} && ${backOffice} }",
+                      "enabled": "{= !${ui>/isEditable} && ${backOffice} && ${accepted}}",
+                      "text": "{i18n>SavePDF}",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "EditAction"
+                      }
+                    }
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "departures_arrivals/@com.sap.vocabularies.UI.v1.LineItem#DeparturesandArrivals": {
+                  "columns": {
+                    "DataField::from_where": {
+                      "width": "18%"
+                    },
+                    "DataField::departure": {
+                      "width": "14%"
+                    },
+                    "DataField::to_where": {
+                      "width": "18%"
+                    },
+                    "DataField::arrival": {
+                      "width": "14%"
+                    },
+                    "DataField::meanOfTransport_ID": {
+                      "width": "10%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
+                    }
+                  }
+                },
+                "daily_expenses/@com.sap.vocabularies.UI.v1.LineItem#Dailyexpenses": {
+                  "columns": {
+                    "DataField::date": {
+                      "width": "18.5%"
+                    },
+                    "DataField::days": {
+                      "width": "14.5%"
+                    },
+                    "DataField::daily_price": {
+                      "width": "26.5%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "12%"
+                    },
+                    "DataField::paymentMethod_ID": {
+                      "width": "14.5%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
+                    }
+                  }
+                },
+                "accomodations/@com.sap.vocabularies.UI.v1.LineItem#Accomodations": {
+                  "columns": {
+                    "DataField::accomodation_name": {
+                      "width": "20%"
+                    },
+                    "DataField::date": {
+                      "width": "10%"
+                    },
+                    "DataField::days": {
+                      "width": "6%"
+                    },
+                    "DataField::daily_price": {
+                      "width": "18%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "10%"
+                    },
+                    "DataField::paymentMethod_ID": {
+                      "width": "10%"
+                    },
+                    "DataField::posting::accomodations::invoiceDate": {
+                      "width": "10%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
+                    }
+                  }
+                },
+                "material_expenses/@com.sap.vocabularies.UI.v1.LineItem#Materialexpenses": {
+                  "columns": {
+                    "DataField::reference": {
+                      "width": "18%"
+                    },
+                    "DataField::date": {
+                      "width": "12%"
+                    },
+                    "DataField::name": {
+                      "width": "18%"
+                    },
+                    "DataField::price": {
+                      "width": "14%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "6%"
+                    },
+                    "DataField::paymentMethod_ID": {
+                      "width": "12%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
+                    }
+                  }
+                },
+                "trip_expenses/@com.sap.vocabularies.UI.v1.LineItem#Tripexpenses": {
+                  "columns": {
+                    "DataField::posting::trip_expenses::reference": {
+                      "width": "18%"
+                    },
+                    "DataField::posting::trip_expenses::date": {
+                      "width": "12%"
+                    },
+                    "DataField::posting::trip_expenses::name": {
+                      "width": "18%"
+                    },
+                    "DataField::posting::trip_expenses::price": {
+                      "width": "14%"
+                    },
+                    "DataField::currency_code": {
+                      "width": "6%"
+                    },
+                    "DataField::paymentMethod_ID": {
+                      "width": "12%"
+                    }
+                  },
+                  "tableSettings": {
+                    "creationMode": {
+                      "createAtEnd": true
+                    }
+                  }
+                },
+                "attachments/@com.sap.vocabularies.UI.v1.LineItem#i18nAttachments1": {
+                  "columns": {
+                    "DataField::content": {
+                      "width": "37%"
+                    },
+                    "DataField::mimeType": {
+                      "width": "37%"
+                    }
+                  }
+                },
+                "messages/@com.sap.vocabularies.UI.v1.LineItem#messages": {
+                  "columns": {
+                    "DataField::date": {
+                      "width": "37%"
+                    },
+                    "DataField::message": {
+                      "width": "37%"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "EmployeesObjectPage": {
+          "type": "Component",
+          "id": "EmployeesObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/Employees",
+              "sectionLayout": "Tabs"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fe": {
+    "app": {
+      "enableLazyLoading": true
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "kikuldetesek.service"
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}

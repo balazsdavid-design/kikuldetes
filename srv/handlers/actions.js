@@ -122,4 +122,9 @@ async function submit(req,entity) {
       
     }
 
-    module.exports = { submit, unsubmit, rejectPosting, accept}
+    module.exports = {
+      submit,
+      unsubmit,
+      rejectPosting,
+      accept
+    }

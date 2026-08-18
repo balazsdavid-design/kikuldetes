@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "es2022",
+    "skipLibCheck": true,
+    "allowJs": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "bundler",
+    "rootDir": "./webapp",
+    "outDir": "./dist",
+    "paths": {
+      "kikuldetesek/delegacysettlementreform/*": [
+        "./webapp/*"
+      ]
+    },
+    "types": [
+      "@sapui5/types"
+    ]
+  },
+  "include": [
+    "./webapp/**/*"
+  ]
+}

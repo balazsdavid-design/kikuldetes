@@ -5,6 +5,28 @@ service AppService {
     
   
     action Test();
+
+    action updatePersonalData(
+      ID : String,
+      name : String,
+      lastName : String,
+      position : String,
+      postal_code : String(4),
+      city : String,
+      address : String,
+      birthDate : Date,
+      birthPlace : String,
+      mothersName : String,
+      taxNumber : String(10)
+    ) returns Boolean;
+
+    @odata.singleton
+    @cds.persistence.skip
+    @readonly
+    entity UserContext {
+      key ID : String;
+      isBackoffice : Boolean;
+    };
     @cds.redirection.target
     @odata.draft.enabled
     entity PostingsRegular  as projection on my.PostingsRegular actions {

@@ -13,8 +13,13 @@ const postingsregular = require("./handlers/postingsregular")
 
 class AppService extends cds.ApplicationService {
   init() {
-    this.on('Test', async(req) => {
-   
+    this.on('READ', 'UserContext', req => ({
+      ID: req.user.id,
+      isBackoffice: req.user.is('Backoffice')
+    }))
+
+    /*this.on('Test', async(req) => {
+     
       const  api  = await cds.connect.to('MS_GRAPH')
       const message = {
 
@@ -50,7 +55,7 @@ class AppService extends cds.ApplicationService {
       catch(err){
         console.log(err)
       }
-      /*const { executeHttpRequest } = require('@sap-cloud-sdk/http-client');
+      const { executeHttpRequest } = require('@sap-cloud-sdk/http-client');
       try {
         const reqs = await executeHttpRequest(
                 {
@@ -68,10 +73,10 @@ class AppService extends cds.ApplicationService {
       }
       catch(e){
         console.log(e)
-      }*/
+      }
       
     
-    })
+    })*/
     this.after('READ',`*`,async(results,req) => {
       const { user} = req;
       
@@ -161,6 +166,10 @@ this.before('DELETE','PostingsRegular',async(req) => {
     
 
   // EMPLOYEES
+  this.on("updatePersonalData", async (req) => {
+    return employees.updatePersonalData(req)
+  })
+
   this.before('CREATE','Employees.drafts', async(req) => {
     employees.beforeCreateEmployeesDraft(req)
   })

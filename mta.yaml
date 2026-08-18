@@ -49,8 +49,20 @@ modules:
           artifacts:
             - postingui.zip
           target-path: app/
+        - name: kikuldetesek-ui
     
-
+  - name: kikuldetesek-ui
+    type: html5
+    path: app/delegacysettlement_reform
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+      
   - name: kikuldetesekadminpanel
     type: html5
     path: app/adminpanel

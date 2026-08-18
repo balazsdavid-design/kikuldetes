@@ -1,0 +1,280 @@
+<mvc:View
+    controllerName="kikuldetesek.delegacysettlementreform.ext.view.Main"
+    height="100%"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:macros="sap.fe.macros">
+
+    <macros:Page
+        id="Main"
+        title="{i18n>WorkspaceTitle}"
+        description="{i18n>WorkspaceDescription}"
+        avatarSrc="sap-icon://travel-itinerary">
+
+        <VBox class="workspaceContent">
+            <MessageStrip
+                text="{i18n>WorkspaceHint}"
+                type="Information"
+                showIcon="true"
+                showCloseButton="false"
+                class="sapUiSmallMarginBottom" />
+
+            <IconTabBar
+                id="workspaceTabs"
+                selectedKey="car"
+                expandable="false"
+                applyContentPadding="false"
+                select=".onTabSelect"
+                class="workspaceTabs">
+                <items>
+                    <IconTabFilter
+                        key="car"
+                        text="{i18n>PostingsCar}"
+                        icon="sap-icon://car-rental">
+                        <VBox class="workspaceTabContent">
+                            <VBox class="workspaceSectionHeading sapUiSmallMarginBottom">
+                                <Title text="{i18n>PostingsCar}" level="H2" />
+                                <Text text="{i18n>CarPostingsDescription}" class="sapUiTinyMarginTop" />
+                            </VBox>
+
+                            <macros:FilterBar
+                                id="CarFilterBar"
+                                contextPath="/PostingsWithCar"
+                                metaPath="@com.sap.vocabularies.UI.v1.SelectionFields#MainFilters"
+                                liveMode="false"
+                                class="sapUiSmallMarginBottom" />
+
+                            <macros:Table
+                                id="CarPostingTable"
+                                contextPath="/PostingsWithCar"
+                                metaPath="@com.sap.vocabularies.UI.v1.LineItem#Main"
+                                type="ResponsiveTable"
+                                filterBar="CarFilterBar"
+                                header="{i18n>PostingsCar}"
+                                isSearchable="true"
+                                selectionMode="ForceMulti"
+                                readOnly="true" />
+                        </VBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter
+                        key="regular"
+                        text="{i18n>PostingsAbroad}"
+                        icon="sap-icon://flight">
+                        <VBox class="workspaceTabContent">
+                            <VBox class="workspaceSectionHeading sapUiSmallMarginBottom">
+                                <Title text="{i18n>PostingsAbroad}" level="H2" />
+                                <Text text="{i18n>RegularPostingsDescription}" class="sapUiTinyMarginTop" />
+                            </VBox>
+
+                            <macros:FilterBar
+                                id="RegularFilterBar"
+                                contextPath="/PostingsRegular"
+                                metaPath="@com.sap.vocabularies.UI.v1.SelectionFields#MainFilters"
+                                liveMode="false"
+                                class="sapUiSmallMarginBottom" />
+
+                            <macros:Table
+                                id="RegularPostingTable"
+                                contextPath="/PostingsRegular"
+                                metaPath="@com.sap.vocabularies.UI.v1.LineItem#Main"
+                                type="ResponsiveTable"
+                                filterBar="RegularFilterBar"
+                                header="{i18n>PostingsAbroad}"
+                                isSearchable="true"
+                                selectionMode="ForceMulti"
+                                readOnly="true" />
+                        </VBox>
+                    </IconTabFilter>
+
+                    <IconTabFilter
+                        key="profile"
+                        text="{i18n>PersonalData}"
+                        icon="sap-icon://employee">
+                        <VBox class="workspaceTabContent profileArea">
+                            <BusyIndicator
+                                visible="{= !${workspace>/profileLoaded}}"
+                                class="sapUiLargeMargin" />
+
+                            <VBox id="profileContent" width="100%" class="profileContent" visible="{workspace>/profileLoaded}">
+                                <MessageStrip
+                                    text="{i18n>CurrentEmployeeUnavailable}"
+                                    type="Warning"
+                                    showIcon="true"
+                                    showCloseButton="false"
+                                    visible="{workspace>/profileUnavailable}"
+                                    class="sapUiSmallMarginBottom" />
+
+                                <HBox
+                                    alignItems="Center"
+                                    justifyContent="SpaceBetween"
+                                    wrap="Wrap"
+                                    class="profileHeader sapUiSmallMarginBottom">
+                                    <HBox alignItems="Center" class="profileIdentity">
+                                        <Avatar
+                                            initials="{profile>/initials}"
+                                            displayShape="Circle"
+                                            displaySize="L"
+                                            class="sapUiSmallMarginEnd" />
+                                        <VBox>
+                                            <Title text="{profile>/fullName}" level="H2" />
+                                            <Text text="{profile>/position}" visible="{= !!${profile>/position}}" />
+                                            <ObjectStatus
+                                                text="{profile>/ID}"
+                                                icon="sap-icon://email"
+                                                class="sapUiTinyMarginTop" />
+                                        </VBox>
+                                    </HBox>
+
+                                    <HBox wrap="Wrap" class="profileActions">
+                                        <Button
+                                            text="{i18n>SearchOtherEmployee}"
+                                            icon="sap-icon://employee-lookup"
+                                            type="Transparent"
+                                            visible="{= ${workspace>/showEmployeeSearch} &amp;&amp; !${workspace>/profileEditing}}"
+                                            enabled="{= !${workspace>/profileBusy}}"
+                                            press=".onEmployeeSearch"
+                                            class="sapUiTinyMarginEnd" />
+                                        <Button
+                                            text="{i18n>CancelPersonalData}"
+                                            icon="sap-icon://decline"
+                                            type="Transparent"
+                                            visible="{workspace>/profileEditing}"
+                                            enabled="{= !${workspace>/profileBusy}}"
+                                            press=".onInlineCancelPersonalData"
+                                            class="sapUiTinyMarginEnd" />
+                                        <Button
+                                            text="{i18n>EditPersonalData}"
+                                            icon="sap-icon://edit"
+                                            type="Emphasized"
+                                            visible="{= !${workspace>/profileEditing}}"
+                                            enabled="{= ${workspace>/hasEmployee} &amp;&amp; !${workspace>/profileBusy}}"
+                                            press=".onInlineEditPersonalData" />
+                                        <Button
+                                            text="{i18n>SavePersonalData}"
+                                            icon="sap-icon://save"
+                                            type="Emphasized"
+                                            visible="{workspace>/profileEditing}"
+                                            enabled="{= !${workspace>/profileBusy}}"
+                                            press=".onInlineSavePersonalData" />
+                                    </HBox>
+                                </HBox>
+
+                                <MessageStrip
+                                    text="{= ${workspace>/showEmployeeSearch} ? ${i18n>BackofficeEmployeeHint} : ${i18n>PersonalDataHint} }"
+                                    type="Information"
+                                    showIcon="true"
+                                    showCloseButton="false"
+                                    class="sapUiSmallMarginBottom" />
+
+                                <VBox width="100%" class="profileCards">
+                                    <Panel class="profileCard profileCardBasic">
+                                        <headerToolbar>
+                                            <Toolbar design="Transparent" class="profileCardHeader">
+                                                <HBox alignItems="Center" justifyContent="Center" class="profileCardIcon">
+                                                    <core:Icon src="sap-icon://person-placeholder" size="1rem" />
+                                                </HBox>
+                                                <Title text="{i18n>BasicData}" level="H3" class="profileCardTitle" />
+                                            </Toolbar>
+                                        </headerToolbar>
+                                        <content>
+                                            <VBox class="profileFieldGrid profileFieldGridBasic">
+                                                <VBox class="profileField">
+                                                    <Label text="{i18n>FirstName}" required="{workspace>/profileEditing}" labelFor="profileFirstNameInput" />
+                                                    <Text text="{profile>/name}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profileFirstNameInput" value="{profile>/name}" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                                <VBox class="profileField">
+                                                    <Label text="{i18n>LastName}" required="{workspace>/profileEditing}" labelFor="profileLastNameInput" />
+                                                    <Text text="{profile>/lastName}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profileLastNameInput" value="{profile>/lastName}" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                                <VBox class="profileField profileFieldWide">
+                                                    <Label text="{i18n>Position}" required="{workspace>/profileEditing}" labelFor="profilePositionInput" />
+                                                    <Text text="{profile>/position}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profilePositionInput" value="{profile>/position}" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                                <VBox class="profileField">
+                                                    <Label text="{i18n>BirthDate}" required="{workspace>/profileEditing}" labelFor="profileBirthDateInput" />
+                                                    <Text text="{profile>/birthDate}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <DatePicker
+                                                        id="profileBirthDateInput"
+                                                        value="{profile>/birthDate}"
+                                                        valueFormat="yyyy-MM-dd"
+                                                        displayFormat="medium"
+                                                        visible="{workspace>/profileEditing}"
+                                                        required="true" />
+                                                </VBox>
+                                                <VBox class="profileField">
+                                                    <Label text="{i18n>BirthPlace}" required="{workspace>/profileEditing}" labelFor="profileBirthPlaceInput" />
+                                                    <Text text="{profile>/birthPlace}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profileBirthPlaceInput" value="{profile>/birthPlace}" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                            </VBox>
+                                        </content>
+                                    </Panel>
+
+                                    <Panel class="profileCard profileCardAddress">
+                                        <headerToolbar>
+                                            <Toolbar design="Transparent" class="profileCardHeader">
+                                                <HBox alignItems="Center" justifyContent="Center" class="profileCardIcon">
+                                                    <core:Icon src="sap-icon://home" size="1rem" />
+                                                </HBox>
+                                                <Title text="{i18n>AddressData}" level="H3" class="profileCardTitle" />
+                                            </Toolbar>
+                                        </headerToolbar>
+                                        <content>
+                                            <VBox class="profileFieldGrid profileFieldGridAddress">
+                                                <VBox class="profileField">
+                                                    <Label text="{i18n>Postalcode}" required="{workspace>/profileEditing}" labelFor="profilePostalCodeInput" />
+                                                    <Text text="{profile>/postal_code}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profilePostalCodeInput" value="{profile>/postal_code}" maxLength="4" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                                <VBox class="profileField">
+                                                    <Label text="{i18n>City}" required="{workspace>/profileEditing}" labelFor="profileCityInput" />
+                                                    <Text text="{profile>/city}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profileCityInput" value="{profile>/city}" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                                <VBox class="profileField profileFieldWide">
+                                                    <Label text="{i18n>Address}" required="{workspace>/profileEditing}" labelFor="profileAddressInput" />
+                                                    <Text text="{profile>/address}" wrapping="true" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profileAddressInput" value="{profile>/address}" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                            </VBox>
+                                        </content>
+                                    </Panel>
+
+                                    <Panel class="profileCard profileCardOfficial">
+                                        <headerToolbar>
+                                            <Toolbar design="Transparent" class="profileCardHeader">
+                                                <HBox alignItems="Center" justifyContent="Center" class="profileCardIcon">
+                                                    <core:Icon src="sap-icon://shield" size="1rem" />
+                                                </HBox>
+                                                <Title text="{i18n>OfficialData}" level="H3" class="profileCardTitle" />
+                                            </Toolbar>
+                                        </headerToolbar>
+                                        <content>
+                                            <VBox class="profileFieldGrid profileFieldGridOfficial">
+                                                <VBox class="profileField">
+                                                    <Label text="{i18n>MothersName}" required="{workspace>/profileEditing}" labelFor="profileMothersNameInput" />
+                                                    <Text text="{profile>/mothersName}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profileMothersNameInput" value="{profile>/mothersName}" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                                <VBox class="profileField">
+                                                    <Label text="{i18n>TaxNum}" required="{workspace>/profileEditing}" labelFor="profileTaxNumberInput" />
+                                                    <Text text="{profile>/taxNumber}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profileTaxNumberInput" value="{profile>/taxNumber}" maxLength="10" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                            </VBox>
+                                        </content>
+                                    </Panel>
+                                </VBox>
+                            </VBox>
+                        </VBox>
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </VBox>
+    </macros:Page>
+</mvc:View>

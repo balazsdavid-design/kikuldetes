@@ -118,7 +118,7 @@ aspect Postings : managed {
     @attachments.disable_facet
     attachments : Composition of many Attachments; 
    
-    
+    @UI.Hidden
     virtual submittable : Boolean default true;
     @UI.Hidden
     virtual backOffice : Boolean default false;
