@@ -35,6 +35,14 @@ annotate service.PostingsWithCar with @(
     ],
 );
 
+
+annotate service.PostingsRegular with {
+    employee @Common.Label : '{i18n>Posted}';
+
+    status @Common.Label : '{i18n>Status}';
+
+};
+
 annotate service.PostingsRegular with @(
     UI.LineItem #Main : [
         {

@@ -178,7 +178,7 @@ async function afterReadPostingWithCar(results,req) {
       if(each.employee){
         
       var employee = each.employee
-    each.employee.fullName = employee.name+" "+employee.lastName
+    each.employee.fullName = employee.lastName+" "+employee.name
     }
       each.backOffice =  user.is('Backoffice')
       each.submittable = (each.status_ID == 1 || each.status_ID == 3)
@@ -195,7 +195,7 @@ async function afterReadPostingWithCarDraft(results,req) {
        
         if(each.employee){
           var employee = each.employee
-    each.employee.fullName = employee.name+" "+employee.lastName
+    each.employee.fullName = employee.lastName+" "+employee.name
         }
         each.editing = true
       if(user.is('Backoffice')){

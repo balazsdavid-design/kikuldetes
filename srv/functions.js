@@ -86,12 +86,18 @@ function compareByDate(a,b) {
     }
     return 0;
 }
+const requiredEmployeeFields = [
+    'name', 'lastName', 'position', 'postal_code', 'city', 'address',
+    'birthDate', 'birthPlace', 'mothersName', 'taxNumber'
+];
+
 function isEmployeeDataMissing(employee){
-   
-    return  (employee.position == null || employee.address == null || employee.birthDate == null 
-        || employee.birthPlace == null || employee.taxNumber == null || employee.mothersName == null )
-            
-        
+    if (!employee) return true;
+
+    return requiredEmployeeFields.some(field => {
+        const value = employee[field];
+        return value == null || (typeof value === 'string' && value.trim() === '');
+    });
 }
 
 async function getBearerToken(username,password,authURL){

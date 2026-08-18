@@ -26,6 +26,7 @@ service AppService {
     entity UserContext {
       key ID : String;
       isBackoffice : Boolean;
+      personalDataMissing : Boolean;
     };
     @cds.redirection.target
     @odata.draft.enabled

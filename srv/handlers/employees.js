@@ -1,4 +1,5 @@
 const cds = require("@sap/cds");
+const { isEmployeeDataMissing } = require("../functions");
 
 async function afterReadEmployees(results){
     for(let each of results){
@@ -80,6 +81,10 @@ async function updatePersonalData(req) {
     const changes = Object.fromEntries(
         editableFields.map((field) => [field, req.data[field] ?? null])
     );
+
+    if (isEmployeeDataMissing(changes)) {
+        return req.reject(400, "PersonalDataRequired");
+    }
 
     const affectedRows = await cds.tx(req).run(
         UPDATE.entity("kikuldetes.Employees")

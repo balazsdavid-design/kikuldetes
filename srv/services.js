@@ -5,7 +5,7 @@ const tx = cds.tx();
 const axios = require('axios');
 const { createRegularXML } = require("./regular");
 const { createCarXML } = require("./car");
-const { getPDF, getBearerToken, attachFile  } = require("./functions");
+const { getPDF, getBearerToken, attachFile, isEmployeeDataMissing } = require("./functions");
 const statusActions = require("./handlers/actions")
 const employees = require("./handlers/employees")
 const postingswithcar = require("./handlers/postingswithcar")
@@ -13,10 +13,14 @@ const postingsregular = require("./handlers/postingsregular")
 
 class AppService extends cds.ApplicationService {
   init() {
-    this.on('READ', 'UserContext', req => ({
-      ID: req.user.id,
-      isBackoffice: req.user.is('Backoffice')
-    }))
+    this.on('READ', 'UserContext', async req => {
+      const employee = await SELECT.one.from('Employees').where({ ID: req.user.id });
+      return {
+        ID: req.user.id,
+        isBackoffice: req.user.is('Backoffice'),
+        personalDataMissing: isEmployeeDataMissing(employee)
+      };
+    })
 
     /*this.on('Test', async(req) => {
      

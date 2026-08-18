@@ -21,7 +21,7 @@ async function afterReadPostingRegular(results,req) {
     for(const each of results){
       if(each.employee){
           var employee = each.employee
-          each.employee.fullName = employee.name+" "+employee.lastName
+          each.employee.fullName = employee.lastName+" "+employee.name
         }
       each.backOffice =  user.is('Backoffice')
 
@@ -38,7 +38,7 @@ async function afterReadPostingRegularDraft(results,req) {
     for(const each of results){
       if(each.employee){
       var employee = each.employee
-      each.employee.fullName = employee.name+" "+employee.lastName
+      each.employee.fullName = employee.lastName+" "+employee.name
     }
       each.editing = true
       if(user.is('Backoffice')){

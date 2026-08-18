@@ -4,6 +4,8 @@ import Fragment from "sap/ui/core/Fragment";
 import Element from "sap/ui/core/Element";
 import Filter from "sap/ui/model/Filter";
 import FilterOperator from "sap/ui/model/FilterOperator";
+import ValueState from "sap/ui/core/ValueState";
+import type InputBase from "sap/m/InputBase";
 import type Context from "sap/ui/model/odata/v4/Context";
 import type ODataModel from "sap/ui/model/odata/v4/ODataModel";
 import type ODataListBinding from "sap/ui/model/odata/v4/ODataListBinding";
@@ -38,6 +40,7 @@ interface EmployeeData {
 interface UserContextData {
     ID: string;
     isBackoffice: boolean;
+    personalDataMissing: boolean;
 }
 
 interface DynamicPageLike {
@@ -66,6 +69,7 @@ export default class Main extends PageController {
     private _profileSaveActionBinding?: ODataContextBinding;
     private _profileLoadInFlight = false;
     private _profileInitialized = false;
+    private _ownEmployeeId?: string;
     private _selectedEmployeeId?: string;
     private _selectedTabKey = "car";
     private _tabResizeObserver?: ResizeObserver;
@@ -89,6 +93,8 @@ export default class Main extends PageController {
             hasEmployee: false,
             showEmployeeSearch: false,
             employeeCount: 0,
+            showOwnProfileAction: false,
+            personalDataMissing: false,
             profileUnavailable: false,
             profileEditing: false,
             profileBusy: false
@@ -101,11 +107,7 @@ export default class Main extends PageController {
             onAfterRendering: () => {
                 this._configureStaticPageHeader();
                 this._observeTabHeaderResize();
-
-                const tabBar = this.byId("workspaceTabs") as IconTabBar | undefined;
-                if (tabBar?.getSelectedKey() === "profile") {
-                    void this._ensureEmployeeProfileLoaded();
-                }
+                void this._ensureEmployeeProfileLoaded();
             }
         });
 
@@ -188,6 +190,28 @@ export default class Main extends PageController {
         // The SelectDialog closes itself. No state change is required.
     }
 
+    public async onReturnToOwnProfile(): Promise<void> {
+        const stateModel = this._getWorkspaceModel();
+        if (!this._ownEmployeeId || stateModel.getProperty("/profileBusy")) {
+            return;
+        }
+
+        stateModel.setProperty("/profileBusy", true);
+        try {
+            const ownContext = await this._requestEmployeeById(
+                this._getODataModel(),
+                this._ownEmployeeId
+            );
+            if (ownContext) {
+                await this._setEmployeeContext(ownContext);
+            }
+        } catch (error) {
+            console.error("Failed to return to the signed-in employee's personal data", error);
+        } finally {
+            stateModel.setProperty("/profileBusy", false);
+        }
+    }
+
     public onTabSelect(event: IconTabBar$SelectEvent): void {
         const item = event.getParameter("item") as IconTabFilter | undefined;
         const itemKey = item?.getKey();
@@ -221,6 +245,7 @@ export default class Main extends PageController {
         const currentData = profileModel.getData() as EmployeeData;
         this._profileEditSnapshot = { ...currentData };
         profileModel.setData({ ...currentData });
+        this._clearRequiredFieldErrors();
         stateModel.setProperty("/profileEditing", true);
     }
 
@@ -238,6 +263,10 @@ export default class Main extends PageController {
         const employeeId = data.ID ?? this._selectedEmployeeId;
 
         if (!employeeId || stateModel.getProperty("/profileBusy")) {
+            return;
+        }
+
+        if (!this._validateRequiredEmployeeFields(data)) {
             return;
         }
 
@@ -297,6 +326,7 @@ export default class Main extends PageController {
             profileModel.setData({ ...this._profileEditSnapshot });
         }
         this._profileEditSnapshot = undefined;
+        this._clearRequiredFieldErrors();
         this._getWorkspaceModel().setProperty("/profileEditing", false);
     }
 
@@ -343,7 +373,15 @@ export default class Main extends PageController {
 
             // UserContext is served by CAP and therefore uses exactly req.user.id.
             const userContext = await this._requestUserContext(model);
+            this._ownEmployeeId = userContext.ID;
             stateModel.setProperty("/showEmployeeSearch", userContext.isBackoffice);
+            stateModel.setProperty("/personalDataMissing", userContext.personalDataMissing);
+
+            if (userContext.personalDataMissing) {
+                const tabBar = this.byId("workspaceTabs") as IconTabBar | undefined;
+                tabBar?.setSelectedKey("profile");
+                this._selectedTabKey = "profile";
+            }
 
             let ownContext = await this._requestEmployeeById(model, userContext.ID);
 
@@ -359,6 +397,11 @@ export default class Main extends PageController {
 
             if (ownContext) {
                 await this._setEmployeeContext(ownContext);
+                if (userContext.personalDataMissing) {
+                    const profileModel = view.getModel("profile") as JSONModel;
+                    this._profileEditSnapshot = { ...profileModel.getData() } as EmployeeData;
+                    stateModel.setProperty("/profileEditing", true);
+                }
             } else {
                 (view.getModel("profile") as JSONModel).setData({});
                 this._setProfileBindingContext(undefined);
@@ -390,7 +433,8 @@ export default class Main extends PageController {
 
             return {
                 ID: String(userContext.ID),
-                isBackoffice: Boolean(userContext.isBackoffice)
+                isBackoffice: Boolean(userContext.isBackoffice),
+                personalDataMissing: Boolean(userContext.personalDataMissing)
             };
         } finally {
             binding.destroy();
@@ -436,19 +480,23 @@ export default class Main extends PageController {
         const profileModel = view.getModel("profile") as JSONModel;
         const stateModel = this._getWorkspaceModel();
 
-        const fullName = employee.fullName
-            || [employee.name, employee.lastName].filter(Boolean).join(" ")
+        const fullName = [employee.lastName, employee.name].filter(Boolean).join(" ")
             || employee.ID
             || "";
 
         profileModel.setData({
             ...employee,
             fullName,
-            initials: this._createInitials(employee.name, employee.lastName, fullName)
+            initials: this._createInitials(employee.lastName, employee.name, fullName)
         });
 
         stateModel.setProperty("/hasEmployee", true);
         stateModel.setProperty("/profileUnavailable", false);
+        stateModel.setProperty("/personalDataMissing", this._isEmployeeDataMissing(employee));
+        stateModel.setProperty(
+            "/showOwnProfileAction",
+            Boolean(this._ownEmployeeId && this._selectedEmployeeId !== this._ownEmployeeId)
+        );
     }
 
     private _getDynamicPage(): DynamicPageLike | undefined {
@@ -583,6 +631,60 @@ export default class Main extends PageController {
         head.style.setProperty("--workspace-tab-indicator-x", String(to.x) + "px");
         head.style.setProperty("--workspace-tab-indicator-width", String(to.width) + "px");
         this._selectedTabKey = item.getKey();
+    }
+
+    private readonly _requiredEmployeeFields: Array<{
+        field: keyof EmployeeData;
+        controlId: string;
+    }> = [
+        { field: "lastName", controlId: "profileLastNameInput" },
+        { field: "name", controlId: "profileFirstNameInput" },
+        { field: "position", controlId: "profilePositionInput" },
+        { field: "birthDate", controlId: "profileBirthDateInput" },
+        { field: "birthPlace", controlId: "profileBirthPlaceInput" },
+        { field: "postal_code", controlId: "profilePostalCodeInput" },
+        { field: "city", controlId: "profileCityInput" },
+        { field: "address", controlId: "profileAddressInput" },
+        { field: "mothersName", controlId: "profileMothersNameInput" },
+        { field: "taxNumber", controlId: "profileTaxNumberInput" }
+    ];
+
+    private _isEmployeeDataMissing(employee: EmployeeData): boolean {
+        return this._requiredEmployeeFields.some(({ field }) => {
+            const value = employee[field];
+            return value == null || (typeof value === "string" && value.trim() === "");
+        });
+    }
+
+    private _validateRequiredEmployeeFields(employee: EmployeeData): boolean {
+        const errorText = String(
+            this.getView()!.getModel("i18n")?.getProperty("RequiredField")
+            ?? "Kötelező mező"
+        );
+        let firstInvalidControl: InputBase | undefined;
+
+        for (const { field, controlId } of this._requiredEmployeeFields) {
+            const control = this.byId(controlId) as InputBase | undefined;
+            const value = employee[field];
+            const missing = value == null || (typeof value === "string" && value.trim() === "");
+
+            control?.setValueState(missing ? ValueState.Error : ValueState.None);
+            control?.setValueStateText(missing ? errorText : "");
+            if (missing && !firstInvalidControl) {
+                firstInvalidControl = control;
+            }
+        }
+
+        firstInvalidControl?.focus();
+        return !firstInvalidControl;
+    }
+
+    private _clearRequiredFieldErrors(): void {
+        for (const { controlId } of this._requiredEmployeeFields) {
+            const control = this.byId(controlId) as InputBase | undefined;
+            control?.setValueState(ValueState.None);
+            control?.setValueStateText("");
+        }
     }
 
     private _createInitials(firstName?: string, lastName?: string, fullName?: string): string {
