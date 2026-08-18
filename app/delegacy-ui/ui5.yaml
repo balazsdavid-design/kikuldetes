@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: kikuldetesek.delegacysettlementreform
+  name: delegacy-ui
 type: application
 server:
   customMiddleware:

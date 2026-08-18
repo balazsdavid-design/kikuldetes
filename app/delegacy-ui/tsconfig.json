@@ -10,7 +10,7 @@
     "rootDir": "./webapp",
     "outDir": "./dist",
     "paths": {
-      "kikuldetesek/delegacysettlementreform/*": [
+      "delegacy-ui/*": [
         "./webapp/*"
       ]
     },

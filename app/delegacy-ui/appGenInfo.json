@@ -5,10 +5,10 @@
     "serviceType": "Local CAP",
     "metadataFilename": "",
     "serviceUrl": "http://localhost:4004/odata/v4/app/",
-    "appName": "delegacysettlement_reform",
+    "appName": "delegacy-ui",
     "appTitle": "Delegacy Settlement",
     "appDescription": "An application to manage delegacies.",
-    "appNamespace": "kikuldetesek",
+    "appNamespace": "",
     "ui5Theme": "sap_horizon",
     "ui5Version": "1.151.0",
     "enableEslint": true,
@@ -23,6 +23,6 @@
         "value": "PostingsRegular"
       }
     ],
-    "launchText": "To launch the generated app, start your CAP project:  and navigate to the following location in your browser:\n\nhttp://localhost:4004/kikuldetesek.delegacysettlementreform/index.html"
+    "launchText": "To launch the generated app, start your CAP project:  and navigate to the following location in your browser:\n\nhttp://localhost:4004/delegacy-ui/index.html"
   }
 }

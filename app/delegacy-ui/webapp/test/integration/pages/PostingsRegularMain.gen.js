@@ -24,7 +24,7 @@ sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
     };
 
     return new TemplatePage(
-        'kikuldetesek.delegacysettlementreform::PostingsRegularMain',
+        'delegacy-ui::PostingsRegularMain',
         CustomPageDefinitions
     );
 });

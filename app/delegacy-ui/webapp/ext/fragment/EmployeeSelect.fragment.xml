@@ -10,7 +10,7 @@
         confirm=".onEmployeeSelected"
         cancel=".onEmployeeSearchCancel"
         items="{/Employees}">
-        <StandardListItem
+        <StandardListItem id="_IDGenStandardListItem"
             title="{fullName}"
             description="{ID}"
             info="{position}"

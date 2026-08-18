@@ -32,7 +32,7 @@
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "watch-postingui": "cds watch --open postingui/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-adminpanel": "cds watch --open adminpanel/index.html?sap-ui-xx-viewCache=false --livereload false",
-    "watch-delegacysettlement_reform": "cds watch --open kikuldetesek.delegacysettlementreform/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-delegacy-ui": "cds watch --open delegacy-ui/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "cds": {
     "requires": {
@@ -90,7 +90,7 @@
     "app/postingui",
     "app/adminpanel",
     "app/employeeteszt",
-    "app/delegacysettlement_reform"
+    "app/delegacy-ui"
   ],
   "workspaces": [
     "app/*"

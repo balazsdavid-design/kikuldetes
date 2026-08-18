@@ -1,7 +1,7 @@
 import BaseComponent from "sap/fe/core/AppComponent";
 
 /**
- * @namespace kikuldetesek.delegacysettlementreform
+ * @namespace delegacy-ui
  */
 export default class Component extends BaseComponent {
 

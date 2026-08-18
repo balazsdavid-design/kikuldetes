@@ -1,7 +1,7 @@
 {
   "_version": "1.86.0",
   "sap.app": {
-    "id": "kikuldetesek.delegacysettlementreform",
+    "id": "delegacy-ui",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -77,7 +77,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "kikuldetesek.delegacysettlementreform.i18n.i18n"
+          "bundleName": "delegacy-ui.i18n.i18n"
         }
       },
       "": {
@@ -132,7 +132,7 @@
           "name": "sap.fe.core.fpm",
           "options": {
             "settings": {
-              "viewName": "kikuldetesek.delegacysettlementreform.ext.view.Main",
+              "viewName": "delegacy-ui.ext.view.Main",
               "contextPath": "/PostingsWithCar",
               "navigation": {
                 "PostingsWithCar": {
@@ -167,7 +167,7 @@
                 "header": {
                   "actions": {
                     "savepdf": {
-                      "press": "kikuldetesek.delegacysettlementreform.ext.controller.PDF_handler.handle",
+                      "press": "delegacy-ui.ext.controller.PDF_handler.handle",
                       "text": "{i18n>SavePDF}",
                       "position": {
                         "placement": "Before",
@@ -253,7 +253,7 @@
                   "actions": {
                     "saveRegularPDF": {
                       "id": "saveRegularPDF",
-                      "press": "kikuldetesek.delegacysettlementreform.ext.controller.RegPDF_handler.downloadPDF",
+                      "press": "delegacy-ui.ext.controller.RegPDF_handler.downloadPDF",
                       "visible": "{= !${submittable} && ${backOffice} }",
                       "enabled": "{= !${ui>/isEditable} && ${backOffice} && ${accepted}}",
                       "text": "{i18n>SavePDF}",

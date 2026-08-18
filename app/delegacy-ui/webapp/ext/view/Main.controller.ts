@@ -56,7 +56,7 @@ interface DynamicPageLike {
  * Personal data is edited inline in a local buffer and saved through a dedicated
  * action, without creating a draft from this custom page.
  *
- * @namespace kikuldetesek.delegacysettlementreform.ext.view
+ * @namespace delegacy-ui.ext.view
  */
 export default class Main extends PageController {
     private _employeeContext?: Context;
@@ -133,7 +133,7 @@ export default class Main extends PageController {
         if (!this._employeeDialog) {
             this._employeeDialog = await Fragment.load({
                 id: this.getView()!.getId(),
-                name: "kikuldetesek.delegacysettlementreform.ext.fragment.EmployeeSelect",
+                name: "delegacy-ui.ext.fragment.EmployeeSelect",
                 controller: this
             }) as SelectDialog;
             this.getView()!.addDependent(this._employeeDialog);
