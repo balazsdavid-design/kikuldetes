@@ -50,6 +50,9 @@ modules:
             - postingui.zip
           target-path: app/
         - name: kikuldetesek-ui
+          artifacts:
+            - kikuldetesekdelegacysettlementreform.zip
+          target-path: app/
     
   - name: kikuldetesek-ui
     type: html5
