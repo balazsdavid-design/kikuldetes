@@ -36,17 +36,26 @@ async function createCarXML(PostingWithCar){
     if(PostingWithCar.fuel_type_ID == 2 || PostingWithCar.fuel_type_ID == 4){
         fuelPrice = fuelPrices.dieselPrice
     }
+    let fuel_type_ID = PostingWithCar.fuel_type_ID
     if(PostingWithCar.fuel_type_ID != 5) {
+        if(fuel_type_ID == 3){
+            fuel_type_ID = 1
+        }
+        else if(fuel_type_ID == 4){
+            fuel_type_ID = 2
+        }
+
         if(cylinder_volume < 3001){
             fuel_consumption = await SELECT.one.from('FuelConsumptions')
-    .where(`${PostingWithCar.cylinder_volume} >= volumeStart and ${PostingWithCar.cylinder_volume} <= volumeEnd and fuelType_ID = ${PostingWithCar.fuel_type_ID} `)
+    .where(`${PostingWithCar.cylinder_volume} >= volumeStart and ${PostingWithCar.cylinder_volume} <= volumeEnd and fuelType_ID = ${fuel_type_ID} `)
         }
         else {
             fuel_consumption =  await SELECT.one.from('FuelConsumptions')
-            .where(`3001 = volumeStart and fuelType_ID = ${PostingWithCar.fuel_type_ID} `)
+            .where(`3001 = volumeStart and fuelType_ID = ${fuel_type_ID} `)
             
             
         }
+        
         consumption = fuel_consumption.consumption
     
     }
