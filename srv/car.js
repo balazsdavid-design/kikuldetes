@@ -7,7 +7,7 @@ async function createCarXML(PostingWithCar){
     const year = date.getFullYear()
     const month =  (date.getMonth()+1).toString().padStart(2,"0")
     const day = date.getDate().toString().padStart(2,"0")
-    const yearMonth = year+"-"+month
+    const yearMonth = PostingWithCar.serialNumber.substring(0,7)
     const employee = PostingWithCar.employee;
     if(isEmployeeDataMissing(employee)){
         return "EmployeeDataMissing"
