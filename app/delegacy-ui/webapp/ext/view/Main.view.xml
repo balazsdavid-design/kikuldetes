@@ -198,26 +198,10 @@
                                                     <Text id="_IDGenText3" text="{profile>/name}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
                                                     <Input id="profileFirstNameInput" value="{profile>/name}" visible="{workspace>/profileEditing}" required="true" />
                                                 </VBox>
-                                                <VBox id="_IDGenVBox11" class="profileField profileFieldWide">
+                                                <VBox id="_IDGenVBox11" class="profileField">
                                                     <Label id="_IDGenLabel2" text="{i18n>Position}" required="{workspace>/profileEditing}" labelFor="profilePositionInput" />
                                                     <Text id="_IDGenText5" text="{profile>/position}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
                                                     <Input id="profilePositionInput" value="{profile>/position}" visible="{workspace>/profileEditing}" required="true" />
-                                                </VBox>
-                                                <VBox id="_IDGenVBox12" class="profileField">
-                                                    <Label id="_IDGenLabel3" text="{i18n>BirthDate}" required="{workspace>/profileEditing}" labelFor="profileBirthDateInput" />
-                                                    <Text id="_IDGenText6" text="{profile>/birthDate}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
-                                                    <DatePicker
-                                                        id="profileBirthDateInput"
-                                                        value="{profile>/birthDate}"
-                                                        valueFormat="yyyy-MM-dd"
-                                                        displayFormat="medium"
-                                                        visible="{workspace>/profileEditing}"
-                                                        required="true" />
-                                                </VBox>
-                                                <VBox id="_IDGenVBox13" class="profileField">
-                                                    <Label id="_IDGenLabel4" text="{i18n>BirthPlace}" required="{workspace>/profileEditing}" labelFor="profileBirthPlaceInput" />
-                                                    <Text id="_IDGenText7" text="{profile>/birthPlace}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
-                                                    <Input id="profileBirthPlaceInput" value="{profile>/birthPlace}" visible="{workspace>/profileEditing}" required="true" />
                                                 </VBox>
                                             </VBox>
                                         </content>
@@ -244,7 +228,7 @@
                                                     <Text id="_IDGenText9" text="{profile>/city}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
                                                     <Input id="profileCityInput" value="{profile>/city}" visible="{workspace>/profileEditing}" required="true" />
                                                 </VBox>
-                                                <VBox id="_IDGenVBox17" class="profileField profileFieldWide">
+                                                <VBox id="_IDGenVBox17" class="profileField">
                                                     <Label id="_IDGenLabel7" text="{i18n>Address}" required="{workspace>/profileEditing}" labelFor="profileAddressInput" />
                                                     <Text id="_IDGenText10" text="{profile>/address}" wrapping="true" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
                                                     <Input id="profileAddressInput" value="{profile>/address}" visible="{workspace>/profileEditing}" required="true" />
@@ -269,10 +253,28 @@
                                                     <Text id="_IDGenText11" text="{profile>/mothersName}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
                                                     <Input id="profileMothersNameInput" value="{profile>/mothersName}" visible="{workspace>/profileEditing}" required="true" />
                                                 </VBox>
+                                                <HBox id="officialDataMiddleRow" class="profileFieldRow">
                                                 <VBox id="_IDGenVBox20" class="profileField">
                                                     <Label id="_IDGenLabel9" text="{i18n>TaxNum}" required="{workspace>/profileEditing}" labelFor="profileTaxNumberInput" />
                                                     <Text id="_IDGenText12" text="{profile>/taxNumber}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
                                                     <Input id="profileTaxNumberInput" value="{profile>/taxNumber}" maxLength="10" visible="{workspace>/profileEditing}" required="true" />
+                                                </VBox>
+                                                <VBox id="_IDGenVBox12" class="profileField">
+                                                    <Label id="_IDGenLabel3" text="{i18n>BirthDate}" required="{workspace>/profileEditing}" labelFor="profileBirthDateInput" />
+                                                    <Text id="_IDGenText6" text="{profile>/birthDate}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <DatePicker
+                                                        id="profileBirthDateInput"
+                                                        value="{profile>/birthDate}"
+                                                        valueFormat="yyyy-MM-dd"
+                                                        displayFormat="medium"
+                                                        visible="{workspace>/profileEditing}"
+                                                        required="true" />
+                                                </VBox>
+                                                </HBox>
+                                                <VBox id="_IDGenVBox13" class="profileField">
+                                                    <Label id="_IDGenLabel4" text="{i18n>BirthPlace}" required="{workspace>/profileEditing}" labelFor="profileBirthPlaceInput" />
+                                                    <Text id="_IDGenText7" text="{profile>/birthPlace}" visible="{= !${workspace>/profileEditing}}" class="profileFieldValue" />
+                                                    <Input id="profileBirthPlaceInput" value="{profile>/birthPlace}" visible="{workspace>/profileEditing}" required="true" />
                                                 </VBox>
                                             </VBox>
                                         </content>
