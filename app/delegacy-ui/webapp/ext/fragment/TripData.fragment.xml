@@ -1,0 +1,15 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:macros="sap.fe.macros" xmlns:table="sap.fe.macros.table" xmlns:trip="delegacy-ui.ext.control">
+    <trip:TripDataContainer id="tripDataContainer" width="100%">
+        <trip:items>
+            <macros:Table id="tripDataTable" contextPath="/PostingsWithCar"
+                metaPath="data/@com.sap.vocabularies.UI.v1.LineItem#Data"
+                type="GridTable" header="{i18n>TripData}" headerVisible="false"
+                enableAutoColumnWidth="false" enableExport="true" enablePaste="true" enableFullScreen="false"
+                personalization="Sort,Column,Filter" selectionMode="Multi">
+                <macros:creationMode>
+                    <table:TableCreationOptions name="Inline" createAtEnd="true" />
+                </macros:creationMode>
+            </macros:Table>
+        </trip:items>
+    </trip:TripDataContainer>
+</core:FragmentDefinition>

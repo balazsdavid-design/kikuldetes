@@ -154,12 +154,6 @@ annotate service.PostingsWithCar with @(
         },
         {
             $Type : 'UI.ReferenceFacet',
-            Label : '{i18n>TripData}',
-            ID : 'Data',
-            Target : 'data/@UI.LineItem#Data',
-        },
-        {
-            $Type : 'UI.ReferenceFacet',
             Label : '{i18n>HighwayStickers}',
             ID : 'HighwayStickers',
             Target : 'stickers/@UI.LineItem#HighwayStickers',
@@ -381,31 +375,17 @@ annotate service.PostingsWithCar with {
 
 annotate service.PostingDataWithCar with @(
     UI.LineItem #Data : [
-        {
-            $Type : 'UI.DataField',
-            Value : posting.data.date,
-            Label : '{i18n>Date}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : posting.data.from_where,
-            Label : '{i18n>FromWhere}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : posting.data.to_where,
-            Label : '{i18n>ToWhere}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : posting.data.mileage,
-            Label : '{i18n>Mileage}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : posting.data.daily_expense,
-            Label : '{i18n>CarPerDiem}',
-        },
+        { $Type : 'UI.DataField', Value : date, Label : '{i18n>Date}' },
+        { $Type : 'UI.DataField', Value : from_postcode, Label : '{i18n>TripPostalCode}' },
+        { $Type : 'UI.DataField', Value : from_city, Label : '{i18n>City}' },
+        { $Type : 'UI.DataField', Value : from_where, Label : '{i18n>Address}' },
+        { $Type : 'UI.DataField', Value : from_client, Label : '{i18n>TripClient}' },
+        { $Type : 'UI.DataField', Value : to_postcode, Label : '{i18n>TripPostalCode}' },
+        { $Type : 'UI.DataField', Value : to_city, Label : '{i18n>City}' },
+        { $Type : 'UI.DataField', Value : to_where, Label : '{i18n>Address}' },
+        { $Type : 'UI.DataField', Value : to_client, Label : '{i18n>TripClient}' },
+        { $Type : 'UI.DataField', Value : mileage, Label : '{i18n>Mileage}' },
+        { $Type : 'UI.DataField', Value : daily_expense, Label : '{i18n>CarPerDiem}' }
     ]
 );
 

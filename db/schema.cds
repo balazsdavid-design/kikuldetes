@@ -249,9 +249,29 @@ entity PostingDataWithCar {
     @mandatory
     date : Date;
     @mandatory
-    from_where : String;
+    @assert.format: '^[0-9]{4}$'
+    @title: '{i18n>TripPostalCode}'
+    from_postcode : String(4);
     @mandatory
+    @title: '{i18n>City}'
+    from_city : String;
+    @mandatory
+    @title: '{i18n>Address}'
+    from_where : String;
+    @title: '{i18n>TripClient}'
+    from_client : String;
+    @mandatory
+    @assert.format: '^[0-9]{4}$'
+    @title: '{i18n>TripPostalCode}'
+    to_postcode : String(4);
+    @mandatory
+    @title: '{i18n>City}'
+    to_city : String;
+    @mandatory
+    @title: '{i18n>Address}'
     to_where : String;
+    @title: '{i18n>TripClient}'
+    to_client : String;
     @mandatory
     mileage : Integer;
     

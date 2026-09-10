@@ -62,7 +62,9 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.fe.templates": {}
+        "sap.fe.templates": {},
+        "sap.ui.table": {},
+        "sap.fe.macros": {}
       }
     },
     "contentDensities": {
@@ -91,7 +93,11 @@
       }
     },
     "resources": {
-      "css": []
+      "css": [
+        {
+          "uri": "css/tripData.css"
+        }
+      ]
     },
     "routing": {
       "config": {},
@@ -223,6 +229,18 @@
                       "visible": "{= !${submittable} && ${backOffice} }"
                     }
                   }
+                },
+                "body": {
+                  "sections": {
+                    "Data": {
+                      "template": "postingui.ext.fragment.TripData",
+                      "title": "{i18n>TripData}",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "Cardata"
+                      }
+                    }
+                  }
                 }
               },
               "controlConfiguration": {
@@ -247,30 +265,6 @@
                     }
                   }
                 },
-                "data/@com.sap.vocabularies.UI.v1.LineItem#Data": {
-                  "columns": {
-                    "DataField::posting::data::date": {
-                      "width": "10%"
-                    },
-                    "DataField::posting::data::from_where": {
-                      "width": "20%"
-                    },
-                    "DataField::posting::data::to_where": {
-                      "width": "20%"
-                    },
-                    "DataField::posting::data::mileage": {
-                      "width": "12%"
-                    },
-                    "DataField::posting::data::daily_expense": {
-                      "width": "6%"
-                    }
-                  },
-                  "tableSettings": {
-                    "creationMode": {
-                      "createAtEnd": true
-                    }
-                  }
-                },
                 "attachments/@com.sap.vocabularies.UI.v1.LineItem#i18nAttachments": {
                   "columns": {
                     "DataField::content": {
@@ -279,6 +273,53 @@
                     "DataField::mimeType": {
                       "width": "34%"
                     }
+                  }
+                },
+                "data/@com.sap.vocabularies.UI.v1.LineItem#Data": {
+                  "columns": {
+                    "DataField::date": {
+                      "width": "9rem"
+                    },
+                    "DataField::from_postcode": {
+                      "width": "6rem"
+                    },
+                    "DataField::from_city": {
+                      "width": "10rem"
+                    },
+                    "DataField::from_where": {
+                      "width": "13rem"
+                    },
+                    "DataField::from_client": {
+                      "width": "10rem"
+                    },
+                    "DataField::to_postcode": {
+                      "width": "6rem"
+                    },
+                    "DataField::to_city": {
+                      "width": "10rem"
+                    },
+                    "DataField::to_where": {
+                      "width": "13rem"
+                    },
+                    "DataField::to_client": {
+                      "width": "10rem"
+                    },
+                    "DataField::mileage": {
+                      "width": "9rem"
+                    },
+                    "DataField::daily_expense": {
+                      "width": "9rem"
+                    }
+                  },
+                  "tableSettings": {
+                    "type": "GridTable",
+                    "creationMode": {
+                      "name": "Inline",
+                      "createAtEnd": true
+                    },
+                    "enablePaste": true,
+                    "enableExport": true,
+                    "enableFullScreen": false
                   }
                 }
               }
@@ -485,7 +526,8 @@
       "extensions": {
         "sap.ui.controllerExtensions": {}
       }
-    }
+    },
+    "handleValidation": true
   },
   "sap.fiori": {
     "registrationIds": [],

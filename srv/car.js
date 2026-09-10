@@ -2,6 +2,16 @@ const { isEmployeeDataMissing, compareByDate, getLocalCountryName ,getExchangeRa
 const { Builder } = require('xml2js');
 const builder = new Builder()
 
+// Keep the existing PDF XML tags while including the structured address fields.
+function formatTripLocation(row, direction) {
+    return ["postcode", "city", "where", "client"]
+        .map(field => row[`${direction}_${field}`])
+        .filter(value => value !== null && value !== undefined)
+        .map(value => String(value).trim())
+        .filter(value => value !== "")
+        .join(", ");
+}
+
 async function createCarXML(PostingWithCar){
     const date = new Date();
     const year = date.getFullYear()
@@ -105,14 +115,14 @@ async function createCarXML(PostingWithCar){
         })
     }
     var trips = []
-    for(row of PostingWithCar.data.sort(compareByDate)){
+    for(const row of PostingWithCar.data.sort(compareByDate)){
         
 
 
         trips.push({
             Date : row.date,
-            From_where : row.from_where,
-            To_where : row.to_where,
+            From_where : formatTripLocation(row, "from"),
+            To_where : formatTripLocation(row, "to"),
             Mileage: row.mileage,
             Daily_expense : row.daily_expense
 

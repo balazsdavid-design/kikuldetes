@@ -1,0 +1,11 @@
+/* These cells span both header rows in the DOM; no empty lower cell remains. */
+.tripDataTable .tripMergedHeader {
+    vertical-align: middle;
+}
+
+.tripDataTable .tripMergedHeader .sapUiTableCellInner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
