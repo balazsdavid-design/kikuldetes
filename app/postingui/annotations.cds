@@ -403,7 +403,7 @@ annotate service.HighwayStickers with @(
         {
             $Type : 'UI.DataField',
             Value : date,
-            Label : '{i18n>Date}',
+            Label : '{i18n>InvoiceDate}',
         },
     ]
 );
@@ -701,12 +701,12 @@ annotate service.DailyExpenses with @(
         {
             $Type : 'UI.DataField',
             Value : date,
-            Label : '{i18n>Date}',
+            Label : '{i18n>PerDiemDate}',
         },
         {
             $Type : 'UI.DataField',
             Value : days,
-            Label : '{i18n>Days}',
+            Label : '{i18n>PerDiemDays}',
         },
         {
             $Type : 'UI.DataField',
@@ -770,7 +770,7 @@ annotate service.MaterialExpenses with @(
         {
             $Type : 'UI.DataField',
             Value : date,
-            Label : '{i18n>Date}',
+            Label : '{i18n>InvoiceDate}',
         },
         {
             $Type : 'UI.DataField',
@@ -992,7 +992,7 @@ annotate service.TripExpenses with @(
         {
             $Type : 'UI.DataField',
             Value : posting.trip_expenses.date,
-            Label : '{i18n>Date}',
+            Label : '{i18n>InvoiceDate}',
         },
         {
             $Type : 'UI.DataField',
@@ -1199,12 +1199,7 @@ annotate service.PostingsRegular.attachments with @(
             $Type : 'UI.DataField',
             Value : content,
             Label : '{i18n>Attachment}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : mimeType,
-            Label : '{i18n>MediaType}',
-        },
+        }
     ],
 );
 
@@ -1214,12 +1209,7 @@ annotate service.PostingsWithCar.attachments with @(
             $Type : 'UI.DataField',
             Value : content,
             Label : '{i18n>Attachment}',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : mimeType,
-            Label : '{i18n>MediaType}',
-        },
+        }
     ]
 );
 

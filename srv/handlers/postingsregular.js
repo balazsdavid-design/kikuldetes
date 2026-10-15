@@ -9,7 +9,7 @@ async function beforeDeletePostingRegular(req) {
 }
 async function beforeCreatePostingRegularDraft(req) {
      
-        req.data.employee_ID = req.user.id
+        req.data.employee_ID = req.user.id.toLowerCase()
       
       req.data.status_ID = 1
       

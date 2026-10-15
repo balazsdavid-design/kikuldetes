@@ -44,23 +44,23 @@ async function beforeReadEmployees(req){
 async function beforeUpdateEmployees(req){
     const { user } = req;
     
-      if(req.data.ID != user.id && !user.is('Backoffice')){
+      if(req.data.ID != user.id.toLowerCase() && !user.is('Backoffice')){
         req.error(400, "Restricted")
       }
 }
 
 async function beforeDeleteEmployees(req){
     const { user } = req;
-    if(req.data.ID != user.id && !user.is('Backoffice')){
+    if(req.data.ID != user.id.toLowerCase() && !user.is('Backoffice')){
       req.error(400, "Restricted")
     }
 }
 
 async function beforeCreateEmployeesDraft(req){
     const { user } = req
-    
-   if (!req.data.ID) req.data.ID = user.id;
-    const employee = await SELECT.one.from('Employees').where({ID:user.id})
+    const userId = user.id.toLowerCase()
+   if (!req.data.ID) req.data.ID = userId;
+    const employee = await SELECT.one.from('Employees').where({ID:userId})
     if(employee){
       req.error(400,"PersonalDataExistsAlready")
     }
@@ -68,9 +68,10 @@ async function beforeCreateEmployeesDraft(req){
 }
 
 async function updatePersonalData(req) {
-    const employeeId = String(req.data.ID || req.user.id);
+    const userId = req.user.id.toLowerCase()
+    const employeeId = String(req.data.ID || userId);
 
-    if (employeeId !== req.user.id && !req.user.is("Backoffice")) {
+    if (employeeId !== userId && !req.user.is("Backoffice")) {
         return req.reject(403, "Restricted");
     }
 

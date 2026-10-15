@@ -14,9 +14,10 @@ const postingsregular = require("./handlers/postingsregular")
 class AppService extends cds.ApplicationService {
   init() {
     this.on('READ', 'UserContext', async req => {
-      const employee = await SELECT.one.from('Employees').where({ ID: req.user.id });
+      const userId = req.user.id.toLowerCase()
+      const employee = await SELECT.one.from('Employees').where({ ID: userId });
       return {
-        ID: req.user.id,
+        ID: userId,
         isBackoffice: req.user.is('Backoffice'),
         personalDataMissing: isEmployeeDataMissing(employee)
       };
@@ -83,14 +84,14 @@ class AppService extends cds.ApplicationService {
     })*/
     this.after('READ',`*`,async(results,req) => {
       const { user} = req;
-      
-     const employee = await SELECT.one`ID`.from('Employees').where({ID:user.id})
+      const userId = user.id.toLowerCase()
+     const employee = await SELECT.one`ID`.from('Employees').where({ID:userId.toLowerCase()})
      if(!employee){
       const tx = cds.tx(req)
       const firstName =user.attr.givenName
       const lastName = user.attr.familyName
       
-      const employee = [{ID:user.id,name:firstName,lastName:lastName}]
+      const employee = [{ID:userId,name:firstName,lastName:lastName}]
       try {
       await tx.run(INSERT.
       into('Employees')

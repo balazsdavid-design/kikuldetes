@@ -4,7 +4,7 @@ import Fragment from "sap/ui/core/Fragment";
 import Element from "sap/ui/core/Element";
 import Filter from "sap/ui/model/Filter";
 import FilterOperator from "sap/ui/model/FilterOperator";
-import ValueState from "sap/ui/core/ValueState";
+import { ValueState } from "sap/ui/core/library";
 import type InputBase from "sap/m/InputBase";
 import type Context from "sap/ui/model/odata/v4/Context";
 import type ODataModel from "sap/ui/model/odata/v4/ODataModel";
@@ -71,7 +71,7 @@ export default class Main extends PageController {
     private _profileInitialized = false;
     private _ownEmployeeId?: string;
     private _selectedEmployeeId?: string;
-    private _selectedTabKey = "car";
+    private _selectedTabKey = "profile";
     private _tabResizeObserver?: ResizeObserver;
     private _observedTabHead?: HTMLElement;
 

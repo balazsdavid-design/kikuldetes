@@ -221,7 +221,7 @@
                 "attachments/@com.sap.vocabularies.UI.v1.LineItem#i18nAttachments": {
                   "columns": {
                     "DataField::content": {
-                      "width": "34%"
+                      "width": "68%"
                     },
                     "DataField::mimeType": {
                       "width": "34%"
@@ -441,7 +441,7 @@
                 "attachments/@com.sap.vocabularies.UI.v1.LineItem#i18nAttachments1": {
                   "columns": {
                     "DataField::content": {
-                      "width": "37%"
+                      "width": "68%"
                     },
                     "DataField::mimeType": {
                       "width": "37%"

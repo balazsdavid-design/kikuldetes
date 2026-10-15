@@ -9,7 +9,7 @@ async function beforeDeletePostingWithCar(req) {
 async function beforeCreatePostingWithCarDraft(req){
 
         
-        req.data.employee_ID = req.user.id
+        req.data.employee_ID = req.user.id.toLowerCase()
       req.data.status_ID = 1
 }
 
