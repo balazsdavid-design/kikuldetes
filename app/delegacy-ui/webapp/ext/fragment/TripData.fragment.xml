@@ -6,6 +6,13 @@
                 type="GridTable" header="{i18n>TripData}" headerVisible="false"
                 enableAutoColumnWidth="false" enableExport="true" enablePaste="true" enableFullScreen="false"
                 personalization="Sort,Column,Filter" selectionMode="Multi">
+                <macros:columns>
+                    <table:Column key="CarPerDiemAmount" header="{i18n>CarPerDiem}"
+                        properties="daily_expense" width="17rem" required="false"
+                        placement="After" anchor="DataField::mileage">
+                        <core:Fragment fragmentName="delegacy-ui.ext.fragment.CarPerDiem" type="XML" />
+                    </table:Column>
+                </macros:columns>
                 <macros:creationMode>
                     <table:TableCreationOptions name="Inline" createAtEnd="true" />
                 </macros:creationMode>

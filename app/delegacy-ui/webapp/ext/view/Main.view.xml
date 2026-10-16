@@ -22,7 +22,7 @@
 
             <IconTabBar
                 id="workspaceTabs"
-                selectedKey="car"
+                selectedKey="profile"
                 expandable="false"
                 applyContentPadding="false"
                 select=".onTabSelect"

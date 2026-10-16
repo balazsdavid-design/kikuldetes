@@ -1,0 +1,8 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:delegacy="delegacy-ui.ext.control">
+    <VBox id="carPerDiemCell">
+        <Text id="carPerDiemDisplay" visible="{= !${ui>/isEditable}}" text="{daily_expense}" />
+        <delegacy:PerDiemSelect id="carPerDiemSelect" width="100%" visible="{ui>/isEditable}"
+            amount="{path: 'daily_expense', mode: 'OneWay', targetType: 'any'}"
+            currency="HUF" amountProperty="daily_expense" currencyProperty="" integerAmount="true" required="false" />
+    </VBox>
+</core:FragmentDefinition>

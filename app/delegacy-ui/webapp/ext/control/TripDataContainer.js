@@ -38,7 +38,8 @@ sap.ui.define(["sap/m/VBox", "sap/m/VBoxRenderer", "sap/m/Label"], function (VBo
             const columns = grid.getColumns();
             const entries = mdc.getColumns().map((column, index) => {
                 const key = column.getPropertyKey();
-                const field = fields.find(name => key === name || key.endsWith("::" + name));
+                const field = key === "CarPerDiemAmount" || key.endsWith("::CarPerDiemAmount")
+                    ? "daily_expense" : fields.find(name => key === name || key.endsWith("::" + name));
                 return { column: columns[index], field: field, header: column.getHeader() };
             });
             const signature = entries.map(entry => entry.column.getId() + ":" + entry.field + ":" + entry.header).join("|");

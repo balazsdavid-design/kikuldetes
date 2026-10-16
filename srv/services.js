@@ -1,3 +1,4 @@
+const { setPostingPDFTitle } = require("./pdf-title");
 
 const cds = require("@sap/cds");
 
@@ -10,6 +11,7 @@ const statusActions = require("./handlers/actions")
 const employees = require("./handlers/employees")
 const postingswithcar = require("./handlers/postingswithcar")
 const postingsregular = require("./handlers/postingsregular")
+const { validateCylinderVolume } = require("./handlers/car-validation");
 
 class AppService extends cds.ApplicationService {
   init() {
@@ -104,6 +106,8 @@ class AppService extends cds.ApplicationService {
       }
      }
     })
+    this.before(['CREATE', 'UPDATE'], 'PostingsWithCar', validateCylinderVolume);
+
     // PostingsWithCar
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {
       postingswithcar.beforeCreatePostingWithCarDraft(req)
@@ -348,12 +352,12 @@ this.before('DELETE','PostingsRegular',async(req) => {
            if(base64pdf.length > 30 && entity.attachments && entity.attachments.length != 0){
             var pdf = base64pdf
             for(const attachment of entity.attachments){
-              pdf = attachFile(token,apiURL,pdf,attachment)
+              pdf = await attachFile(token,apiURL,pdf,attachment)
             }
-            return pdf
+            return await setPostingPDFTitle(pdf, entity, "Car")
             
           }
-            return base64pdf 
+            return await setPostingPDFTitle(base64pdf, entity, "Car")
           } catch(exception){
             console.log(exception)
             console.log(exception.response.data)
@@ -407,10 +411,10 @@ this.before('DELETE','PostingsRegular',async(req) => {
             for(const attachment of entity.attachments){
               pdf = await attachFile(token,apiURL,pdf,attachment)
             }
-            return pdf
+            return await setPostingPDFTitle(pdf, entity, "Regular")
             
           }
-            return base64pdf 
+            return await setPostingPDFTitle(base64pdf, entity, "Regular")
           } catch(exception){
             console.log(exception)
             console.log(exception.response.data)

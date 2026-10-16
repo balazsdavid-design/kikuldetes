@@ -1,0 +1,9 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:delegacy="delegacy-ui.ext.control">
+    <VBox id="perDiemAmountCell">
+        <Text id="perDiemAmountDisplay" visible="{= !${ui>/isEditable}}"
+            text="{path: 'daily_price', type: 'sap.ui.model.odata.type.Decimal', constraints: {precision: 10, scale: 2}}" />
+        <delegacy:PerDiemSelect id="perDiemAmountSelect" width="100%" visible="{ui>/isEditable}"
+            amount="{path: 'daily_price', mode: 'OneWay', targetType: 'any'}"
+            currency="{path: 'currency_code', mode: 'OneWay'}" />
+    </VBox>
+</core:FragmentDefinition>

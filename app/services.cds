@@ -1,12 +1,2 @@
-
-
-
-
-
-
-
-
-using from './postingui/annotations';
-
+using from './delegacy-ui/annotations';
 using from './adminpanel/annotations';
-

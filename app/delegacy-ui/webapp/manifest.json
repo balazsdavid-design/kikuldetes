@@ -3,7 +3,14 @@
   "sap.app": {
     "id": "delegacy-ui",
     "type": "application",
-    "i18n": "i18n/i18n.properties",
+    "i18n": {
+      "bundleUrl": "i18n/i18n.properties",
+      "supportedLocales": [
+        "",
+        "hu"
+      ],
+      "fallbackLocale": ""
+    },
     "applicationVersion": {
       "version": "0.0.1"
     },
@@ -68,7 +75,8 @@
         "sap.fe.core": {},
         "sap.fe.templates": {},
         "sap.ui.table": {},
-        "sap.fe.macros": {}
+        "sap.fe.macros": {},
+        "sap.uxap": {}
       }
     },
     "contentDensities": {
@@ -79,7 +87,12 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "delegacy-ui.i18n.i18n"
+          "bundleName": "delegacy-ui.i18n.i18n",
+          "supportedLocales": [
+            "",
+            "hu"
+          ],
+          "fallbackLocale": ""
         }
       },
       "": {
@@ -93,7 +106,17 @@
       },
       "@i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "uri": "i18n/i18n.properties"
+        "uri": "i18n/i18n.properties",
+        "settings": {
+          "supportedLocales": [
+            "",
+            "hu"
+          ],
+          "fallbackLocale": ""
+        }
+      },
+      "sectionNavigation": {
+        "type": "sap.ui.model.json.JSONModel"
       }
     },
     "resources": {
@@ -173,7 +196,7 @@
                   "actions": {
                     "savepdf": {
                       "press": "delegacy-ui.ext.controller.PDF_handler.handle",
-                      "text": "{i18n>SavePDF}",
+                      "text": "{i18n>PreviewPDF}",
                       "position": {
                         "placement": "Before",
                         "anchor": "EditAction"
@@ -191,6 +214,28 @@
                       "position": {
                         "placement": "After",
                         "anchor": "Cardata"
+                      }
+                    }
+                  }
+                },
+                "footer": {
+                  "actions": {
+                    "previousSection": {
+                      "text": "{i18n>PreviousSection}",
+                      "press": "delegacy-ui.ext.controller.SectionNavigation.previous",
+                      "enabled": "{sectionNavigation>/hasPrevious}",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "DataFieldForAction::AppService.submit"
+                      }
+                    },
+                    "nextSection": {
+                      "text": "{i18n>NextSection}",
+                      "press": "delegacy-ui.ext.controller.SectionNavigation.next",
+                      "enabled": "{sectionNavigation>/hasNext}",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "previousSection"
                       }
                     }
                   }
@@ -261,7 +306,7 @@
                       "width": "9rem"
                     },
                     "DataField::daily_expense": {
-                      "width": "9rem"
+                      "availability": "Hidden"
                     }
                   },
                   "tableSettings": {
@@ -296,10 +341,32 @@
                       "press": "delegacy-ui.ext.controller.RegPDF_handler.downloadPDF",
                       "visible": "{= !${submittable} && ${backOffice} }",
                       "enabled": "{= !${ui>/isEditable} && ${backOffice} && ${accepted}}",
-                      "text": "{i18n>SavePDF}",
+                      "text": "{i18n>PreviewPDF}",
                       "position": {
                         "placement": "Before",
                         "anchor": "EditAction"
+                      }
+                    }
+                  }
+                },
+                "footer": {
+                  "actions": {
+                    "previousSection": {
+                      "text": "{i18n>PreviousSection}",
+                      "press": "delegacy-ui.ext.controller.SectionNavigation.previous",
+                      "enabled": "{sectionNavigation>/hasPrevious}",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "DataFieldForAction::AppService.submitRegular"
+                      }
+                    },
+                    "nextSection": {
+                      "text": "{i18n>NextSection}",
+                      "press": "delegacy-ui.ext.controller.SectionNavigation.next",
+                      "enabled": "{sectionNavigation>/hasNext}",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "previousSection"
                       }
                     }
                   }
@@ -312,16 +379,42 @@
                       "width": "18%"
                     },
                     "DataField::departure": {
-                      "width": "14%"
+                      "availability": "Hidden"
                     },
                     "DataField::to_where": {
                       "width": "18%"
                     },
                     "DataField::arrival": {
-                      "width": "14%"
+                      "availability": "Hidden"
                     },
                     "DataField::meanOfTransport_ID": {
                       "width": "10%"
+                    },
+                    "DepartureMinutes": {
+                      "header": "{i18n>Departure}",
+                      "template": "delegacy-ui.ext.fragment.Departure",
+                      "properties": [
+                        "departure"
+                      ],
+                      "required": true,
+                      "width": "15rem",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "DataField::from_where"
+                      }
+                    },
+                    "ArrivalMinutes": {
+                      "header": "{i18n>Arrival}",
+                      "template": "delegacy-ui.ext.fragment.Arrival",
+                      "properties": [
+                        "arrival"
+                      ],
+                      "required": true,
+                      "width": "15rem",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "DataField::to_where"
+                      }
                     }
                   },
                   "tableSettings": {
@@ -339,13 +432,27 @@
                       "width": "14.5%"
                     },
                     "DataField::daily_price": {
-                      "width": "26.5%"
+                      "availability": "Hidden"
                     },
                     "DataField::currency_code": {
                       "width": "12%"
                     },
                     "DataField::paymentMethod_ID": {
                       "width": "14.5%"
+                    },
+                    "PerDiemAmount": {
+                      "header": "{i18n>Amount}",
+                      "template": "delegacy-ui.ext.fragment.PerDiem",
+                      "properties": [
+                        "daily_price",
+                        "currency_code"
+                      ],
+                      "required": true,
+                      "width": "17rem",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "DataField::days"
+                      }
                     }
                   },
                   "tableSettings": {
@@ -374,7 +481,7 @@
                     "DataField::paymentMethod_ID": {
                       "width": "10%"
                     },
-                    "DataField::posting::accomodations::invoiceDate": {
+                    "DataField::invoiceDate": {
                       "width": "10%"
                     }
                   },
@@ -413,23 +520,23 @@
                 },
                 "trip_expenses/@com.sap.vocabularies.UI.v1.LineItem#Tripexpenses": {
                   "columns": {
-                    "DataField::posting::trip_expenses::reference": {
-                      "width": "18%"
-                    },
-                    "DataField::posting::trip_expenses::date": {
-                      "width": "12%"
-                    },
-                    "DataField::posting::trip_expenses::name": {
-                      "width": "18%"
-                    },
-                    "DataField::posting::trip_expenses::price": {
-                      "width": "14%"
-                    },
                     "DataField::currency_code": {
                       "width": "6%"
                     },
                     "DataField::paymentMethod_ID": {
                       "width": "12%"
+                    },
+                    "DataField::reference": {
+                      "width": "18%"
+                    },
+                    "DataField::date": {
+                      "width": "12%"
+                    },
+                    "DataField::name": {
+                      "width": "18%"
+                    },
+                    "DataField::price": {
+                      "width": "14%"
                     }
                   },
                   "tableSettings": {
@@ -476,7 +583,16 @@
         }
       }
     },
-    "handleValidation": true
+    "handleValidation": true,
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ObjectPage.ObjectPageController": {
+            "controllerName": "delegacy-ui.ext.controller.ObjectPage"
+          }
+        }
+      }
+    }
   },
   "sap.fe": {
     "app": {

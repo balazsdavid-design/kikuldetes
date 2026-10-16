@@ -1,0 +1,9 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
+    <VBox id="departureMinutesCell">
+        <Text id="departureMinutesDisplay" visible="{= !${ui>/isEditable}}"
+            text="{path: 'departure', type: 'sap.ui.model.odata.type.DateTimeOffset', formatOptions: {pattern: 'yyyy-MM-dd HH:mm'}, constraints: {V4: true, precision: 0}}" />
+        <DateTimePicker id="departureMinutesInput" width="100%" visible="{ui>/isEditable}" required="true"
+            value="{path: 'departure', type: 'sap.ui.model.odata.type.DateTimeOffset', formatOptions: {pattern: 'yyyy-MM-dd HH:mm', strictParsing: true}, constraints: {V4: true, precision: 0, nullable: false}}"
+            displayFormat="yyyy-MM-dd HH:mm" />
+    </VBox>
+</core:FragmentDefinition>

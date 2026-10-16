@@ -180,7 +180,7 @@ async function afterReadPostingWithCar(results,req) {
       var employee = each.employee
     each.employee.fullName = employee.lastName+" "+employee.name
     }
-      each.backOffice =  user.is('Backoffice')
+      each.backOffice =  !user.is('Backoffice')
       each.submittable = (each.status_ID == 1 || each.status_ID == 3)
 
       each.accepted = each.status_ID == 4
