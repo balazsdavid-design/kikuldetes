@@ -9,3 +9,14 @@
     align-items: center;
     justify-content: center;
 }
+
+/* Keep the group captions bold and separate only the two direction groups. */
+.tripDataTable .tripDirectionHeader {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+/* Paint the divider through headers and data without changing column widths. */
+.tripDataTable .tripDirectionDivider {
+    box-shadow: inset 3px 0 0 #000;
+}

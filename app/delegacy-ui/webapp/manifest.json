@@ -415,6 +415,19 @@
                         "placement": "After",
                         "anchor": "DataField::to_where"
                       }
+                    },
+                    "TripMileage": {
+                      "header": "{i18n>TripMileage}",
+                      "template": "delegacy-ui.ext.fragment.TripMileage",
+                      "properties": [
+                        "mileage",
+                        "meanOfTransport_ID"
+                      ],
+                      "width": "9rem",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "DataField::meanOfTransport_ID"
+                      }
                     }
                   },
                   "tableSettings": {

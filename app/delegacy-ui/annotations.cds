@@ -671,6 +671,10 @@ annotate service.PostingsRegular with {
     )
 };
 
+annotate service.DeparturesAndArrivals with {
+    mileage @Common.Label : '{i18n>TripMileage}';
+};
+
 annotate service.DeparturesAndArrivals with @(
     UI.LineItem #DeparturesandArrivals : [
         {

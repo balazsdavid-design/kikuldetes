@@ -1,0 +1,11 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
+    <VBox id="tripMileageCell" visible="{= %{meanOfTransport_ID} === 4 || %{meanOfTransport_ID} === 5 }">
+        <Text id="tripMileageDisplay"
+            visible="{= !%{ui>/isEditable} &amp;&amp; (%{meanOfTransport_ID} === 4 || %{meanOfTransport_ID} === 5) }"
+            text="{path: 'mileage', type: 'sap.ui.model.odata.type.Int32'}" />
+        <Input id="tripMileageInput" width="100%" textAlign="End"
+            visible="{= %{ui>/isEditable} &amp;&amp; (%{meanOfTransport_ID} === 4 || %{meanOfTransport_ID} === 5) }"
+            value="{path: 'mileage', type: 'sap.ui.model.type.Integer', formatOptions: {groupingEnabled: false, strictParsing: true}, constraints: {minimum: 0, maximum: 2147483647}}"
+            tooltip="{i18n>TripMileage}" />
+    </VBox>
+</core:FragmentDefinition>

@@ -12,6 +12,7 @@ const employees = require("./handlers/employees")
 const postingswithcar = require("./handlers/postingswithcar")
 const postingsregular = require("./handlers/postingsregular")
 const { validateCylinderVolume } = require("./handlers/car-validation");
+const { validateTripMileage } = require("./handlers/trip-mileage");
 
 class AppService extends cds.ApplicationService {
   init() {
@@ -107,6 +108,8 @@ class AppService extends cds.ApplicationService {
      }
     })
     this.before(['CREATE', 'UPDATE'], 'PostingsWithCar', validateCylinderVolume);
+    this.before(['CREATE', 'UPDATE'], ['PostingsRegular', 'DeparturesAndArrivals'], validateTripMileage);
+    this.before('PATCH', 'DeparturesAndArrivals.drafts', validateTripMileage);
 
     // PostingsWithCar
     this.before('CREATE','PostingsWithCar.drafts', async(req) => {

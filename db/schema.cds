@@ -40,7 +40,9 @@ entity DeparturesAndArrivals {
     @mandatory
     arrival : DateTime;
     posting : Association to PostingsRegular;
-    meanOfTransport : Association to one MeansOfTransport
+    meanOfTransport : Association to one MeansOfTransport;
+    @assert.range: [0, 2147483647]
+    mileage : Integer;
 
 }
 

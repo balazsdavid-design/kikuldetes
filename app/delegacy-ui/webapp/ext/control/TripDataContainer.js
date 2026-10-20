@@ -41,7 +41,7 @@ sap.ui.define(["sap/m/VBox", "sap/m/VBoxRenderer", "sap/m/Label"], function (VBo
                 const field = key === "CarPerDiemAmount" || key.endsWith("::CarPerDiemAmount")
                     ? "daily_expense" : fields.find(name => key === name || key.endsWith("::" + name));
                 return { column: columns[index], field: field, header: column.getHeader() };
-            });
+            }).filter(entry => entry.column.getVisible());
             const signature = entries.map(entry => entry.column.getId() + ":" + entry.field + ":" + entry.header).join("|");
             if (this._headerSignature !== signature) {
                 this._headerSignature = signature;
@@ -52,7 +52,9 @@ sap.ui.define(["sap/m/VBox", "sap/m/VBoxRenderer", "sap/m/Label"], function (VBo
                         : entry.field?.startsWith("to_") ? "ToWhere" : undefined;
                     const label = new Label({ text: entry.header, wrapping: true, width: "100%" });
                     if (direction) {
-                        column.addMultiLabel(new Label({ text: "{i18n>" + direction + "}", textAlign: "Center", width: "100%" }));
+                        column.addMultiLabel(new Label({
+                            text: "{i18n>" + direction + "}", textAlign: "Center", width: "100%"
+                        }).addStyleClass("tripDirectionHeader"));
                         column.addMultiLabel(label);
                         const prefix = entry.field.split("_")[0] + "_";
                         let span = 1;
@@ -75,6 +77,7 @@ sap.ui.define(["sap/m/VBox", "sap/m/VBoxRenderer", "sap/m/Label"], function (VBo
             if (!root) {
                 return;
             }
+            this._decorateDirectionDivider(root, entries);
             const pairs = Array.from(root.querySelectorAll(".tripSingleHeader"), label => {
                 const cell = label.closest("td, th");
                 const nextRow = cell?.parentElement.nextElementSibling;
@@ -90,6 +93,21 @@ sap.ui.define(["sap/m/VBox", "sap/m/VBoxRenderer", "sap/m/Label"], function (VBo
                     lower.style.display = "none";
                     lower.setAttribute("aria-hidden", "true");
                 }
+            });
+        },
+
+        _decorateDirectionDivider: function (root, entries) {
+            const direction = entry => entry?.field?.startsWith("from_") ? "from"
+                : entry?.field?.startsWith("to_") ? "to" : undefined;
+            const dividerColumns = new Set(entries.filter((entry, index) => {
+                const group = direction(entry);
+                const previous = direction(entries[index - 1]);
+                return group && previous && group !== previous;
+            }).map(entry => entry.column.getId()));
+            // Follow the visible columns when users hide or reorder them.
+            root.querySelectorAll("td[data-sap-ui-colid], th[data-sap-ui-colid]").forEach(cell => {
+                cell.classList.toggle("tripDirectionDivider",
+                    dividerColumns.has(cell.getAttribute("data-sap-ui-colid")));
             });
         }
     });
