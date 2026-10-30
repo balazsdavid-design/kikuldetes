@@ -134,7 +134,7 @@ async function createCarXML(PostingWithCar){
             Year : year,
             Month : month,
             SerialNumber : PostingWithCar.serialNumber,
-            Goal: PostingsWithCar.goal,
+            Goal: PostingWithCar.goal,
             Employee_Name : employee.lastName+" "+employee.name,
             Employee_Address : employee.postal_code+" "+employee.city+" "+employee.address,
             Employee_BirthPlaceAndDate: employee.birthPlace+", " + employee.birthDate,
